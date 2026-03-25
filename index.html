@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 Jogos Matemáticos - Aprenda se Divertindo!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Poppins', 'Quicksand', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        /* Container principal */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Cabeçalho */
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            color: #fff;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .header .subtitle {
+            font-size: 1.2rem;
+            color: #f0e6ff;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Cards de apresentação */
+        .intro-card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 48px;
+            padding: 35px;
+            margin-bottom: 50px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .intro-card h2 {
+            font-size: 2rem;
+            color: #5a3e8c;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .intro-card p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: #2d3748;
+            margin-bottom: 20px;
+        }
+
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .feature {
+            flex: 1;
+            min-width: 180px;
+            background: linear-gradient(135deg, #f5f0ff, #e9e2ff);
+            padding: 18px;
+            border-radius: 32px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .feature:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature span {
+            font-size: 2.5rem;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .feature h3 {
+            color: #5a3e8c;
+            margin-bottom: 8px;
+        }
+
+        .feature p {
+            font-size: 0.9rem;
+            margin-bottom: 0;
+            color: #4a5568;
+        }
+
+        /* Seção dos jogos */
+        .games-section {
+            margin-bottom: 40px;
+        }
+
+        .games-section h2 {
+            text-align: center;
+            font-size: 2.2rem;
+            color: #fff;
+            margin-bottom: 35px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .game-card {
+            background: white;
+            border-radius: 48px;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeInUp 0.6s ease;
+            animation-fill-mode: both;
+        }
+
+        .game-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .game-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .game-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 45px rgba(0,0,0,0.3);
+        }
+
+        .game-icon {
+            background: linear-gradient(135deg, #ffb347, #ff8c1a);
+            padding: 35px 20px;
+            text-align: center;
+            font-size: 4rem;
+        }
+
+        .game-icon.fractions {
+            background: linear-gradient(135deg, #2a9d8f, #21867a);
+        }
+
+        .game-icon.notable {
+            background: linear-gradient(135deg, #e76f51, #e95a2a);
+        }
+
+        .game-content {
+            padding: 28px;
+        }
+
+        .game-content h3 {
+            font-size: 1.6rem;
+            color: #2d3748;
+            margin-bottom: 12px;
+        }
+
+        .game-content p {
+            color: #4a5568;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .game-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .tag {
+            background: #f0e6ff;
+            color: #5a3e8c;
+            padding: 5px 14px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .play-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .play-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+        }
+
+        /* Rodapé */
+        .footer {
+            text-align: center;
+            color: rgba(255,255,255,0.8);
+            padding: 30px 20px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            margin-top: 20px;
+        }
+
+        .footer p {
+            margin-bottom: 8px;
+        }
+
+        /* Animações */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .intro-card {
+                padding: 25px;
+            }
+            
+            .intro-card h2 {
+                font-size: 1.5rem;
+            }
+            
+            .games-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .game-content h3 {
+                font-size: 1.3rem;
+            }
+        }
+
+        /* Botão de voltar (caso os jogos abram na mesma aba, útil) */
+        .back-info {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.7);
+        }
+
+        .back-info a {
+            color: #ffd966;
+            text-decoration: none;
+        }
+
+        .back-info a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Cabeçalho -->
+        <div class="header">
+            <h1>
+                <span>🎮</span>
+                Jogos Matemáticos
+                <span>🧮</span>
+            </h1>
+            <div class="subtitle">
+                Aprenda matemática de forma divertida com nossos jogos interativos! 
+                Desafie-se, conquiste recordes e domine os conteúdos.
+            </div>
+        </div>
+
+        <!-- Cards de apresentação -->
+        <div class="intro-card">
+            <h2>
+                <span>✨</span>
+                Sobre os Jogos
+            </h2>
+            <p>
+                <strong>Jogos matemáticos</strong> são ferramentas poderosas para o aprendizado. 
+                Eles combinam diversão com desafios cognitivos, ajudando os estudantes a 
+                fixarem conceitos importantes de forma lúdica e interativa. Nossa plataforma 
+                oferece jogos desenvolvidos especialmente para alunos do Ensino Médio, 
+                focando em conteúdos fundamentais da matemática.
+            </p>
+            <div class="features">
+                <div class="feature">
+                    <span>🎯</span>
+                    <h3>Aprendizado Ativo</h3>
+                    <p>Participe ativamente da construção do conhecimento</p>
+                </div>
+                <div class="feature">
+                    <span>🏆</span>
+                    <h3>Sistema de Ranking</h3>
+                    <p>Registre seus recordes e compita com os colegas</p>
+                </div>
+                <div class="feature">
+                    <span>📊</span>
+                    <h3>Feedback Imediato</h3>
+                    <p>Saiba na hora se acertou e aprenda com os erros</p>
+                </div>
+                <div class="feature">
+                    <span>🔥</span>
+                    <h3>Sequência de Acertos</h3>
+                    <p>Mantenha sua streak e quebre recordes</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seção dos jogos -->
+        <div class="games-section">
+            <h2>🎲 Escolha seu Jogo 🎲</h2>
+            <div class="games-grid">
+                <!-- Jogo 1: Frações Equivalentes e Simplificação -->
+                <div class="game-card">
+                    <div class="game-icon fractions">
+                        🍕 ➗
+                    </div>
+                    <div class="game-content">
+                        <h3>Frações: Equivalentes e Simplificação</h3>
+                        <p>
+                            Aprenda a encontrar frações equivalentes e a simplificar frações 
+                            até sua forma irredutível. Use botões interativos para multiplicar 
+                            ou dividir numerador e denominador.
+                        </p>
+                        <div class="game-tags">
+                            <span class="tag">🔢 Frações</span>
+                            <span class="tag">📐 Equivalência</span>
+                            <span class="tag">✂️ Simplificação</span>
+                            <span class="tag">🏆 Ranking</span>
+                        </div>
+                        <a href="Jogo das frações equivalentes e simplificação.html" class="play-btn">
+                            🎮 Jogar Agora
+                            <span>→</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Jogo 2: Produtos Notáveis (2º ano) - Competição -->
+                <div class="game-card">
+                    <div class="game-icon notable">
+                        📐 ✨
+                    </div>
+                    <div class="game-content">
+                        <h3>Produtos Notáveis - 2º Ano</h3>
+                        <p>
+                            Domine os produtos notáveis: quadrado da soma, quadrado da diferença 
+                            e produto da soma pela diferença. Pratique desenvolvendo expressões 
+                            ou encontrando a forma fatorada!
+                        </p>
+                        <div class="game-tags">
+                            <span class="tag">📌 (a+b)²</span>
+                            <span class="tag">📌 (a-b)²</span>
+                            <span class="tag">📌 (a+b)(a-b)</span>
+                            <span class="tag">🏆 Torneio</span>
+                        </div>
+                        <a href="Jogo produtos notáveis 2 ano competição.html" class="play-btn">
+                            🎮 Jogar Agora
+                            <span>→</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Informações adicionais sobre os jogos -->
+        <div class="intro-card" style="background: rgba(255,255,255,0.9); margin-top: 0;">
+            <h2>
+                <span>📖</span>
+                Como Funciona?
+            </h2>
+            <p>
+                <strong>🎯 Jogo das Frações:</strong> O jogo apresenta uma fração e desafia o aluno a encontrar 
+                uma fração equivalente que atenda a uma condição específica. Além disso, há um modo de 
+                simplificação onde o aluno deve reduzir frações passo a passo. Com botões de multiplicação 
+                e divisão por números de 2 a 9, o aprendizado se torna prático e intuitivo.
+            </p>
+            <p style="margin-top: 15px;">
+                <strong>📐 Jogo de Produtos Notáveis:</strong> Disponibilizamos dois formatos de jogo dentro de uma mesma 
+                interface: no primeiro, o aluno desenvolve o produto notável; no segundo, ele precisa reconhecer 
+                a forma fatorada a partir da expressão desenvolvida. O sistema registra pontuação, sequência de 
+                acertos e mantém um ranking local para motivar a competição saudável entre os estudantes.
+            </p>
+            <p style="margin-top: 15px; font-weight: 500; color: #5a3e8c;">
+                💡 <strong>Dica para o professor:</strong> Os alunos podem se cadastrar com seus nomes e competir 
+                pelo melhor recorde de sequência de acertos. Utilize os rankings para premiar os destaques da turma!
+            </p>
+        </div>
+
+        <!-- Rodapé -->
+        <div class="footer">
+            <p>🎓 Desenvolvido para auxiliar no aprendizado de Matemática | Ensino Médio</p>
+            <p>✨ Jogos educativos com sistema de pontuação, ranking e desafios progressivos ✨</p>
+            <div class="back-info">
+                💡 Os jogos abrirão na mesma página. Use o botão "Voltar" do navegador para retornar ao menu.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Pequeno script para garantir que os links funcionem corretamente e dar um feedback caso o arquivo não exista
+        document.querySelectorAll('.play-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                // Verificação simples: se o arquivo existir, o navegador tenta carregar.
+                // Não há como verificar perfeitamente via JS sem fetch, mas podemos tentar uma validação leve
+                // Apenas para debug em console, mas não impede o clique.
+                console.log(`Tentando abrir o jogo: ${href}`);
+                // Não bloqueamos o evento, apenas deixamos o navegador seguir
+            });
+        });
+    </script>
+</body>
+</html>
