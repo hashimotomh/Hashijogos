@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>🏆 Produtos Notáveis - Torneio de Recordes 🏆</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0b2b3b 0%, #1a4a6f 100%);
+            font-family: 'Segoe UI', 'Poppins', 'Quicksand', system-ui, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .game-wrapper {
+            max-width: 1100px;
+            width: 100%;
+            background: #fef7e8;
+            border-radius: 64px;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.35);
+            overflow: hidden;
+        }
+
+        /* Cabeçalho */
+        .game-header {
+            background: #ffb74d;
+            padding: 18px 24px;
+            text-align: center;
+            border-bottom: 4px solid #e67e22;
+        }
+
+        .game-header h1 {
+            margin: 0;
+            font-size: 1.6rem;
+            color: #2d2b1f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        /* Área do aluno e ranking lado a lado */
+        .top-panel {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 20px 24px;
+            background: #e9dfc7;
+            border-bottom: 2px solid #d4b48c;
+        }
+
+        .student-area {
+            flex: 2;
+            min-width: 220px;
+            background: #fff4e4;
+            padding: 15px 20px;
+            border-radius: 48px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.05), 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .student-area label {
+            font-weight: bold;
+            color: #b1621a;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .student-input-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .student-input-group input {
+            flex: 2;
+            padding: 10px 16px;
+            border-radius: 40px;
+            border: 2px solid #d4a373;
+            font-size: 1rem;
+            font-family: inherit;
+            background: white;
+        }
+
+        .student-input-group button {
+            background: #ff9f4b;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+
+        .ranking-area {
+            flex: 3;
+            min-width: 260px;
+            background: #fff4e4;
+            padding: 12px 18px;
+            border-radius: 48px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .ranking-area h3 {
+            margin: 0 0 8px 0;
+            font-size: 1.2rem;
+            color: #c25d00;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ranking-list {
+            max-height: 110px;
+            overflow-y: auto;
+            font-size: 0.9rem;
+        }
+
+        .ranking-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 8px;
+            border-bottom: 1px solid #eeddbb;
+            font-weight: 500;
+        }
+
+        .ranking-item .name {
+            color: #2c5a2e;
+        }
+
+        .ranking-item .record {
+            color: #b1621a;
+            font-weight: bold;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-between;
+            background: #e9dfc7;
+            padding: 10px 28px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .score, .streak, .best-streak {
+            background: #2c3e2f;
+            color: #f9e0a0;
+            padding: 5px 18px;
+            border-radius: 40px;
+        }
+
+        /* Abas categorias */
+        .category-tabs {
+            display: flex;
+            background: #e6cba0;
+            gap: 4px;
+            padding: 8px 16px 0 16px;
+            flex-wrap: wrap;
+        }
+
+        .cat-btn {
+            background: #cfb27c;
+            border: none;
+            padding: 8px 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            border-radius: 32px 32px 0 0;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .cat-btn.active {
+            background: #fef7e8;
+            color: #c25d00;
+        }
+
+        .game-panel {
+            padding: 24px 28px 32px;
+        }
+
+        .question-area {
+            background: white;
+            border-radius: 56px;
+            padding: 20px;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .formula-box {
+            font-size: 1.8rem;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            background: #fff4e4;
+            padding: 20px;
+            border-radius: 48px;
+            margin: 12px 0;
+            color: #1f4f2b;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 14px;
+            margin: 20px 0;
+        }
+
+        .opt-btn {
+            background: #f0e2ce;
+            border: 2px solid #d4a373;
+            border-radius: 60px;
+            padding: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+
+        .opt-btn.correct-feedback {
+            background: #9bcd6c;
+            border-color: #2e6b2f;
+        }
+
+        .opt-btn.wrong-feedback {
+            background: #e69b7c;
+            border-color: #bc4e2c;
+        }
+
+        .feedback {
+            background: #f5e5cf;
+            border-radius: 40px;
+            padding: 12px;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        .next-btn {
+            background: #ff9f4b;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: bold;
+            padding: 10px 28px;
+            border-radius: 48px;
+            margin-top: 15px;
+            cursor: pointer;
+        }
+
+        /* Modal de recorde */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeIn 0.2s;
+        }
+
+        .modal-content {
+            background: #fff7e8;
+            border-radius: 64px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            padding: 32px 24px;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.4);
+            border: 3px solid #ffb347;
+        }
+
+        .modal-content h2 {
+            color: #c25d00;
+            font-size: 2rem;
+            margin: 0;
+        }
+
+        .record-number {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #e67e22;
+            margin: 15px 0;
+        }
+
+        .modal-content button {
+            background: #ff9f4b;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 48px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .btn-reset-rank {
+            background: #7f8c8d;
+            color: white;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            margin-left: 10px;
+        }
+
+        @media (max-width: 700px) {
+            .formula-box { font-size: 1.2rem; }
+            .options-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+<div class="game-wrapper">
+    <div class="game-header">
+        <h1>📐 PRODUTOS NOTÁVEIS <span>🏆 TORNEIO DE RECORDES 🏆</span></h1>
+    </div>
+
+    <!-- Área do aluno e ranking -->
+    <div class="top-panel">
+        <div class="student-area">
+            <label>👤 Nome do(a) Estudante:</label>
+            <div class="student-input-group">
+                <input type="text" id="studentNameInput" placeholder="Digite seu nome" maxlength="20">
+                <button id="setStudentBtn">✅ Ativar Jogador</button>
+            </div>
+            <small style="color:#a5712e;">*O nome será usado no ranking de maior sequência</small>
+        </div>
+        <div class="ranking-area">
+            <h3>🏅 RANKING DE RECORDES (Maior Sequência) <button id="resetRankingBtn" class="btn-reset-rank">🔄 Zerar Ranking</button></h3>
+            <div id="rankingList" class="ranking-list">
+                <div class="ranking-item">-- Nenhum recorde ainda --</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="stats-bar">
+        <span class="score">🏆 Pontuação: <span id="scoreValue">0</span></span>
+        <span class="streak">🔥 Sequência atual: <span id="streakValue">0</span></span>
+        <span class="best-streak">⭐ Melhor sequência (sessão): <span id="sessionBest">0</span></span>
+    </div>
+
+    <div class="category-tabs">
+        <button class="cat-btn active" data-cat="todos">🎲 Todos</button>
+        <button class="cat-btn" data-cat="quadrado_soma">(a+b)²</button>
+        <button class="cat-btn" data-cat="quadrado_diferenca">(a-b)²</button>
+        <button class="cat-btn" data-cat="produto_soma_diferenca">(a+b)(a-b)</button>
+    </div>
+
+    <div id="gamePanel" class="game-panel">
+        <div class="question-area">
+            <div class="formula-box" id="questionExpression">(x + 3)²</div>
+            <div class="options-grid" id="optionsContainer"></div>
+            <div id="feedbackMsg" class="feedback">✨ Escolha uma alternativa! Faça sua melhor sequência!</div>
+            <button id="nextQuestionBtn" class="next-btn">➡️ Próxima questão</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ======================= BANCO DE QUESTÕES =======================
+    const questionsDB = [
+        // Quadrado da soma
+        { type: "quadrado_soma", expression: "(x + 2)²", correct: "x² + 4x + 4", options: ["x² + 2x + 4", "x² + 4x + 4", "x² + 4x + 2", "x² + 2x + 2"] },
+        { type: "quadrado_soma", expression: "(a + 5)²", correct: "a² + 10a + 25", options: ["a² + 5a + 25", "a² + 10a + 25", "a² + 25a + 10", "a² + 10a + 10"] },
+        { type: "quadrado_soma", expression: "(2x + 3)²", correct: "4x² + 12x + 9", options: ["4x² + 6x + 9", "2x² + 12x + 9", "4x² + 12x + 9", "4x² + 9x + 9"] },
+        { type: "quadrado_soma", expression: "(3y + 1)²", correct: "9y² + 6y + 1", options: ["9y² + 3y + 1", "6y² + 6y + 1", "9y² + 6y + 1", "9y² + 1"] },
+        { type: "quadrado_soma", expression: "(x + 7)²", correct: "x² + 14x + 49", options: ["x² + 7x + 49", "x² + 14x + 49", "x² + 49x + 14", "x² + 14x + 14"] },
+        { type: "quadrado_soma", expression: "(4 + m)²", correct: "16 + 8m + m²", options: ["16 + 4m + m²", "8 + 8m + m²", "16 + 8m + m²", "m² + 16m + 16"] },
+        // Quadrado da diferença
+        { type: "quadrado_diferenca", expression: "(x - 3)²", correct: "x² - 6x + 9", options: ["x² - 3x + 9", "x² - 6x + 9", "x² - 6x - 9", "x² + 6x + 9"] },
+        { type: "quadrado_diferenca", expression: "(a - 4)²", correct: "a² - 8a + 16", options: ["a² - 4a + 16", "a² - 8a + 16", "a² - 8a - 16", "a² + 8a + 16"] },
+        { type: "quadrado_diferenca", expression: "(2x - 5)²", correct: "4x² - 20x + 25", options: ["4x² - 10x + 25", "2x² - 20x + 25", "4x² - 20x + 25", "4x² - 20x - 25"] },
+        { type: "quadrado_diferenca", expression: "(3y - 2)²", correct: "9y² - 12y + 4", options: ["9y² - 6y + 4", "9y² - 12y + 4", "9y² + 12y + 4", "6y² - 12y + 4"] },
+        { type: "quadrado_diferenca", expression: "(5 - b)²", correct: "25 - 10b + b²", options: ["25 - 5b + b²", "25 - 10b + b²", "b² - 10b + 25", "25 + 10b + b²"] },
+        { type: "quadrado_diferenca", expression: "(x - 1)²", correct: "x² - 2x + 1", options: ["x² - x + 1", "x² - 2x + 1", "x² + 2x + 1", "x² - 1"] },
+        // Produto da soma pela diferença
+        { type: "produto_soma_diferenca", expression: "(x + 4)(x - 4)", correct: "x² - 16", options: ["x² - 8", "x² - 16", "x² + 16", "x² - 4x + 16"] },
+        { type: "produto_soma_diferenca", expression: "(a + 6)(a - 6)", correct: "a² - 36", options: ["a² - 12", "a² + 36", "a² - 36", "a² - 6"] },
+        { type: "produto_soma_diferenca", expression: "(2x + 3)(2x - 3)", correct: "4x² - 9", options: ["4x² + 9", "2x² - 9", "4x² - 9", "4x² - 6x + 9"] },
+        { type: "produto_soma_diferenca", expression: "(5y + 1)(5y - 1)", correct: "25y² - 1", options: ["25y² - 1", "5y² - 1", "25y² + 1", "25y² - 10y + 1"] },
+        { type: "produto_soma_diferenca", expression: "(3 + m)(3 - m)", correct: "9 - m²", options: ["9 + m²", "m² - 9", "9 - m²", "3 - m²"] },
+        { type: "produto_soma_diferenca", expression: "(x² + 2)(x² - 2)", correct: "x⁴ - 4", options: ["x⁴ - 2", "x⁴ - 4", "x⁴ + 4", "x² - 4"] },
+    ];
+
+    // ---------- ESTADO DO JOGO ----------
+    let currentCategory = "todos";
+    let currentQuestion = null;
+    let answered = false;
+    let score = 0;
+    let currentStreak = 0;
+    let sessionBestStreak = 0;      // melhor sequência da sessão atual (sem fechar a página)
+    let studentName = "Anônimo";
+    let isStudentActive = false;
+
+    // Ranking global (salvo no localStorage)
+    let ranking = [];   // array de { name, recordStreak, date }
+
+    // Controle de perguntas repetidas
+    let usedQuestionsIndices = [];
+
+    // DOM Elements
+    const questionEl = document.getElementById("questionExpression");
+    const optionsContainer = document.getElementById("optionsContainer");
+    const feedbackMsgDiv = document.getElementById("feedbackMsg");
+    const scoreSpan = document.getElementById("scoreValue");
+    const streakSpan = document.getElementById("streakValue");
+    const sessionBestSpan = document.getElementById("sessionBest");
+    const nextBtn = document.getElementById("nextQuestionBtn");
+    const studentNameInput = document.getElementById("studentNameInput");
+    const setStudentBtn = document.getElementById("setStudentBtn");
+    const rankingListDiv = document.getElementById("rankingList");
+    const resetRankingBtn = document.getElementById("resetRankingBtn");
+    const catBtns = document.querySelectorAll(".cat-btn");
+
+    // ==================== FUNÇÕES DE RANKING (localStorage) ====================
+    function loadRanking() {
+        const stored = localStorage.getItem("prodNotaveisRanking");
+        if (stored) {
+            ranking = JSON.parse(stored);
+        } else {
+            ranking = [];
+        }
+        renderRanking();
+    }
+
+    function saveRanking() {
+        localStorage.setItem("prodNotaveisRanking", JSON.stringify(ranking));
+        renderRanking();
+    }
+
+    function renderRanking() {
+        if (ranking.length === 0) {
+            rankingListDiv.innerHTML = '<div class="ranking-item">🏆 Nenhum recorde ainda. Seja o primeiro!</div>';
+            return;
+        }
+        // ordenar por recordStreak decrescente
+        const sorted = [...ranking].sort((a,b) => b.recordStreak - a.recordStreak);
+        rankingListDiv.innerHTML = "";
+        sorted.forEach((entry, idx) => {
+            const div = document.createElement("div");
+            div.className = "ranking-item";
+            div.innerHTML = `<span class="name">${idx+1}. ${escapeHtml(entry.name)}</span><span class="record">🔥 ${entry.recordStreak} acertos seguidos</span>`;
+            rankingListDiv.appendChild(div);
+        });
+    }
+
+    function addRecordToRanking(name, streakRecord) {
+        if (!name || name.trim() === "" || name === "Anônimo") name = "Anônimo";
+        // Verificar se o nome já existe no ranking: se sim, atualiza apenas se o recorde for maior
+        const existing = ranking.find(r => r.name === name);
+        if (existing) {
+            if (streakRecord > existing.recordStreak) {
+                existing.recordStreak = streakRecord;
+                existing.date = new Date().toLocaleDateString();
+                saveRanking();
+                return true;
+            }
+            return false;
+        } else {
+            ranking.push({
+                name: name,
+                recordStreak: streakRecord,
+                date: new Date().toLocaleDateString()
+            });
+            saveRanking();
+            return true;
+        }
+    }
+
+    function resetRanking() {
+        if (confirm("⚠️ Tem certeza que deseja zerar TODO o ranking de recordes? Essa ação é definitiva.")) {
+            ranking = [];
+            saveRanking();
+            feedbackMsgDiv.innerHTML = "🏁 Ranking foi zerado! Agora todos podem competir novamente.";
+            feedbackMsgDiv.style.background = "#ffe0b5";
+        }
+    }
+
+    // Helper para evitar XSS
+    function escapeHtml(str) {
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+            return c;
+        });
+    }
+
+    // ==================== MODAL DE RECORDE ====================
+    function showRecordModal(streakRecord, playerName) {
+        // Cria overlay
+        const modalOverlay = document.createElement("div");
+        modalOverlay.className = "modal-overlay";
+        modalOverlay.innerHTML = `
+            <div class="modal-content">
+                <h2>🎉 RECORDE QUEBRADO! 🎉</h2>
+                <p style="font-size:1.2rem;">${escapeHtml(playerName)} alcançou</p>
+                <div class="record-number">${streakRecord}</div>
+                <p>acertos consecutivos!</p>
+                <p style="font-weight:bold;">🏆 Registrado no ranking! 🏆</p>
+                <button id="closeModalBtn">Fechar e continuar</button>
+            </div>
+        `;
+        document.body.appendChild(modalOverlay);
+        const closeBtn = modalOverlay.querySelector("#closeModalBtn");
+        closeBtn.addEventListener("click", () => {
+            modalOverlay.remove();
+        });
+        // Fechar ao clicar no overlay (opcional)
+        modalOverlay.addEventListener("click", (e) => {
+            if (e.target === modalOverlay) modalOverlay.remove();
+        });
+    }
+
+    // ==================== LÓGICA DO JOGO ====================
+    function filterQuestionsByCategory() {
+        if (currentCategory === "todos") return [...questionsDB];
+        return questionsDB.filter(q => q.type === currentCategory);
+    }
+
+    function getRandomQuestion() {
+        let filtered = filterQuestionsByCategory();
+        if (filtered.length === 0) return { question: questionsDB[0], idx: 0 };
+        if (usedQuestionsIndices.length >= filtered.length * 1.5) {
+            usedQuestionsIndices = usedQuestionsIndices.slice(-3);
+        }
+        let available = [];
+        for (let i = 0; i < filtered.length; i++) {
+            const originalIdx = questionsDB.findIndex(q => q === filtered[i]);
+            if (!usedQuestionsIndices.includes(originalIdx)) {
+                available.push({ q: filtered[i], idx: originalIdx });
+            }
+        }
+        if (available.length === 0) {
+            let rand = Math.floor(Math.random() * filtered.length);
+            let origIdx = questionsDB.findIndex(q => q === filtered[rand]);
+            usedQuestionsIndices.push(origIdx);
+            return { question: filtered[rand], idx: origIdx };
+        }
+        const chosen = available[Math.floor(Math.random() * available.length)];
+        usedQuestionsIndices.push(chosen.idx);
+        return { question: chosen.q, idx: chosen.idx };
+    }
+
+    function shuffleOptions(correct, optionsArray) {
+        let opts = [...optionsArray];
+        if (!opts.includes(correct)) opts.push(correct);
+        for (let i = opts.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [opts[i], opts[j]] = [opts[j], opts[i]];
+        }
+        return opts;
+    }
+
+    function loadNewQuestion() {
+        answered = false;
+        const { question, idx } = getRandomQuestion();
+        currentQuestion = question;
+        questionEl.innerText = currentQuestion.expression;
+        const shuffled = shuffleOptions(currentQuestion.correct, currentQuestion.options);
+        optionsContainer.innerHTML = "";
+        shuffled.forEach(opt => {
+            const btn = document.createElement("button");
+            btn.className = "opt-btn";
+            btn.innerText = opt;
+            btn.addEventListener("click", () => handleAnswer(opt, btn));
+            optionsContainer.appendChild(btn);
+        });
+        feedbackMsgDiv.className = "feedback";
+        feedbackMsgDiv.innerHTML = "🤔 Escolha uma opção! Construa sua sequência de acertos.";
+        document.querySelectorAll(".opt-btn").forEach(b => {
+            b.classList.remove("correct-feedback", "wrong-feedback");
+        });
+    }
+
+    // Função chamada quando o aluno erra - exibe janela de recorde e reseta streak/sessão
+    function endStreakBecauseWrong() {
+        // O currentStreak é o número de acertos que ele tinha antes de errar
+        const brokenStreak = currentStreak;
+        if (brokenStreak > 0 && isStudentActive && studentName !== "Anônimo") {
+            // Verifica se superou o ranking global ou pelo menos mostra o recorde alcançado
+            const wasTop = addRecordToRanking(studentName, brokenStreak);
+            // Exibe janela com o recorde atingido
+            showRecordModal(brokenStreak, studentName);
+        } else if (brokenStreak > 0 && !isStudentActive) {
+            // mesmo sem nome ativo, mostra mensagem mas não salva ranking
+            const modalOverlay = document.createElement("div");
+            modalOverlay.className = "modal-overlay";
+            modalOverlay.innerHTML = `
+                <div class="modal-content">
+                    <h2>⚠️ FIM DE SEQUÊNCIA!</h2>
+                    <p>Você fez <strong style="font-size:2rem;">${brokenStreak}</strong> acertos seguidos!</p>
+                    <p>💡 Ative seu nome no campo superior para registrar recordes no ranking!</p>
+                    <button id="closeModalBtn">Continuar</button>
+                </div>
+            `;
+            document.body.appendChild(modalOverlay);
+            modalOverlay.querySelector("#closeModalBtn").addEventListener("click", () => modalOverlay.remove());
+        } else if (brokenStreak === 0 && isStudentActive) {
+            // erro sem sequência, nenhum recorde
+            feedbackMsgDiv.innerHTML += " ❌ Que pena! Tente começar uma nova sequência.";
+        }
+        // Resetar streak e atualizar UI
+        currentStreak = 0;
+        streakSpan.innerText = currentStreak;
+        // sessionBest permanece, mas não reseta
+    }
+
+    function handleAnswer(selectedOption, btnElement) {
+        if (answered) {
+            feedbackMsgDiv.innerHTML = "⚠️ Você já respondeu! Clique em 'Próxima' para continuar.";
+            return;
+        }
+        const isCorrect = (selectedOption === currentQuestion.correct);
+        if (isCorrect) {
+            // ACERTO
+            const pointsGain = 10 + Math.floor(currentStreak / 4);
+            score += pointsGain;
+            currentStreak++;
+            if (currentStreak > sessionBestStreak) {
+                sessionBestStreak = currentStreak;
+                sessionBestSpan.innerText = sessionBestStreak;
+            }
+            feedbackMsgDiv.className = "feedback";
+            feedbackMsgDiv.innerHTML = `✅ CORRETO! +${pointsGain} pts | Sequência: ${currentStreak} acertos seguidos! 🎯`;
+            btnElement.classList.add("correct-feedback");
+            answered = true;
+            updateScoreUI();
+        } else {
+            // ERRO: mostra erro, destaca resposta certa e exibe janela de recorde
+            feedbackMsgDiv.className = "feedback";
+            feedbackMsgDiv.innerHTML = `❌ ERRO! Resposta correta: ${currentQuestion.correct}. ${currentQuestion.expression} = ${currentQuestion.correct}.`;
+            btnElement.classList.add("wrong-feedback");
+            // Destacar botão correto
+            const allBtns = document.querySelectorAll(".opt-btn");
+            allBtns.forEach(btn => {
+                if (btn.innerText === currentQuestion.correct) {
+                    btn.classList.add("correct-feedback");
+                }
+            });
+            answered = true;
+            updateScoreUI();
+
+            // Chamar a função que lida com o fim da sequência e exibe modal
+            endStreakBecauseWrong();
+            // Não reseta score total, apenas streak já foi resetado dentro de endStreakBecauseWrong
+            // Atualiza display do streak
+            streakSpan.innerText = currentStreak;
+        }
+    }
+
+    function updateScoreUI() {
+        scoreSpan.innerText = score;
+        streakSpan.innerText = currentStreak;
+        sessionBestSpan.innerText = sessionBestStreak;
+    }
+
+    function nextQuestion() {
+        if (!answered) {
+            feedbackMsgDiv.innerHTML = "📢 Responda a questão atual antes de prosseguir!";
+            return;
+        }
+        loadNewQuestion();
+    }
+
+    function resetGameSession() {
+        // Não resetamos pontuação nem recordes de sessão - só reiniciamos se necessário? Vamos manter apenas nova pergunta.
+        // O reset do ranking é separado.
+    }
+
+    function setStudent() {
+        let newName = studentNameInput.value.trim();
+        if (newName === "") {
+            alert("Digite um nome para aparecer no ranking!");
+            return;
+        }
+        studentName = newName;
+        isStudentActive = true;
+        feedbackMsgDiv.innerHTML = `👋 Olá, ${studentName}! Seus recordes serão salvos. Boa sorte!`;
+        feedbackMsgDiv.className = "feedback";
+        studentNameInput.value = studentName;
+    }
+
+    function changeCategory(category) {
+        currentCategory = category;
+        usedQuestionsIndices = [];
+        loadNewQuestion();
+        answered = false;
+        catBtns.forEach(btn => {
+            if (btn.getAttribute("data-cat") === category) {
+                btn.classList.add("active");
+            } else {
+                btn.classList.remove("active");
+            }
+        });
+        feedbackMsgDiv.innerHTML = `📚 Categoria alterada: ${getCategoryName(category)}. Nova questão!`;
+    }
+
+    function getCategoryName(cat) {
+        if (cat === "quadrado_soma") return "Quadrado da Soma (a+b)²";
+        if (cat === "quadrado_diferenca") return "Quadrado da Diferença (a-b)²";
+        if (cat === "produto_soma_diferenca") return "Produto da Soma pela Diferença";
+        return "Todos os Produtos Notáveis";
+    }
+
+    // ==================== EVENTOS E INICIALIZAÇÃO ====================
+    function init() {
+        loadRanking();
+        loadNewQuestion();
+        updateScoreUI();
+
+        nextBtn.addEventListener("click", nextQuestion);
+        setStudentBtn.addEventListener("click", setStudent);
+        resetRankingBtn.addEventListener("click", resetRanking);
+
+        catBtns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                const cat = btn.getAttribute("data-cat");
+                if (cat === currentCategory) return;
+                changeCategory(cat);
+            });
+        });
+
+        // Configura um nome padrão para testes, mas não obriga
+        studentNameInput.value = "";
+        isStudentActive = false;
+        sessionBestStreak = 0;
+        currentStreak = 0;
+        score = 0;
+        updateScoreUI();
+    }
+
+    init();
+</script>
+</body>
+</html>

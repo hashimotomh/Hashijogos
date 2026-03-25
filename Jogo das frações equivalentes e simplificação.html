@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Jogo das Frações - Equivalentes e Simplificação</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1e5f8e 0%, #0d3b57 100%);
+            font-family: 'Segoe UI', 'Poppins', system-ui, -apple-system, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .game-container {
+            max-width: 800px;
+            width: 100%;
+            background: #fef9e8;
+            border-radius: 48px;
+            box-shadow: 0 25px 40px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        /* Abas */
+        .tabs {
+            display: flex;
+            background: #ffcd94;
+            border-bottom: 3px solid #e6a017;
+        }
+
+        .tab-btn {
+            flex: 1;
+            background: #ffcd94;
+            border: none;
+            font-size: 1.4rem;
+            font-weight: bold;
+            padding: 16px 0;
+            cursor: pointer;
+            color: #4a2e1a;
+            transition: 0.2s;
+            font-family: inherit;
+        }
+
+        .tab-btn.active {
+            background: #fef9e8;
+            color: #c25d00;
+            border-bottom: 3px solid #fef9e8;
+            margin-bottom: -3px;
+        }
+
+        /* Painéis */
+        .game-panel {
+            padding: 28px 24px 36px;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .game-panel.active-panel {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+
+        /* Estilo das frações - formato vertical */
+        .fraction-display {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .fraction-box {
+            background: white;
+            border-radius: 32px;
+            padding: 25px 35px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            text-align: center;
+            min-width: 180px;
+        }
+
+        .fraction-vertical {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 3rem;
+            font-weight: bold;
+            font-family: 'Courier New', 'Segoe UI', monospace;
+        }
+
+        .fraction-vertical .numerator {
+            padding-bottom: 5px;
+        }
+
+        .fraction-vertical .fraction-line {
+            width: 80px;
+            height: 4px;
+            background-color: #3b2a1f;
+            margin: 5px 0;
+        }
+
+        .fraction-vertical .denominator {
+            padding-top: 5px;
+        }
+
+        .equal-sign {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #e67e22;
+        }
+
+        .condition-badge {
+            background: #ffebcc;
+            padding: 10px 20px;
+            border-radius: 40px;
+            margin: 15px auto 10px;
+            display: inline-block;
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #c25d00;
+        }
+
+        /* Inputs de resposta - também em formato de fração */
+        .answer-fraction {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            background: #f4e9da;
+            padding: 20px;
+            border-radius: 48px;
+            margin: 15px 0;
+        }
+
+        .fraction-input {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .fraction-input input {
+            width: 90px;
+            font-size: 2rem;
+            text-align: center;
+            border: 2px solid #d4a373;
+            border-radius: 20px;
+            background: white;
+            padding: 8px;
+            font-weight: bold;
+            font-family: monospace;
+        }
+
+        .fraction-input .line-input {
+            width: 70px;
+            height: 3px;
+            background-color: #b97f3a;
+            margin: 8px 0;
+        }
+
+        /* Botões numéricos */
+        .numeric-buttons {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .numeric-buttons p {
+            font-weight: bold;
+            color: #b1621a;
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+
+        .btn-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .num-btn {
+            background: #ffb347;
+            border: none;
+            font-size: 1.3rem;
+            font-weight: bold;
+            width: 60px;
+            padding: 12px 0;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: 0.1s linear;
+            color: #2d1b0c;
+            font-family: inherit;
+            box-shadow: 0 4px 0 #b4621a;
+        }
+
+        .num-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 #b4621a;
+        }
+
+        .btn-check {
+            background: #2a9d8f;
+            color: white;
+            box-shadow: 0 4px 0 #1e6b5e;
+            padding: 12px 28px;
+            font-size: 1.2rem;
+        }
+
+        .btn-reset {
+            background: #6c757d;
+            box-shadow: 0 4px 0 #495057;
+            color: white;
+            padding: 12px 28px;
+            font-size: 1.2rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        button {
+            border: none;
+            border-radius: 48px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            transition: 0.1s linear;
+        }
+
+        .alert-msg {
+            background: #ffe0b5;
+            border-left: 8px solid #f4a261;
+            padding: 14px;
+            margin-top: 20px;
+            border-radius: 32px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .success {
+            background: #c9e9d6;
+            border-left-color: #2a9d8f;
+            color: #1b4e3f;
+        }
+
+        .error {
+            background: #ffddcc;
+            border-left-color: #e76f51;
+            color: #9c2e1a;
+        }
+
+        h2 {
+            text-align: center;
+            color: #b1621a;
+            margin-top: 0;
+        }
+
+        @media (max-width: 600px) {
+            .fraction-vertical { font-size: 2rem; }
+            .fraction-vertical .fraction-line { width: 60px; }
+            .fraction-input input { width: 70px; font-size: 1.5rem; }
+            .num-btn { width: 50px; font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="game-container">
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="equiv">🔁 Frações Equivalentes</button>
+        <button class="tab-btn" data-tab="simp">✂️ Simplificação</button>
+    </div>
+
+    <!-- PAINEL EQUIVALENTES -->
+    <div id="equivPanel" class="game-panel active-panel">
+        <h2>🍕 Encontre a Fração Equivalente</h2>
+        <div class="fraction-display">
+            <div class="fraction-box">
+                <div class="fraction-vertical">
+                    <span class="numerator" id="equivNumerador">2</span>
+                    <div class="fraction-line"></div>
+                    <span class="denominator" id="equivDenominador">3</span>
+                </div>
+            </div>
+            <div class="equal-sign">=</div>
+            <div class="fraction-box">
+                <div class="condition-badge" id="equivCondition">Numerador deve ser 6</div>
+                <div class="answer-fraction">
+                    <div class="fraction-input">
+                        <input type="number" id="equivNumInput" placeholder="?" value="">
+                        <div class="line-input"></div>
+                        <input type="number" id="equivDenInput" placeholder="?" value="">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botões de multiplicação e divisão com números de 2 a 9 -->
+        <div class="numeric-buttons">
+            <p>✖️ Multiplicar numerador e denominador por:</p>
+            <div class="btn-grid" id="multiplyButtonsEquiv"></div>
+        </div>
+        <div class="numeric-buttons">
+            <p>➗ Dividir numerador e denominador por (somente se for divisor comum):</p>
+            <div class="btn-grid" id="divideButtonsEquiv"></div>
+        </div>
+
+        <div class="action-buttons">
+            <button id="equivCheckBtn" class="btn-check">✅ Verificar</button>
+            <button id="equivResetBtn" class="btn-reset">🔄 Nova Fração</button>
+        </div>
+        <div id="equivMessage" class="alert-msg">⭐ Clique nos botões acima para ajustar a fração e atender à condição!</div>
+    </div>
+
+    <!-- PAINEL SIMPLIFICAÇÃO -->
+    <div id="simpPanel" class="game-panel">
+        <h2>⬇️ Simplifique até a forma irredutível</h2>
+        <div class="fraction-display">
+            <div class="fraction-box">
+                <div class="fraction-vertical">
+                    <span class="numerator" id="simpNumerador">18</span>
+                    <div class="fraction-line"></div>
+                    <span class="denominator" id="simpDenominador">24</span>
+                </div>
+            </div>
+            <div class="equal-sign">→</div>
+            <div class="fraction-box">
+                <div class="answer-fraction">
+                    <div class="fraction-input">
+                        <input type="number" id="simpNumRes" placeholder="num" value="">
+                        <div class="line-input"></div>
+                        <input type="number" id="simpDenRes" placeholder="den" value="">
+                    </div>
+                </div>
+                <div style="font-size: 0.85rem; margin-top: 8px;">Digite a fração simplificada</div>
+            </div>
+        </div>
+
+        <!-- Botões de divisão para simplificação (números 2 a 9) -->
+        <div class="numeric-buttons">
+            <p>➗ Dividir numerador e denominador por (simplificar):</p>
+            <div class="btn-grid" id="divideButtonsSimp"></div>
+        </div>
+
+        <div class="action-buttons">
+            <button id="simpCheckBtn" class="btn-check">✅ Verificar</button>
+            <button id="simpResetBtn" class="btn-reset">🔄 Nova Fração</button>
+        </div>
+        <div id="simpMessage" class="alert-msg">✨ Clique nos botões para dividir a fração passo a passo até ficar irredutível!</div>
+    </div>
+</div>
+
+<script>
+    // ==================== ESTADO DO JOGO ====================
+    
+    // ----- Módulo Equivalentes -----
+    let equivState = {
+        baseNum: 2,
+        baseDen: 3,
+        currentNum: 2,
+        currentDen: 3,
+        conditionType: 'numerador',
+        targetValue: 6
+    };
+
+    // ----- Módulo Simplificação -----
+    let simpState = {
+        originalNum: 18,
+        originalDen: 24,
+        currentNum: 18,
+        currentDen: 24
+    };
+
+    // ==================== FUNÇÕES AUXILIARES ====================
+    function mdc(a, b) {
+        a = Math.abs(a);
+        b = Math.abs(b);
+        while (b !== 0) {
+            let t = b;
+            b = a % b;
+            a = t;
+        }
+        return a;
+    }
+
+    // Verifica se dois pares são equivalentes
+    function saoEquivalentes(num1, den1, num2, den2) {
+        return num1 * den2 === num2 * den1;
+    }
+
+    // ==================== MÓDULO EQUIVALENTES ====================
+    function updateEquivDisplay() {
+        document.getElementById('equivNumerador').textContent = equivState.baseNum;
+        document.getElementById('equivDenominador').textContent = equivState.baseDen;
+        
+        let condText = "";
+        if (equivState.conditionType === 'numerador') {
+            condText = `🎯 O numerador deve ser ${equivState.targetValue}`;
+        } else {
+            condText = `🎯 O denominador deve ser ${equivState.targetValue}`;
+        }
+        document.getElementById('equivCondition').textContent = condText;
+        
+        // Limpa os inputs
+        document.getElementById('equivNumInput').value = "";
+        document.getElementById('equivDenInput').value = "";
+    }
+
+    function generateRandomCondition(baseN, baseD) {
+        // Escolhe entre condição de numerador ou denominador
+        const type = Math.floor(Math.random() * 2);
+        // Escolhe um multiplicador entre 2 e 6 para tornar o desafio interessante
+        const multiplier = Math.floor(Math.random() * 5) + 2;
+        
+        if (type === 0) {
+            // Condição: numerador deve ser baseN * multiplier
+            return { conditionType: 'numerador', targetValue: baseN * multiplier };
+        } else {
+            // Condição: denominador deve ser baseD * multiplier
+            return { conditionType: 'denominador', targetValue: baseD * multiplier };
+        }
+    }
+
+    function resetEquivalents() {
+        // Gera fração base simples (numerador 1-7, denominador 2-8)
+        let newNum = Math.floor(Math.random() * 7) + 1;
+        let newDen = Math.floor(Math.random() * 7) + 2;
+        // Evita frações muito triviais tipo 1/1
+        if (newNum === newDen && newDen > 2) newNum = newDen - 1;
+        
+        equivState.baseNum = newNum;
+        equivState.baseDen = newDen;
+        equivState.currentNum = newNum;
+        equivState.currentDen = newDen;
+        
+        let condition = generateRandomCondition(equivState.baseNum, equivState.baseDen);
+        equivState.conditionType = condition.conditionType;
+        equivState.targetValue = condition.targetValue;
+        
+        updateEquivDisplay();
+        
+        let msgDiv = document.getElementById('equivMessage');
+        msgDiv.className = "alert-msg";
+        msgDiv.innerHTML = `🔄 Nova fração: ${equivState.baseNum}/${equivState.baseDen}. Use os botões para criar uma equivalente que atenda à condição!`;
+    }
+
+    function multiplyEquiv(factor) {
+        equivState.currentNum = equivState.currentNum * factor;
+        equivState.currentDen = equivState.currentDen * factor;
+        
+        // Atualiza os inputs com o novo valor
+        document.getElementById('equivNumInput').value = equivState.currentNum;
+        document.getElementById('equivDenInput').value = equivState.currentDen;
+        
+        let msgDiv = document.getElementById('equivMessage');
+        msgDiv.className = "alert-msg";
+        msgDiv.innerHTML = `✖️ Multiplicou por ${factor}: ${equivState.currentNum}/${equivState.currentDen}`;
+    }
+
+    function divideEquiv(divisor) {
+        if (equivState.currentNum % divisor !== 0 || equivState.currentDen % divisor !== 0) {
+            let msgDiv = document.getElementById('equivMessage');
+            msgDiv.className = "alert-msg error";
+            msgDiv.innerHTML = `❌ Não é possível dividir por ${divisor}. ${divisor} não é divisor comum de ${equivState.currentNum} e ${equivState.currentDen}.`;
+            return;
+        }
+        
+        equivState.currentNum = equivState.currentNum / divisor;
+        equivState.currentDen = equivState.currentDen / divisor;
+        
+        document.getElementById('equivNumInput').value = equivState.currentNum;
+        document.getElementById('equivDenInput').value = equivState.currentDen;
+        
+        let msgDiv = document.getElementById('equivMessage');
+        msgDiv.className = "alert-msg success";
+        msgDiv.innerHTML = `➗ Dividiu por ${divisor}: ${equivState.currentNum}/${equivState.currentDen}`;
+    }
+
+    function checkEquivalence() {
+        let userNum = parseInt(document.getElementById('equivNumInput').value);
+        let userDen = parseInt(document.getElementById('equivDenInput').value);
+        let msgDiv = document.getElementById('equivMessage');
+        
+        if (isNaN(userNum) || isNaN(userDen) || userDen === 0) {
+            msgDiv.className = "alert-msg error";
+            msgDiv.innerHTML = "❓ Preencha o numerador e o denominador com números válidos!";
+            return;
+        }
+        
+        if (userDen <= 0 || userNum < 0) {
+            msgDiv.className = "alert-msg error";
+            msgDiv.innerHTML = "🔢 Use números inteiros positivos!";
+            return;
+        }
+        
+        // Verifica equivalência com a fração base
+        const isEquiv = saoEquivalentes(equivState.baseNum, equivState.baseDen, userNum, userDen);
+        
+        if (!isEquiv) {
+            msgDiv.className = "alert-msg error";
+            msgDiv.innerHTML = `❌ ${userNum}/${userDen} NÃO é equivalente a ${equivState.baseNum}/${equivState.baseDen}. Use os botões de multiplicação para criar uma fração equivalente!`;
+            return;
+        }
+        
+        // Verifica condição especial
+        let conditionMet = false;
+        if (equivState.conditionType === 'numerador') {
+            if (userNum === equivState.targetValue) conditionMet = true;
+        } else {
+            if (userDen === equivState.targetValue) conditionMet = true;
+        }
+        
+        if (conditionMet) {
+            msgDiv.className = "alert-msg success";
+            msgDiv.innerHTML = `🎉 Parabéns! ${userNum}/${userDen} é equivalente a ${equivState.baseNum}/${equivState.baseDen} E atende à condição! 🎉`;
+        } else {
+            let esperado = equivState.conditionType === 'numerador' ? `numerador = ${equivState.targetValue}` : `denominador = ${equivState.targetValue}`;
+            msgDiv.className = "alert-msg error";
+            msgDiv.innerHTML = `⚠️ A fração é equivalente, mas não cumpre a condição: ${esperado}. Continue ajustando!`;
+        }
+    }
+
+    // ==================== MÓDULO SIMPLIFICAÇÃO ====================
+    function updateSimpDisplay() {
+        document.getElementById('simpNumerador').textContent = simpState.currentNum;
+        document.getElementById('simpDenominador').textContent = simpState.currentDen;
+        document.getElementById('simpNumRes').value = "";
+        document.getElementById('simpDenRes').value = "";
+    }
+
+    function divideSimplification(divisor) {
+        let msgDiv = document.getElementById('simpMessage');
+        
+        if (divisor === 1) {
+            msgDiv.className = "alert-msg error";
+            msgDiv.innerHTML = "⚠️ Dividir por 1 não simplifica a fração! Escolha um número maior que 1.";
+            return;
+        }
+        
+        if (simpState.currentNum % divisor !== 0 || simpState.currentDen % divisor !== 0) {
+            msgDiv.className = "alert-msg error";
+            msgDiv.innerHTML = `❌ ${divisor} não é divisor comum de ${simpState.currentNum} e ${simpState.currentDen}. Tente outro número!`;
+            return;
+        }
+        
+        simpState.currentNum = simpState.currentNum / divisor;
+        simpState.currentDen = simpState.currentDen / divisor;
+        updateSimpDisplay();
+        
+        let gcdValue = mdc(simpState.currentNum, simpState.currentDen);
+        if (gcdValue === 1) {
+            msgDiv.className = "alert-msg success";
+            msgDiv.innerHTML = `✨ Fração atual: ${simpState.currentNum}/${simpState.currentDen} - ESTÁ IRREDUTÍVEL! ✨ Agora verifique sua resposta.`;
+        } else {
+            msgDiv.className = "alert-msg";
+            msgDiv.innerHTML = `✔️ Simplificou por ${divisor}: ${simpState.currentNum}/${simpState.currentDen} | Ainda pode dividir por ${gcdValue}. Continue!`;
+        }
+    }
+
+    function checkSimplification() {
+        let userNum = parseInt(document.getElementById('simpNumRes').value);
+        let userDen = parseInt(document.getElementById('simpDenRes').value);
+        let msgDiv = document.getElementById('simpMessage');
+        
+        if (isNaN(userNum) || isNaN(userDen) || userDen <= 0 || userNum <= 0) {
+            msgDiv.className = "alert-msg error";
+            msgDiv.innerHTML = "🔢 Digite numerador e denominador positivos!";
+            return;
+        }
+        
+        // Calcula a forma irredutível da fração ORIGINAL
+        const originalNum = simpState.originalNum;
+        const originalDen = simpState.originalDen;
+        const gcdVal = mdc(originalNum, originalDen);
+        const irreducibleNum = originalNum / gcdVal;
+        const irreducibleDen = originalDen / gcdVal;
+        
+        if (userNum === irreducibleNum && userDen === irreducibleDen) {
+            msgDiv.className = "alert-msg success";
+            msgDiv.innerHTML = `🎉 Acertou! ${userNum}/${userDen} é a forma irredutível de ${originalNum}/${originalDen}. Muito bem! 🏆`;
+        } else {
+            msgDiv.className = "alert-msg error";
+            msgDiv.innerHTML = `❌ ${userNum}/${userDen} não é a fração irredutível. A forma correta é ${irreducibleNum}/${irreducibleDen}. Use os botões para simplificar!`;
+        }
+    }
+
+    function resetSimplification() {
+        // Gera uma fração redutível (mdc > 1)
+        let num, den, g;
+        do {
+            num = Math.floor(Math.random() * 40) + 6;
+            den = Math.floor(Math.random() * 35) + 8;
+            g = mdc(num, den);
+        } while (g === 1 || num === den || num > 80 || den > 80);
+        
+        // Limita valores para não ficarem muito grandes
+        if (num > 70) num = Math.floor(num / 2);
+        if (den > 70) den = Math.floor(den / 2);
+        
+        simpState.originalNum = num;
+        simpState.originalDen = den;
+        simpState.currentNum = num;
+        simpState.currentDen = den;
+        updateSimpDisplay();
+        
+        let gcdHint = mdc(num, den);
+        let msgDiv = document.getElementById('simpMessage');
+        msgDiv.className = "alert-msg";
+        msgDiv.innerHTML = `🔄 Nova fração: ${num}/${den} | Dica: o MDC é ${gcdHint}. Use os botões para dividir até ficar irredutível!`;
+    }
+
+    // ==================== CRIAÇÃO DOS BOTÕES NUMÉRICOS ====================
+    function createNumericButtons() {
+        const numbers = [2, 3, 4, 5, 6, 7, 8, 9];
+        
+        // Botões de multiplicação para equivalentes
+        const multContainer = document.getElementById('multiplyButtonsEquiv');
+        multContainer.innerHTML = '';
+        numbers.forEach(num => {
+            const btn = document.createElement('button');
+            btn.textContent = `× ${num}`;
+            btn.className = 'num-btn';
+            btn.addEventListener('click', () => multiplyEquiv(num));
+            multContainer.appendChild(btn);
+        });
+        
+        // Botões de divisão para equivalentes
+        const divContainerEquiv = document.getElementById('divideButtonsEquiv');
+        divContainerEquiv.innerHTML = '';
+        numbers.forEach(num => {
+            const btn = document.createElement('button');
+            btn.textContent = `÷ ${num}`;
+            btn.className = 'num-btn';
+            btn.addEventListener('click', () => divideEquiv(num));
+            divContainerEquiv.appendChild(btn);
+        });
+        
+        // Botões de divisão para simplificação
+        const divContainerSimp = document.getElementById('divideButtonsSimp');
+        divContainerSimp.innerHTML = '';
+        numbers.forEach(num => {
+            const btn = document.createElement('button');
+            btn.textContent = `÷ ${num}`;
+            btn.className = 'num-btn';
+            btn.addEventListener('click', () => divideSimplification(num));
+            divContainerSimp.appendChild(btn);
+        });
+    }
+
+    // ==================== INICIALIZAÇÃO ====================
+    function init() {
+        createNumericButtons();
+        resetEquivalents();
+        resetSimplification();
+        
+        // Eventos das abas
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const panels = document.querySelectorAll('.game-panel');
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tabId = btn.getAttribute('data-tab');
+                panels.forEach(panel => panel.classList.remove('active-panel'));
+                if (tabId === 'equiv') {
+                    document.getElementById('equivPanel').classList.add('active-panel');
+                } else {
+                    document.getElementById('simpPanel').classList.add('active-panel');
+                }
+                tabBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
+        
+        // Eventos dos botões principais
+        document.getElementById('equivCheckBtn').addEventListener('click', checkEquivalence);
+        document.getElementById('equivResetBtn').addEventListener('click', resetEquivalents);
+        document.getElementById('simpCheckBtn').addEventListener('click', checkSimplification);
+        document.getElementById('simpResetBtn').addEventListener('click', resetSimplification);
+    }
+    
+    init();
+</script>
+</body>
+</html>
