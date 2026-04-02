@@ -145,13 +145,9 @@
             animation-fill-mode: both;
         }
 
-        .game-card:nth-child(1) {
-            animation-delay: 0.1s;
-        }
-
-        .game-card:nth-child(2) {
-            animation-delay: 0.2s;
-        }
+        .game-card:nth-child(1) { animation-delay: 0.1s; }
+        .game-card:nth-child(2) { animation-delay: 0.2s; }
+        .game-card:nth-child(3) { animation-delay: 0.3s; }
 
         .game-card:hover {
             transform: translateY(-10px);
@@ -159,19 +155,14 @@
         }
 
         .game-icon {
-            background: linear-gradient(135deg, #ffb347, #ff8c1a);
             padding: 35px 20px;
             text-align: center;
             font-size: 4rem;
         }
 
-        .game-icon.fractions {
-            background: linear-gradient(135deg, #2a9d8f, #21867a);
-        }
-
-        .game-icon.notable {
-            background: linear-gradient(135deg, #e76f51, #e95a2a);
-        }
+        .game-icon.fractions { background: linear-gradient(135deg, #2a9d8f, #21867a); }
+        .game-icon.notable { background: linear-gradient(135deg, #e76f51, #e95a2a); }
+        .game-icon.factoring { background: linear-gradient(135deg, #6b5b95, #4b3b75); }
 
         .game-content {
             padding: 28px;
@@ -236,77 +227,33 @@
             margin-top: 20px;
         }
 
-        .footer p {
-            margin-bottom: 8px;
-        }
-
         /* Animações */
         @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Responsividade */
         @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2rem;
-            }
-            
-            .intro-card {
-                padding: 25px;
-            }
-            
-            .intro-card h2 {
-                font-size: 1.5rem;
-            }
-            
-            .games-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .game-content h3 {
-                font-size: 1.3rem;
-            }
+            .header h1 { font-size: 2rem; }
+            .intro-card { padding: 25px; }
+            .games-grid { grid-template-columns: 1fr; }
         }
 
-        /* Botão de voltar (caso os jogos abram na mesma aba, útil) */
         .back-info {
             text-align: center;
             margin-top: 20px;
             font-size: 0.9rem;
             color: rgba(255,255,255,0.7);
         }
-
-        .back-info a {
-            color: #ffd966;
-            text-decoration: none;
-        }
-
-        .back-info a:hover {
-            text-decoration: underline;
-        }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Cabeçalho -->
         <div class="header">
             <h1>
                 <span>🎮</span>
@@ -319,145 +266,114 @@
             </div>
         </div>
 
-        <!-- Cards de apresentação -->
         <div class="intro-card">
             <h2>
                 <span>✨</span>
                 Sobre os Jogos
             </h2>
             <p>
-                <strong>Jogos matemáticos</strong> são ferramentas poderosas para o aprendizado. 
-                Eles combinam diversão com desafios cognitivos, ajudando os estudantes a 
-                fixarem conceitos importantes de forma lúdica e interativa. Nossa plataforma 
-                oferece jogos desenvolvidos especialmente para alunos do Ensino Médio, 
-                focando em conteúdos fundamentais da matemática.
+                <strong>Jogos matemáticos</strong> combinam diversão com desafios cognitivos, ajudando na 
+                fixação de conceitos importantes. Nossa plataforma foca em conteúdos fundamentais 
+                do Ensino Médio, oferecendo feedback imediato e um sistema de competição saudável.
             </p>
             <div class="features">
                 <div class="feature">
                     <span>🎯</span>
                     <h3>Aprendizado Ativo</h3>
-                    <p>Participe ativamente da construção do conhecimento</p>
+                    <p>Participe da construção do conhecimento</p>
                 </div>
                 <div class="feature">
                     <span>🏆</span>
                     <h3>Sistema de Ranking</h3>
-                    <p>Registre seus recordes e compita com os colegas</p>
+                    <p>Registre recordes e compita com colegas</p>
                 </div>
                 <div class="feature">
                     <span>📊</span>
                     <h3>Feedback Imediato</h3>
-                    <p>Saiba na hora se acertou e aprenda com os erros</p>
+                    <p>Aprenda na hora com seus acertos e erros</p>
                 </div>
                 <div class="feature">
-                    <span>🔥</span>
-                    <h3>Sequência de Acertos</h3>
-                    <p>Mantenha sua streak e quebre recordes</p>
+                    <span>📱</span>
+                    <h3>Otimizado Mobile</h3>
+                    <p>Jogue perfeitamente no seu smartphone</p>
                 </div>
             </div>
         </div>
 
-        <!-- Seção dos jogos -->
         <div class="games-section">
             <h2>🎲 Escolha seu Jogo 🎲</h2>
             <div class="games-grid">
-                <!-- Jogo 1: Frações Equivalentes e Simplificação -->
+                
                 <div class="game-card">
-                    <div class="game-icon fractions">
-                        🍕 ➗
-                    </div>
+                    <div class="game-icon fractions">🍕 ➗</div>
                     <div class="game-content">
-                        <h3>Frações: Equivalentes e Simplificação</h3>
-                        <p>
-                            Aprenda a encontrar frações equivalentes e a simplificar frações 
-                            até sua forma irredutível. Use botões interativos para multiplicar 
-                            ou dividir numerador e denominador.
-                        </p>
+                        <h3>Frações: Equivalência e Simplificação</h3>
+                        <p>Encontre frações equivalentes e simplifique até a forma irredutível usando botões interativos de multiplicação e divisão.</p>
                         <div class="game-tags">
                             <span class="tag">🔢 Frações</span>
-                            <span class="tag">📐 Equivalência</span>
                             <span class="tag">✂️ Simplificação</span>
                             <span class="tag">🏆 Ranking</span>
                         </div>
                         <a href="Jogo das frações equivalentes e simplificação.html" class="play-btn">
-                            🎮 Jogar Agora
-                            <span>→</span>
+                            🎮 Jogar Agora <span>→</span>
                         </a>
                     </div>
                 </div>
 
-                <!-- Jogo 2: Produtos Notáveis (2º ano) - Competição -->
                 <div class="game-card">
-                    <div class="game-icon notable">
-                        📐 ✨
+                    <div class="game-icon factoring">🧩 ✖️</div>
+                    <div class="game-content">
+                        <h3>Fatoração Algébrica - 2º Ano</h3>
+                        <p>Domine a técnica de fatoração por agrupamento e soma e produto. Use o mapa de área geométrica para visualizar as expressões!</p>
+                        <div class="game-tags">
+                            <span class="tag">📌 x² + Bx + C</span>
+                            <span class="tag">🟦 Geometria</span>
+                            <span class="tag">🔥 Modo Misto</span>
+                        </div>
+                        <a href="fatoração algébrica 2 ano.html" class="play-btn">
+                            🎮 Jogar Agora <span>→</span>
+                        </a>
                     </div>
+                </div>
+
+                <div class="game-card">
+                    <div class="game-icon notable">📐 ✨</div>
                     <div class="game-content">
                         <h3>Produtos Notáveis - 2º Ano</h3>
-                        <p>
-                            Domine os produtos notáveis: quadrado da soma, quadrado da diferença 
-                            e produto da soma pela diferença. Pratique desenvolvendo expressões 
-                            ou encontrando a forma fatorada!
-                        </p>
+                        <p>Pratique o desenvolvimento de expressões e o reconhecimento da forma fatorada (quadrado da soma e diferença).</p>
                         <div class="game-tags">
                             <span class="tag">📌 (a+b)²</span>
                             <span class="tag">📌 (a-b)²</span>
-                            <span class="tag">📌 (a+b)(a-b)</span>
                             <span class="tag">🏆 Torneio</span>
                         </div>
                         <a href="Jogo produtos notáveis 2 ano competição.html" class="play-btn">
-                            🎮 Jogar Agora
-                            <span>→</span>
+                            🎮 Jogar Agora <span>→</span>
                         </a>
                     </div>
                 </div>
+
             </div>
         </div>
 
-        <!-- Informações adicionais sobre os jogos -->
         <div class="intro-card" style="background: rgba(255,255,255,0.9); margin-top: 0;">
             <h2>
                 <span>📖</span>
-                Como Funciona?
+                O que há de novo?
             </h2>
             <p>
-                <strong>🎯 Jogo das Frações:</strong> O jogo apresenta uma fração e desafia o aluno a encontrar 
-                uma fração equivalente que atenda a uma condição específica. Além disso, há um modo de 
-                simplificação onde o aluno deve reduzir frações passo a passo. Com botões de multiplicação 
-                e divisão por números de 2 a 9, o aprendizado se torna prático e intuitivo.
-            </p>
-            <p style="margin-top: 15px;">
-                <strong>📐 Jogo de Produtos Notáveis:</strong> Disponibilizamos dois formatos de jogo dentro de uma mesma 
-                interface: no primeiro, o aluno desenvolve o produto notável; no segundo, ele precisa reconhecer 
-                a forma fatorada a partir da expressão desenvolvida. O sistema registra pontuação, sequência de 
-                acertos e mantém um ranking local para motivar a competição saudável entre os estudantes.
+                <strong>🧩 Fatoração Algébrica:</strong> Adicionamos suporte completo para fatoração de trinômios do 2º grau. O aluno pode escolher entre praticar apenas com sinais positivos, negativos ou enfrentar o desafio "Misto". O jogo conta com suporte para visualização geométrica abstrata e distratores inteligentes que desafiam o raciocínio da regra de sinais.
             </p>
             <p style="margin-top: 15px; font-weight: 500; color: #5a3e8c;">
-                💡 <strong>Dica para o professor:</strong> Os alunos podem se cadastrar com seus nomes e competir 
-                pelo melhor recorde de sequência de acertos. Utilize os rankings para premiar os destaques da turma!
+                💡 <strong>Dica Mobile:</strong> Todos os jogos foram atualizados com design responsivo, facilitando o uso em tablets e celulares durante as atividades em sala de aula!
             </p>
         </div>
 
-        <!-- Rodapé -->
         <div class="footer">
             <p>🎓 Desenvolvido para auxiliar no aprendizado de Matemática | Ensino Médio</p>
-            <p>✨ Jogos educativos com sistema de pontuação, ranking e desafios progressivos ✨</p>
             <div class="back-info">
-                💡 Os jogos abrirão na mesma página. Use o botão "Voltar" do navegador para retornar ao menu.
+                💡 Use o botão "Voltar" do navegador para retornar a este menu principal.
             </div>
         </div>
     </div>
-
-    <script>
-        // Pequeno script para garantir que os links funcionem corretamente e dar um feedback caso o arquivo não exista
-        document.querySelectorAll('.play-btn').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                const href = this.getAttribute('href');
-                // Verificação simples: se o arquivo existir, o navegador tenta carregar.
-                // Não há como verificar perfeitamente via JS sem fetch, mas podemos tentar uma validação leve
-                // Apenas para debug em console, mas não impede o clique.
-                console.log(`Tentando abrir o jogo: ${href}`);
-                // Não bloqueamos o evento, apenas deixamos o navegador seguir
-            });
-        });
-    </script>
 </body>
 </html>
