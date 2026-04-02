@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fatoração Mobile - Hashijogos</title>
+    <style>
+        :root {
+            --bg-body: #1a1c23; --bg-card: #242731; --primary: #00d2ff;
+            --correct: #00b894; --wrong: #ff7675; --text-main: #ffffff;
+            --color-x2: #fab1a0; --color-x: #ffeaa7; --color-c: #55efc4;
+            /* Tamanhos adaptáveis para mobile */
+            --x-size: 80px; --unit-size: 25px;
+        }
+
+        body { 
+            font-family: 'Segoe UI', sans-serif; background: var(--bg-body); color: var(--text-main); 
+            margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh;
+            padding-bottom: 20px;
+        }
+
+        /* LOGIN E NAVEGAÇÃO */
+        #login-screen { position: fixed; inset: 0; background: var(--bg-body); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
+        .login-box { background: var(--bg-card); padding: 30px; border-radius: 20px; width: 90%; text-align: center; border: 1px solid #444; }
+        
+        .nav-tabs { 
+            display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 95%; 
+            margin: 15px 0; background: #2d303a; padding: 8px; border-radius: 12px;
+        }
+        .tab-btn { padding: 10px; border: none; border-radius: 8px; background: transparent; color: #b2bec3; font-size: 0.8rem; font-weight: bold; cursor: pointer; }
+        .tab-btn.active { background: var(--primary); color: #1a1c23; }
+
+        /* CONTAINER PRINCIPAL (VERTICAL) */
+        .main-container { 
+            display: flex; flex-direction: column; width: 95%; max-width: 500px; 
+            background: var(--bg-card); border-radius: 20px; overflow: hidden; border: 1px solid #444;
+        }
+
+        /* PAINEL DE QUESTÃO */
+        .game-panel { padding: 20px; display: flex; flex-direction: column; }
+        .header-info { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 15px; color: #aaa; }
+        
+        .expression-display { 
+            background: #1a1c23; padding: 25px 10px; border-radius: 15px; font-size: 2.2rem; 
+            font-weight: 800; text-align: center; margin-bottom: 20px; color: var(--primary); 
+            border: 1px solid #333; box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
+        }
+
+        .options-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+        .btn-option { 
+            background: #2d303a; border: 1px solid #444; color: white; padding: 15px; 
+            border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer;
+            transition: 0.2s; -webkit-tap-highlight-color: transparent;
+        }
+        .btn-option:active { transform: scale(0.98); }
+        .btn-option.correct { background: var(--correct) !important; border-color: var(--correct); }
+        .btn-option.wrong { background: var(--wrong) !important; border-color: var(--wrong); }
+
+        /* VISUALIZAÇÃO (ABAIXO) */
+        .visual-panel { 
+            background: #1e2128; padding: 20px; display: flex; flex-direction: column; 
+            align-items: center; border-top: 1px solid #333; min-height: 200px;
+        }
+        .grid-container { display: grid; gap: 3px; padding: 30px; background: #2d303a; border-radius: 15px; position: relative; }
+        
+        .block { display: flex; align-items: center; justify-content: center; font-weight: bold; border-radius: 3px; font-size: 1rem; color: transparent; }
+        .reveal .block { color: #1a1c23; }
+        .reveal .label-dim { opacity: 1; }
+
+        .block-x2 { background: var(--color-x2); }
+        .block-x { background: var(--color-x); }
+        .block-unit { background: var(--color-c); }
+
+        .label-dim { position: absolute; font-weight: bold; color: var(--primary); font-size: 0.9rem; opacity: 0; }
+        .label-top { top: -25px; width: 100%; text-align: center; left: 0; }
+        .label-left { left: -55px; top: 50%; transform: translateY(-50%); width: 50px; text-align: right; }
+
+        .btn-next { 
+            background: var(--primary); color: #1a1c23; width: 100%; margin-top: 15px; 
+            padding: 18px; font-weight: bold; border-radius: 12px; border: none; font-size: 1.1rem;
+            display: none; box-shadow: 0 4px 15px rgba(0, 210, 255, 0.3);
+        }
+
+        #feedback { text-align: center; margin-top: 15px; font-weight: bold; font-size: 1.1rem; }
+    </style>
+</head>
+<body>
+
+<div id="login-screen">
+    <div class="login-box">
+        <h1 style="color: var(--primary); margin-bottom: 5px;">HASHIJOGOS</h1>
+        <p style="color: #666; margin-bottom: 25px;">Fatoração de Trinômios</p>
+        <input type="text" id="p-name" placeholder="Nome do Aluno" maxlength="12">
+        <button onclick="initGame()" style="background: var(--primary); width: 100%; padding: 15px; border:none; border-radius:10px; font-weight:bold; cursor:pointer;">INICIAR ATIVIDADE</button>
+    </div>
+</div>
+
+<div class="nav-tabs">
+    <button class="tab-btn active" onclick="setMode('pos', this)">Sinais ++</button>
+    <button class="tab-btn" onclick="setMode('neg', this)">Sinais --</button>
+    <button class="tab-btn" onclick="setMode('dif', this)">Sinais +-</button>
+    <button class="tab-btn" onclick="setMode('mix', this)">MISTO</button>
+</div>
+
+<div class="main-container">
+    <div class="game-panel">
+        <div class="header-info">
+            <span>👤 <span id="display-name">...</span> <span onclick="resetPlayer()" style="color:var(--wrong); cursor:pointer;">[Sair]</span></span>
+            <span>Recorde: <span id="best">0</span></span>
+        </div>
+        <div style="font-weight: bold; color: var(--primary); margin-bottom: 5px;">Pontos: <span id="score">0</span></div>
+        
+        <div class="expression-display" id="eq-box">x² + 5x + 6</div>
+        
+        <div class="options-grid" id="opt-container"></div>
+        
+        <div id="feedback"></div>
+        <button id="btn-next" class="btn-next" onclick="newRound()">PRÓXIMA QUESTÃO</button>
+    </div>
+
+    <div class="visual-panel">
+        <div id="visual-grid" class="grid-container">
+            <div class="label-dim label-top" id="dim-t"></div>
+            <div class="label-dim label-left" id="dim-l"></div>
+        </div>
+        <p id="hint-msg" style="color: #444; font-size: 0.75rem; margin-top: 15px;">Fatoração Geométrica (Abstrata para Negativos)</p>
+    </div>
+</div>
+
+<script>
+    let currentScore = 0, highScore = localStorage.getItem('hashiFactoMob') || 0, mode = 'pos';
+    let curA, curB, canPlay = true;
+
+    document.getElementById('best').innerText = highScore;
+
+    function setMode(m, btn) {
+        mode = m;
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        newRound();
+    }
+
+    function initGame() {
+        const n = document.getElementById('p-name').value;
+        if(!n.trim()) return;
+        document.getElementById('display-name').innerText = n;
+        document.getElementById('login-screen').style.display = 'none';
+        newRound();
+    }
+
+    function resetPlayer() { location.reload(); }
+
+    function getPairs(n) {
+        let p = []; let num = Math.abs(n);
+        for(let i=1; i<=Math.sqrt(num); i++) if(num%i===0) p.push([i, num/i]);
+        return p;
+    }
+
+    function newRound() {
+        canPlay = true; document.getElementById('btn-next').style.display = 'none';
+        document.getElementById('feedback').innerText = "";
+        document.getElementById('visual-grid').classList.remove('reveal');
+
+        // Geração de raízes
+        if (mode === 'pos') { curA = Math.floor(Math.random()*5)+1; curB = Math.floor(Math.random()*5)+1; }
+        else if (mode === 'neg') { curA = -(Math.floor(Math.random()*5)+1); curB = -(Math.floor(Math.random()*5)+1); }
+        else if (mode === 'dif') { curA = Math.floor(Math.random()*5)+1; curB = -(Math.floor(Math.random()*5)+1); }
+        else {
+            curA = (Math.random() > 0.5 ? 1 : -1) * (Math.floor(Math.random()*5)+1);
+            curB = (Math.random() > 0.5 ? 1 : -1) * (Math.floor(Math.random()*5)+1);
+        }
+
+        let sum = curA + curB, prod = curA * curB;
+        let bText = sum >= 0 ? "+ " + sum : "- " + Math.abs(sum);
+        let cText = prod >= 0 ? "+ " + prod : "- " + Math.abs(prod);
+        document.getElementById('eq-box').innerText = `x² ${bText}x ${cText}`;
+
+        let correct = `(x ${curA >= 0 ? '+' : '-'} ${Math.abs(curA)})(x ${curB >= 0 ? '+' : '-'} ${Math.abs(curB)})`;
+        let opts = [correct];
+        
+        // Gerador de distratores inteligentes para mobile
+        getPairs(prod).forEach(p => {
+            let s1 = `(x + ${p[0]})(x + ${p[1]})`, s2 = `(x - ${p[0]})(x - ${p[1]})`;
+            if(opts.length < 4 && s1 !== correct && !opts.includes(s1)) opts.push(s1);
+            if(opts.length < 4 && s2 !== correct && !opts.includes(s2)) opts.push(s2);
+        });
+
+        while(opts.length < 4) {
+            let fA = (Math.random() > 0.5 ? '+' : '-'), fAn = Math.floor(Math.random()*9)+1;
+            let fB = (Math.random() > 0.5 ? '+' : '-'), fBn = Math.floor(Math.random()*9)+1;
+            let s = `(x ${fA} ${fAn})(x ${fB} ${fBn})`;
+            if(!opts.includes(s)) opts.push(s);
+        }
+        opts.sort(() => Math.random() - 0.5);
+
+        const container = document.getElementById('opt-container');
+        container.innerHTML = "";
+        opts.forEach(o => {
+            const btn = document.createElement('button');
+            btn.className = 'btn-option'; btn.innerText = o;
+            btn.onclick = () => check(o, btn, correct);
+            container.appendChild(btn);
+        });
+
+        renderGrid(curA, curB, prod);
+    }
+
+    function check(sel, btn, cor) {
+        if(!canPlay) return; canPlay = false;
+        document.getElementById('visual-grid').classList.add('reveal');
+        const f = document.getElementById('feedback');
+        if(sel === cor) {
+            btn.classList.add('correct'); f.innerText = "CERTO! ✨"; f.style.color = "var(--correct)";
+            currentScore++;
+        } else {
+            btn.classList.add('wrong'); f.innerText = "OPS! TENTE NOVAMENTE."; f.style.color = "var(--wrong)";
+            Array.from(document.querySelectorAll('.btn-option')).forEach(b => { if(b.innerText === cor) b.classList.add('correct'); });
+        }
+        updateScore(); document.getElementById('btn-next').style.display = 'block';
+    }
+
+    function updateScore() {
+        document.getElementById('score').innerText = currentScore;
+        if(currentScore > highScore) {
+            highScore = currentScore; localStorage.setItem('hashiFactoMob', highScore);
+            document.getElementById('best').innerText = highScore;
+        }
+    }
+
+    function renderGrid(a, b, p) {
+        const grid = document.getElementById('visual-grid');
+        if(a > 0 && b > 0) {
+            grid.style.display = "grid";
+            grid.style.gridTemplateColumns = `var(--x-size) repeat(${a}, var(--unit-size))`;
+            grid.style.gridTemplateRows = `var(--x-size) repeat(${b}, var(--unit-size))`;
+            grid.innerHTML = '<div class="label-dim label-top" id="dim-t"></div><div class="label-dim label-left" id="dim-l"></div>';
+            addBlk(grid, 'x²', 'block-x2', 1, 1, 1, 1);
+            addBlk(grid, 'x', 'block-x', 1, 2, 1, a);
+            addBlk(grid, 'x', 'block-x', 2, 1, b, 1);
+            addBlk(grid, p, 'block-unit', 2, 2, b, a);
+            document.getElementById('dim-t').innerText = "x + " + a;
+            document.getElementById('dim-l').innerText = "x + " + b;
+        } else { grid.style.display = "none"; }
+    }
+
+    function addBlk(p, t, c, r, col, rs, cs) {
+        const d = document.createElement('div'); d.className = `block ${c}`; d.innerText = t;
+        d.style.gridRow = `${r} / span ${rs}`; d.style.gridColumn = `${col} / span ${cs}`; p.appendChild(d);
+    }
+</script>
+</body>
+</html>
