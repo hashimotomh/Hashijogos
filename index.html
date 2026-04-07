@@ -163,6 +163,7 @@
         .game-icon.fractions { background: linear-gradient(135deg, #2a9d8f, #21867a); }
         .game-icon.notable { background: linear-gradient(135deg, #e76f51, #e95a2a); }
         .game-icon.factoring { background: linear-gradient(135deg, #6b5b95, #4b3b75); }
+        .game-icon.study { background: linear-gradient(135deg, #3b82f6, #1e40af); }
 
         .game-content {
             padding: 28px;
@@ -218,6 +219,73 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.25);
         }
 
+        /* Card de destaque para o roteiro de estudos */
+        .study-highlight {
+            background: rgba(255,255,255,0.95);
+            border-radius: 48px;
+            padding: 30px 35px;
+            margin: 30px 0 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            animation: fadeInUp 0.8s ease;
+            border: 2px solid rgba(255,215,0,0.5);
+            transition: transform 0.3s;
+        }
+
+        .study-highlight:hover {
+            transform: translateY(-5px);
+        }
+
+        .study-highlight .highlight-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .study-highlight h2 {
+            font-size: 1.8rem;
+            color: #1e3c72;
+            margin: 0;
+        }
+
+        .study-badge {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .study-highlight p {
+            font-size: 1.05rem;
+            color: #2d3748;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .study-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            text-decoration: none;
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .study-btn:hover {
+            transform: scale(1.05);
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+        }
+
         /* Rodapé */
         .footer {
             text-align: center;
@@ -242,6 +310,8 @@
             .header h1 { font-size: 2rem; }
             .intro-card { padding: 25px; }
             .games-grid { grid-template-columns: 1fr; }
+            .study-highlight { padding: 20px; }
+            .study-highlight h2 { font-size: 1.4rem; }
         }
 
         .back-info {
@@ -355,6 +425,22 @@
             </div>
         </div>
 
+        <!-- DESTAQUE: Link para o Roteiro de Estudos (Matemática 2º ano) -->
+        <div class="study-highlight">
+            <div class="highlight-header">
+                <h2>📘 Roteiro de Estudos para a Prova</h2>
+                <span class="study-badge">📝 MATERIAL DE APOIO</span>
+            </div>
+            <p>
+                <strong>Prepare-se com organização!</strong> Este roteiro contém atividades sobre potenciação, notação científica, 
+                equações do 1º e 2º grau, fatoração e produtos notáveis. São exercícios de aplicação direta e questões elaboradas, 
+                ideais para revisar antes da avaliação. Clique no botão abaixo e estude no seu ritmo.
+            </p>
+            <a href="roteiro de estudos mat 2 ano.html" class="study-btn">
+                📖 Acessar Roteiro de Estudos <span>→</span>
+            </a>
+        </div>
+
         <div class="intro-card" style="background: rgba(255,255,255,0.9); margin-top: 0;">
             <h2>
                 <span>📖</span>
@@ -365,6 +451,9 @@
             </p>
             <p style="margin-top: 15px; font-weight: 500; color: #5a3e8c;">
                 💡 <strong>Dica Mobile:</strong> Todos os jogos foram atualizados com design responsivo, facilitando o uso em tablets e celulares durante as atividades em sala de aula!
+            </p>
+            <p style="margin-top: 15px; font-weight: 500; color: #1e40af;">
+                📘 <strong>Novo recurso:</strong> Agora você também tem acesso ao "Roteiro de Estudos - Matemática 2º ano" com exercícios completos e gabarito para revisão!
             </p>
         </div>
 
