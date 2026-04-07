@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Roteiro de Estudos - Matemática | Potenciação, Notação Científica, Equações</title>
+    <!-- MathJax para renderizar fórmulas corretamente -->
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: #f0f7ff;
+            color: #1e2a3e;
+            padding: 30px 20px;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 32px;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            padding: 28px 32px 40px;
+        }
+
+        h1 {
+            font-size: 1.9rem;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 8px;
+            display: inline-block;
+        }
+
+        .sub {
+            color: #2c5282;
+            border-left: 4px solid #2b6cb0;
+            padding-left: 16px;
+            margin: 8px 0 28px 0;
+            font-weight: 500;
+            background: #eef2ff;
+            border-radius: 20px;
+            padding: 10px 20px;
+        }
+
+        .instrucao {
+            background: #fef9e3;
+            border-left: 6px solid #f59e0b;
+            padding: 12px 20px;
+            border-radius: 20px;
+            margin-bottom: 32px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .aula-card {
+            background: #ffffff;
+            border-radius: 28px;
+            margin-bottom: 36px;
+            box-shadow: 0 5px 18px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2edff;
+            transition: all 0.2s;
+        }
+
+        .aula-header {
+            background: #eef4ff;
+            padding: 12px 24px;
+            border-radius: 28px 28px 20px 20px;
+            border-bottom: 2px solid #cbdffc;
+        }
+
+        .aula-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e3a5f;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .badge-aula {
+            background: #2b6cb0;
+            color: white;
+            font-size: 0.8rem;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-weight: 500;
+        }
+
+        .exercicios {
+            padding: 20px 24px 24px;
+        }
+
+        .exercicio-item {
+            margin-bottom: 24px;
+            border-bottom: 1px dashed #e9ecef;
+            padding-bottom: 16px;
+        }
+
+        .exercicio-texto {
+            font-weight: 500;
+            background: #fafcff;
+            padding: 6px 12px;
+            border-radius: 16px;
+            margin-bottom: 6px;
+            font-size: 1.02rem;
+        }
+
+        .letter {
+            font-weight: 800;
+            color: #2c5282;
+            margin-right: 8px;
+            font-size: 1.1rem;
+        }
+
+        .alternativas {
+            margin-top: 8px;
+            padding-left: 24px;
+            color: #2d3748;
+        }
+
+        hr {
+            margin: 16px 0;
+            border: 0;
+            height: 1px;
+            background: linear-gradient(to right, #cbd5e0, transparent);
+        }
+
+        .btn-gabarito {
+            background: #1f6392;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+            padding: 14px 28px;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 100%;
+            max-width: 320px;
+            margin: 20px auto 0;
+            display: block;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border: none;
+        }
+
+        .btn-gabarito:hover {
+            background: #0e4b72;
+            transform: scale(1.02);
+        }
+
+        .gabarito {
+            background: #eef2f9;
+            margin-top: 32px;
+            padding: 24px 28px;
+            border-radius: 28px;
+            display: none;
+            border-left: 8px solid #2c7a4d;
+            transition: 0.2s;
+        }
+
+        .gabarito h3 {
+            font-size: 1.6rem;
+            color: #276749;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .gabarito-conteudo {
+            columns: 2;
+            column-gap: 32px;
+        }
+
+        .gabarito-conteudo p {
+            break-inside: avoid;
+            margin-bottom: 12px;
+            background: white;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 700px) {
+            .container {
+                padding: 20px 16px;
+            }
+            .gabarito-conteudo {
+                columns: 1;
+            }
+            .aula-header h2 {
+                font-size: 1.25rem;
+            }
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 36px;
+            font-size: 0.8rem;
+            color: #5a7184;
+            border-top: 1px solid #dce5f0;
+            padding-top: 20px;
+        }
+        .math-inline {
+            font-size: 1.05em;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>📐 Roteiro de Estudos</h1>
+    <div class="sub">Preparação para a Prova • Potenciação • Notação Científica • Equações • Fatoração</div>
+    <div class="instrucao">
+        📘 <strong>Orientação:</strong> Resolva cada exercício no caderno. As questões mesclam aplicação direta e situações-problema.
+        Ao final, clique no botão para conferir o gabarito. (As fórmulas são renderizadas automaticamente)
+    </div>
+
+    <!-- AULA 1 - Potenciação e unidades de medidas (inclui memória) -->
+    <div class="aula-card">
+        <div class="aula-header">
+            <h2><span class="badge-aula">Aula 1</span> ⚡ Potenciação + Unidades de Medida (memória)</h2>
+        </div>
+        <div class="exercicios">
+            <div class="exercicio-item"><div class="exercicio-texto"><span class="letter">1.</span> Calcule:</div> a) \( 2^5 \) &nbsp;&nbsp; b) \( (-3)^4 \) &nbsp;&nbsp; c) \( 10^3 \) &nbsp;&nbsp; d) \( (0,5)^2 \)</div>
+            <div class="exercicio-item"><div class="exercicio-texto"><span class="letter">2.</span> Converta (unidades de memória):</div> a) 5 GB para MB &nbsp;&nbsp; b) 2 TB para GB &nbsp;&nbsp; c) 4096 MB para GB</div>
+            <div class="exercicio-item"><div class="exercicio-texto"><span class="letter">3.</span> (Problema) Um arquivo de vídeo ocupa 1,5 GB. Quantos arquivos desse cabem em um pendrive de 32 GB? (Desconsidere espaço de formatação)</div></div>
+        </div>
+    </div>
+
+    <!-- AULA 2 - Problemas com potências de expoentes inteiros -->
+    <div class="aula-card">
+        <div class="aula-header">
+            <h2><span class="badge-aula">Aula 2</span> 🧮 Potências com expoentes inteiros</h2>
+        </div>
+        <div class="exercicios">
+            <div class="exercicio-item"><div class="exercicio-texto"><span class="letter">4.</span> Simplifique usando propriedades:</div> a) \( 3^5 \times 3^2 \) &nbsp;&nbsp; b) \( \frac{7^8}{7^5} \) &nbsp;&nbsp; c) \( (2^3)^4 \)</div>
+            <div class="exercicio-item"><div class="exercicio-texto"><span class="letter">5.</span> Uma cultura de bactérias dobra a cada hora. Começando com 100 bactérias, quantas haverá após 6 horas? (Escreva como potência e calcule)</div></div>
+        </div>
+    </div>
+
+    <!-- AULA 3 - Problemas com potências de expoentes fracionários -->
+    <div class="aula-card">
+        <div class="aula-header">
+            <h2><span class="badge-aula">Aula 3</span> 🔢 Expoentes fracionários</h2>
+        </div>
+        <div class="exercicios">
+            <div class="exercicio-item"><div class="exercicio-texto"><span class="letter">6.</span> Calcule:</div> a) \( 25^{1/2} \) &nbsp;&nbsp; b) \( 8^{2/3} \) &nbsp;&nbsp; c) \( 16^{3/4} \)</div>
+            <div class="exercicio-item"><div class="exercicio-texto"><span class="letter">7.</span> A área de um quadrado é \(144\) cm². Quanto mede o lado? Escreva na forma de potência de expoente fracionário e calcule.</div></div>
+        </div>
+    </div>
+
+    <!-- AULA 5 - Medidas e notação científica -->
+    <div class="aula-card">
+        <div class="aula-header">
+            <h2><span class="badge-aula">Aula 5</span> 📏 Notação científica (medidas)</h2>
+        </div>
+        <div class="exercicios">
+            <div class="exercicio-item"><div class="exercicio-texto"><span class="letter">8.</span> Escreva em notação científica:</div> a) 450 000 000 &nbsp;&nbsp; b) 0,00032 &nbsp;&nbsp; c) 7 200 000 &nbsp;&nbsp; d) 0,0000041</div>
+            <div class="exercicio-item"><div class="exercicio-texto"><span class="letter">9.</span> A distância da Terra à Lua é aproximadamente \( 3,84 \times 10^8 \) m. Expresse em quilômetros (notação científica).</div></div>
+        </div>
+    </div>
+
+    <!-- AULA 6 - Notação científica: operações e problemas -->
+    <div class="aula-card">
+        <div class="aula-header">
+            <h2><span class="badge-aula">Aula 6</span> ✖️ Operações com notação científica</h2>
+        </div>
+        <div class="exercicios">
+            <div class="exercicio-item"><div class="exercicio-texto"><span class="letter">10.</span> Efetue e dê a resposta em notação científica:</div> a) \( (2 \times 10^5) \times (3 \times 10^4) \) <br> b) \( (8 \times 10^7) \div (4 \times 10^3) \) <br> c) \( (5 \times 10^{-2}) \times (2 \times 10^6) \)</div>
+            <div class="exercicio-item"><div class="exercicio-texto"><span class="letter">11.</span> A massa de um próton é \( 1,67 \times 10^{-27} \) kg. Quantos prótons são necessários para 1 kg? (Resposta em notação científica)</div></div>
+        </div>
+    </div>
+
+    <!-- AULA 7 - Problemas cotidiano potenciação e notação científica -->
+    <div class="aula-card">
+        <div class="aula-header">
+            <h2><span class="badge-aula">Aula 7</span> 🌍 Problemas do cotidiano</h2>
+        </div>
+        <div class="exercicios">
+            <div class="exercicio-item"><div class="exercicio-texto"><span class="letter">12.</span> Em 2020, o Brasil produziu cerca de \( 1,5 \times 10^{11} \) kWh de energia. Se cada habitante consumiu \( 2,5 \times 10^3 \) kWh, quantos habitantes o país tinha aproximadamente? (Resposta em notação científica)</div></div>
+        </div>
+    </div>
+
+    <!-- AULA 9 - Estratégias resolução equações 1º grau -->
+    <div class="aula-card">
+        <div class="aula-header">
+            <h2><span class="badge-aula">Aula 9</span> 🧩 Equações do 1º grau</h2>
+        </div>
+        <div class="exercicios">
+            <div class="exercicio-item"><div class="exercicio-texto"><span class="letter">13.</span> Resolva:</div> a) \( 3x + 5 = 20 \) &nbsp;&nbsp; b) \( 2(x - 4) = 10 \) &nbsp;&nbsp; c) \( \frac{x}{3} + 2 = 7 \)</div>
+            <div class="exercicio-item"><div class="exercicio-texto"><span class="letter">14.</span> A soma de um número com o seu dobro é 45. Qual é o número?</div></div>
+        </div>
+    </div>
+
+    <!-- AULA 10 - Modelagem algébrica 1º grau -->
+    <div class="aula-card">
+        <div class="aula-header">
+            <h2><span class="badge-aula">Aula 10</span> 📝 Modelagem algébrica</h2>
+        </div>
+        <div class="exercicios">
+            <div class="exercicio-item"><div class="exercicio-texto"><span class="letter">15.</span> Um celular custa R$ 1200,00 à vista. A prazo, entrada de R$ 300,00 + 6 parcelas iguais. Qual o valor de cada parcela? (Monte a equação e resolva)</div></div>
+        </div>
+    </div>
+
+    <!-- AULA 11 - Fatoração por produtos notáveis -->
+    <div class="aula-card">
+        <div class="aula-header">
+            <h2><span class="badge-aula">Aula 11</span> ✨ Produtos notáveis / Fatoração</h2>
+        </div>
+        <div class="exercicios">
+            <div class="exercicio-item"><div class="exercicio-texto"><span class="letter">16.</span> Fatore:</div> a) \( x^2 - 16 \) &nbsp;&nbsp; b) \( x^2 + 6x + 9 \) &nbsp;&nbsp; c) \( x^2 - 10x + 25 \)</div>
+            <div class="exercicio-item"><div class="exercicio-texto"><span class="letter">17.</span> A área de um quadrado é \( 4x^2 + 12x + 9 \). Qual a expressão que representa o lado?</div></div>
+        </div>
+    </div>
+
+    <!-- AULA 12 - Revisão Khan (exercício integrado) -->
+    <div class="aula-card">
+        <div class="aula-header">
+            <h2><span class="badge-aula">Aula 12 (Khan/Revisão)</span> 🔁 Síntese e desafio</h2>
+        </div>
+        <div class="exercicios">
+            <div class="exercicio-item"><div class="exercicio-texto"><span class="letter">18.</span> Resolva a equação do 2º grau por fatoração ou Bhaskara: \( x^2 - 5x + 6 = 0 \)</div></div>
+            <div class="exercicio-item"><div class="exercicio-texto"><span class="letter">19.</span> O quadrado de um número menos o próprio número é igual a 6. Encontre esse número.</div></div>
+            <div class="exercicio-item"><div class="exercicio-texto"><span class="letter">20.</span> (Revisão notação científica) A distância do Sol a Netuno é cerca de \( 4,5 \times 10^9 \) km. Expresse em metros (notação científica).</div></div>
+        </div>
+    </div>
+
+    <!-- Botão do gabarito -->
+    <button class="btn-gabarito" id="mostrarGabaritoBtn">🔍 Mostrar Gabarito (conferir respostas)</button>
+
+    <!-- Área do gabarito oculta -->
+    <div id="gabaritoArea" class="gabarito">
+        <h3>📌 GABARITO OFICIAL</h3>
+        <div class="gabarito-conteudo">
+            <p><strong>Aula 1</strong><br>1. a) 32  b) 81  c) 1000  d) 0,25<br>2. a) 5000 MB  b) 2048 GB  c) 4 GB<br>3. 21 arquivos (32 ÷ 1,5 ≈ 21,3 → cabem 21)</p>
+            <p><strong>Aula 2</strong><br>4. a) \(3^7\)  b) \(7^3\)  c) \(2^{12}\) <br>5. \(100 \times 2^6 = 6400\) bactérias</p>
+            <p><strong>Aula 3</strong><br>6. a) 5  b) 4  c) 8<br>7. Lado = \(144^{1/2} = 12\) cm</p>
+            <p><strong>Aula 5</strong><br>8. a) \(4,5\times10^8\)  b) \(3,2\times10^{-4}\)  c) \(7,2\times10^6\)  d) \(4,1\times10^{-6}\)<br>9. \(3,84\times10^5\) km</p>
+            <p><strong>Aula 6</strong><br>10. a) \(6\times10^9\)  b) \(2\times10^4\)  c) \(1\times10^5\) <br>11. Aprox. \(5,99\times10^{26}\) prótons</p>
+            <p><strong>Aula 7</strong><br>12. \(6\times10^7\) habitantes</p>
+            <p><strong>Aula 9</strong><br>13. a) \(x=5\)  b) \(x=9\)  c) \(x=15\)<br>14. Número = 15</p>
+            <p><strong>Aula 10</strong><br>15. \(300 + 6x = 1200 \rightarrow x = R\$ 150,00\)</p>
+            <p><strong>Aula 11</strong><br>16. a) \((x-4)(x+4)\)  b) \((x+3)^2\)  c) \((x-5)^2\) <br>17. Lado = \(2x+3\)</p>
+            <p><strong>Aula 12 - Revisão</strong><br>18. \(x=2\) ou \(x=3\) <br>19. Números: \(3\) ou \(-2\)  (\(x^2 - x = 6\)) <br>20. \(4,5\times10^{12}\) m</p>
+        </div>
+    </div>
+
+    <footer>
+        📐 Estude com calma • Resolva primeiro, depois confira • Dúvidas? Anote para a aula de verificação
+    </footer>
+</div>
+
+<script>
+    const btn = document.getElementById('mostrarGabaritoBtn');
+    const gabDiv = document.getElementById('gabaritoArea');
+    let visible = false;
+
+    btn.addEventListener('click', () => {
+        if (!visible) {
+            gabDiv.style.display = 'block';
+            btn.textContent = '🙈 Ocultar Gabarito';
+            visible = true;
+        } else {
+            gabDiv.style.display = 'none';
+            btn.textContent = '🔍 Mostrar Gabarito (conferir respostas)';
+            visible = false;
+        }
+    });
+</script>
+</body>
+</html>
