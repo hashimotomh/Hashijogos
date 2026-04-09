@@ -164,6 +164,7 @@
         .game-icon.notable { background: linear-gradient(135deg, #e76f51, #e95a2a); }
         .game-icon.factoring { background: linear-gradient(135deg, #6b5b95, #4b3b75); }
         .game-icon.study { background: linear-gradient(135deg, #3b82f6, #1e40af); }
+        .game-icon.study7 { background: linear-gradient(135deg, #f59e0b, #b45309); }
 
         .game-content {
             padding: 28px;
@@ -219,7 +220,7 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.25);
         }
 
-        /* Card de destaque para o roteiro de estudos */
+        /* Card de destaque para os roteiros de estudos */
         .study-highlight {
             background: rgba(255,255,255,0.95);
             border-radius: 48px;
@@ -286,6 +287,20 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.25);
         }
 
+        /* Estilo específico para o card do 7º ano */
+        .study-highlight.seventh {
+            border: 2px solid #f59e0b;
+            background: linear-gradient(135deg, #fffaf0, #fff5e6);
+        }
+
+        .study-highlight.seventh h2 {
+            color: #b45309;
+        }
+
+        .study-highlight.seventh .study-badge {
+            background: linear-gradient(135deg, #f59e0b, #b45309);
+        }
+
         /* Rodapé */
         .footer {
             text-align: center;
@@ -344,7 +359,7 @@
             <p>
                 <strong>Jogos matemáticos</strong> combinam diversão com desafios cognitivos, ajudando na 
                 fixação de conceitos importantes. Nossa plataforma foca em conteúdos fundamentais 
-                do Ensino Médio, oferecendo feedback imediato e um sistema de competição saudável.
+                do Ensino Fundamental e Médio, oferecendo feedback imediato e um sistema de competição saudável.
             </p>
             <div class="features">
                 <div class="feature">
@@ -425,19 +440,39 @@
             </div>
         </div>
 
-        <!-- DESTAQUE: Link para o Roteiro de Estudos (Matemática 2º ano) -->
+        <!-- DESTAQUE 1: Roteiro de Estudos - 2º ANO (ENSINO MÉDIO) -->
         <div class="study-highlight">
             <div class="highlight-header">
-                <h2>📘 Roteiro de Estudos para a Prova</h2>
-                <span class="study-badge">📝 MATERIAL DE APOIO</span>
+                <h2>📘 Roteiro de Estudos para a Prova - 2º Ano (EM)</h2>
+                <span class="study-badge">📝 MATERIAL DE APOIO - 2º ANO</span>
             </div>
             <p>
                 <strong>Prepare-se com organização!</strong> Este roteiro contém atividades sobre potenciação, notação científica, 
                 equações do 1º e 2º grau, fatoração e produtos notáveis. São exercícios de aplicação direta e questões elaboradas, 
-                ideais para revisar antes da avaliação. Clique no botão abaixo e estude no seu ritmo.
+                ideais para revisar antes da avaliação. O gabarito está disponível para você conferir suas respostas.
             </p>
             <a href="roteiro de estudos mat 2 ano.html" class="study-btn">
-                📖 Acessar Roteiro de Estudos <span>→</span>
+                📖 Acessar Roteiro de Estudos (2º Ano) <span>→</span>
+            </a>
+        </div>
+
+        <!-- DESTAQUE 2: Roteiro de Estudos - 7º ANO (ENSINO FUNDAMENTAL) - NOVO LINK -->
+        <div class="study-highlight seventh">
+            <div class="highlight-header">
+                <h2>📕 Roteiro de Estudos para a Prova - 7º Ano (EF)</h2>
+                <span class="study-badge">📝 MATERIAL DE APOIO - 7º ANO</span>
+            </div>
+            <p>
+                <strong>Prepare-se com dedicação!</strong> Este roteiro contém atividades sobre frações, operações com frações, 
+                representação decimal e percentual, números inteiros (adição, subtração, multiplicação, divisão) e muito mais. 
+                O gabarito está disponível para que você possa conferir suas respostas e aprender com os erros.
+            </p>
+            <p style="margin-top: 12px; font-style: italic; color: #b45309;">
+                💡 <strong>Dica importante:</strong> Para maximizar seus estudos, busque também outras questões sobre os mesmos conteúdos. 
+                Quanto mais você praticar, mais preparado estará! Se tiver dúvidas, não hesite em perguntar ao professor.
+            </p>
+            <a href="roteiro de estudos 7 ano prova 1.html" class="study-btn" style="background: linear-gradient(135deg, #f59e0b, #b45309);">
+                📖 Acessar Roteiro de Estudos (7º Ano) <span>→</span>
             </a>
         </div>
 
@@ -453,12 +488,16 @@
                 💡 <strong>Dica Mobile:</strong> Todos os jogos foram atualizados com design responsivo, facilitando o uso em tablets e celulares durante as atividades em sala de aula!
             </p>
             <p style="margin-top: 15px; font-weight: 500; color: #1e40af;">
-                📘 <strong>Novo recurso:</strong> Agora você também tem acesso ao "Roteiro de Estudos - Matemática 2º ano" com exercícios completos e gabarito para revisão!
+                📘 <strong>Novo recurso:</strong> Agora você também tem acesso ao <strong>Roteiro de Estudos para o 7º ano</strong> com exercícios completos e gabarito para revisão!
+            </p>
+            <p style="margin-top: 15px; font-weight: 500; color: #b45309; background: #fff5e6; padding: 12px; border-radius: 32px;">
+                🧠 <strong>Estratégia de estudo:</strong> Além dos roteiros, procure resolver questões variadas sobre o mesmo conteúdo, crie resumos e revise os conceitos com os jogos disponíveis. O segredo do aprendizado é a prática constante!
             </p>
         </div>
 
         <div class="footer">
-            <p>🎓 Desenvolvido para auxiliar no aprendizado de Matemática | Ensino Médio</p>
+            <p>🎓 Desenvolvido para auxiliar no aprendizado de Matemática | Ensino Fundamental e Médio</p>
+            <p style="margin-top: 10px;">📢 <strong>Precisa de ajuda?</strong> Procure seu professor para tirar dúvidas e aprofundar seus estudos.</p>
             <div class="back-info">
                 💡 Use o botão "Voltar" do navegador para retornar a este menu principal.
             </div>
