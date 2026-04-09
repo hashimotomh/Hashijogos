@@ -115,9 +115,9 @@
             color: #4a5568;
         }
 
-        /* Seção dos jogos */
+        /* Seção dos jogos e simulados */
         .games-section {
-            margin-bottom: 40px;
+            margin-bottom: 60px;
         }
 
         .games-section h2 {
@@ -143,11 +143,9 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             animation: fadeInUp 0.6s ease;
             animation-fill-mode: both;
+            display: flex;
+            flex-direction: column;
         }
-
-        .game-card:nth-child(1) { animation-delay: 0.1s; }
-        .game-card:nth-child(2) { animation-delay: 0.2s; }
-        .game-card:nth-child(3) { animation-delay: 0.3s; }
 
         .game-card:hover {
             transform: translateY(-10px);
@@ -158,16 +156,20 @@
             padding: 35px 20px;
             text-align: center;
             font-size: 4rem;
+            color: white;
         }
 
         .game-icon.fractions { background: linear-gradient(135deg, #2a9d8f, #21867a); }
         .game-icon.notable { background: linear-gradient(135deg, #e76f51, #e95a2a); }
         .game-icon.factoring { background: linear-gradient(135deg, #6b5b95, #4b3b75); }
-        .game-icon.study { background: linear-gradient(135deg, #3b82f6, #1e40af); }
-        .game-icon.study7 { background: linear-gradient(135deg, #f59e0b, #b45309); }
+        .game-icon.math-sim { background: linear-gradient(135deg, #4361ee, #3f37c9); }
+        .game-icon.phys-sim { background: linear-gradient(135deg, #ef233c, #d90429); }
 
         .game-content {
             padding: 28px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
         }
 
         .game-content h3 {
@@ -180,6 +182,16 @@
             color: #4a5568;
             line-height: 1.6;
             margin-bottom: 20px;
+        }
+
+        .formula-alert {
+            background: #fff5f5;
+            border-left: 4px solid #ef233c;
+            padding: 10px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: #880808;
+            border-radius: 0 10px 10px 0;
         }
 
         .game-tags {
@@ -201,6 +213,7 @@
         .play-btn {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 10px;
             background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
@@ -213,7 +226,11 @@
             border: none;
             cursor: pointer;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            margin-top: auto;
         }
+
+        .play-btn.math { background: linear-gradient(135deg, #4361ee, #3f37c9); }
+        .play-btn.phys { background: linear-gradient(135deg, #ef233c, #d90429); }
 
         .play-btn:hover {
             transform: scale(1.05);
@@ -346,20 +363,19 @@
                 <span>🧮</span>
             </h1>
             <div class="subtitle">
-                Aprenda matemática de forma divertida com nossos jogos interativos! 
-                Desafie-se, conquiste recordes e domine os conteúdos.
+                Aprenda matemática e física de forma divertida! 
+                Desafie-se com nossos jogos e prepare-se para a Prova Paulista com simulados exclusivos.
             </div>
         </div>
 
         <div class="intro-card">
             <h2>
                 <span>✨</span>
-                Sobre os Jogos
+                Sobre a Plataforma
             </h2>
             <p>
-                <strong>Jogos matemáticos</strong> combinam diversão com desafios cognitivos, ajudando na 
-                fixação de conceitos importantes. Nossa plataforma foca em conteúdos fundamentais 
-                do Ensino Fundamental e Médio, oferecendo feedback imediato e um sistema de competição saudável.
+                Combinamos diversão com desafios cognitivos para ajudar na fixação de conceitos importantes. 
+                Aqui você encontra jogos interativos e materiais de apoio focados na sua preparação acadêmica.
             </p>
             <div class="features">
                 <div class="feature">
@@ -368,25 +384,68 @@
                     <p>Participe da construção do conhecimento</p>
                 </div>
                 <div class="feature">
-                    <span>🏆</span>
-                    <h3>Sistema de Ranking</h3>
-                    <p>Registre recordes e compita com colegas</p>
+                    <span>📝</span>
+                    <h3>Simulados</h3>
+                    <p>Materiais focados na Prova Paulista</p>
                 </div>
                 <div class="feature">
                     <span>📊</span>
-                    <h3>Feedback Imediato</h3>
-                    <p>Aprenda na hora com seus acertos e erros</p>
+                    <h3>Feedback</h3>
+                    <p>Aprenda com seus acertos e erros</p>
                 </div>
                 <div class="feature">
                     <span>📱</span>
-                    <h3>Otimizado Mobile</h3>
-                    <p>Jogue perfeitamente no seu smartphone</p>
+                    <h3>Otimizado</h3>
+                    <p>Acesse pelo tablet ou smartphone</p>
                 </div>
             </div>
         </div>
 
         <div class="games-section">
-            <h2>🎲 Escolha seu Jogo 🎲</h2>
+            <h2>📝 Simulados Prova Paulista 📝</h2>
+            <div class="games-grid">
+                
+                <div class="game-card">
+                    <div class="game-icon math-sim">📐 🖋️</div>
+                    <div class="game-content">
+                        <h3>Simulado Matemática - 2º Ano</h3>
+                        <p>Prepare-se para a Prova Paulista com questões selecionadas que revisam os tópicos mais importantes do bimestre.</p>
+                        <div class="formula-alert">
+                            <strong>⚠️ Atenção:</strong> Estude este simulado com foco nas fórmulas! Memorizá-las é essencial para o sucesso na prova.
+                        </div>
+                        <div class="game-tags">
+                            <span class="tag">📚 Prova Paulista</span>
+                            <span class="tag">📝 PDF</span>
+                        </div>
+                        <a href="simulado matemática prova paulista 2 ano.pdf" class="play-btn math">
+                            📖 Abrir Simulado <span>→</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="game-card">
+                    <div class="game-icon phys-sim">⚛️ 🚀</div>
+                    <div class="game-content">
+                        <h3>Simulado Física - Geral</h3>
+                        <p>Exercícios práticos de física para reforçar o conteúdo da Prova Paulista e testar seus conhecimentos em fenômenos e leis.</p>
+                        <div class="formula-alert">
+                            <strong>⚠️ Atenção:</strong> A física depende da aplicação correta das leis! Revise as fórmulas e vá com elas em mente.
+                        </div>
+                        <div class="game-tags">
+                            <span class="tag">🍎 Física</span>
+                            <span class="tag">📝 PDF</span>
+                        </div>
+                        <a href="simulado prova paulista física.pdf" class="play-btn phys">
+                            📖 Abrir Simulado <span>→</span>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="games-section">
+            <h2>🎲 Jogos Interativos 🎲</h2>
             <div class="games-grid">
                 
                 <div class="game-card">
@@ -397,7 +456,6 @@
                         <div class="game-tags">
                             <span class="tag">🔢 Frações</span>
                             <span class="tag">✂️ Simplificação</span>
-                            <span class="tag">🏆 Ranking</span>
                         </div>
                         <a href="Jogo das frações equivalentes e simplificação.html" class="play-btn">
                             🎮 Jogar Agora <span>→</span>
@@ -409,11 +467,10 @@
                     <div class="game-icon factoring">🧩 ✖️</div>
                     <div class="game-content">
                         <h3>Fatoração Algébrica - 2º Ano</h3>
-                        <p>Domine a técnica de fatoração por agrupamento e soma e produto. Use o mapa de área geométrica para visualizar as expressões!</p>
+                        <p>Domine a técnica de fatoração por agrupamento e soma e produto. Use o mapa de área geométrica para visualizar!</p>
                         <div class="game-tags">
                             <span class="tag">📌 x² + Bx + C</span>
                             <span class="tag">🟦 Geometria</span>
-                            <span class="tag">🔥 Modo Misto</span>
                         </div>
                         <a href="fatoração algébrica 2 ano.html" class="play-btn">
                             🎮 Jogar Agora <span>→</span>
@@ -428,7 +485,6 @@
                         <p>Pratique o desenvolvimento de expressões e o reconhecimento da forma fatorada (quadrado da soma e diferença).</p>
                         <div class="game-tags">
                             <span class="tag">📌 (a+b)²</span>
-                            <span class="tag">📌 (a-b)²</span>
                             <span class="tag">🏆 Torneio</span>
                         </div>
                         <a href="Jogo produtos notáveis 2 ano competição.html" class="play-btn">
@@ -440,64 +496,27 @@
             </div>
         </div>
 
-        <!-- DESTAQUE 1: Roteiro de Estudos - 2º ANO (ENSINO MÉDIO) -->
         <div class="study-highlight">
             <div class="highlight-header">
-                <h2>📘 Roteiro de Estudos para a Prova - 2º Ano (EM)</h2>
-                <span class="study-badge">📝 MATERIAL DE APOIO - 2º ANO</span>
+                <h2>📘 Roteiros de Apoio</h2>
+                <span class="study-badge">📝 MATERIAL DE REVISÃO</span>
             </div>
             <p>
-                <strong>Prepare-se com organização!</strong> Este roteiro contém atividades sobre potenciação, notação científica, 
-                equações do 1º e 2º grau, fatoração e produtos notáveis. São exercícios de aplicação direta e questões elaboradas, 
-                ideais para revisar antes da avaliação. O gabarito está disponível para você conferir suas respostas.
+                Utilize nossos roteiros de estudo para o 7º ano e 2º ano do Ensino Médio para complementar sua preparação para as provas.
             </p>
-            <a href="roteiro de estudos mat 2 ano.html" class="study-btn">
-                📖 Acessar Roteiro de Estudos (2º Ano) <span>→</span>
-            </a>
-        </div>
-
-        <!-- DESTAQUE 2: Roteiro de Estudos - 7º ANO (ENSINO FUNDAMENTAL) - NOVO LINK -->
-        <div class="study-highlight seventh">
-            <div class="highlight-header">
-                <h2>📕 Roteiro de Estudos para a Prova - 7º Ano (EF)</h2>
-                <span class="study-badge">📝 MATERIAL DE APOIO - 7º ANO</span>
+            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                <a href="roteiro de estudos mat 2 ano.html" class="study-btn">
+                    📖 Roteiro 2º Ano <span>→</span>
+                </a>
+                <a href="roteiro de estudos 7 ano prova 1.html" class="study-btn" style="background: linear-gradient(135deg, #f59e0b, #b45309);">
+                    📖 Roteiro 7º Ano <span>→</span>
+                </a>
             </div>
-            <p>
-                <strong>Prepare-se com dedicação!</strong> Este roteiro contém atividades sobre frações, operações com frações, 
-                representação decimal e percentual, números inteiros (adição, subtração, multiplicação, divisão) e muito mais. 
-                O gabarito está disponível para que você possa conferir suas respostas e aprender com os erros.
-            </p>
-            <p style="margin-top: 12px; font-style: italic; color: #b45309;">
-                💡 <strong>Dica importante:</strong> Para maximizar seus estudos, busque também outras questões sobre os mesmos conteúdos. 
-                Quanto mais você praticar, mais preparado estará! Se tiver dúvidas, não hesite em perguntar ao professor.
-            </p>
-            <a href="roteiro de estudos 7 ano prova 1.html" class="study-btn" style="background: linear-gradient(135deg, #f59e0b, #b45309);">
-                📖 Acessar Roteiro de Estudos (7º Ano) <span>→</span>
-            </a>
-        </div>
-
-        <div class="intro-card" style="background: rgba(255,255,255,0.9); margin-top: 0;">
-            <h2>
-                <span>📖</span>
-                O que há de novo?
-            </h2>
-            <p>
-                <strong>🧩 Fatoração Algébrica:</strong> Adicionamos suporte completo para fatoração de trinômios do 2º grau. O aluno pode escolher entre praticar apenas com sinais positivos, negativos ou enfrentar o desafio "Misto". O jogo conta com suporte para visualização geométrica abstrata e distratores inteligentes que desafiam o raciocínio da regra de sinais.
-            </p>
-            <p style="margin-top: 15px; font-weight: 500; color: #5a3e8c;">
-                💡 <strong>Dica Mobile:</strong> Todos os jogos foram atualizados com design responsivo, facilitando o uso em tablets e celulares durante as atividades em sala de aula!
-            </p>
-            <p style="margin-top: 15px; font-weight: 500; color: #1e40af;">
-                📘 <strong>Novo recurso:</strong> Agora você também tem acesso ao <strong>Roteiro de Estudos para o 7º ano</strong> com exercícios completos e gabarito para revisão!
-            </p>
-            <p style="margin-top: 15px; font-weight: 500; color: #b45309; background: #fff5e6; padding: 12px; border-radius: 32px;">
-                🧠 <strong>Estratégia de estudo:</strong> Além dos roteiros, procure resolver questões variadas sobre o mesmo conteúdo, crie resumos e revise os conceitos com os jogos disponíveis. O segredo do aprendizado é a prática constante!
-            </p>
         </div>
 
         <div class="footer">
-            <p>🎓 Desenvolvido para auxiliar no aprendizado de Matemática | Ensino Fundamental e Médio</p>
-            <p style="margin-top: 10px;">📢 <strong>Precisa de ajuda?</strong> Procure seu professor para tirar dúvidas e aprofundar seus estudos.</p>
+            <p>🎓 Desenvolvido para auxiliar no aprendizado de Matemática e Física</p>
+            <p style="margin-top: 10px;">📢 <strong>Dica de Ouro:</strong> Além de resolver o simulado, tente explicar a matéria para um colega. Ensinar é a melhor forma de aprender!</p>
             <div class="back-info">
                 💡 Use o botão "Voltar" do navegador para retornar a este menu principal.
             </div>
