@@ -23,7 +23,7 @@
             margin: 0 auto;
         }
 
-        /* --- ESTILO PARA FRAÇÕES --- */
+        /* ESTILO PARA FRAÇÕES MATEMÁTICAS */
         .frac {
             display: inline-block;
             vertical-align: middle;
@@ -37,9 +37,6 @@
         }
         .frac span.num {
             border-bottom: 2px solid #2d3748;
-        }
-        .frac span.den {
-            /* Sem borda superior para evitar linha dupla */
         }
 
         /* Cabeçalho */
@@ -82,7 +79,7 @@
         .questions-card h2 {
             font-size: 1.8rem;
             color: #5a3e8c;
-            margin-top: 30px;
+            margin-top: 35px;
             margin-bottom: 20px;
             border-left: 6px solid #764ba2;
             padding-left: 20px;
@@ -106,7 +103,7 @@
             transform: translateX(5px);
         }
 
-        .question .question-text {
+        .question-text {
             font-size: 1.1rem;
             font-weight: 700;
             color: #1e1e4a;
@@ -114,20 +111,21 @@
             display: flex;
             align-items: center;
             flex-wrap: wrap;
+            gap: 5px;
         }
 
         .options {
-            padding-left: 20px;
-            color: #4a5568;
+            padding-left: 10px;
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
         }
 
-        .options .opt-item {
+        .opt-item {
             display: flex;
             align-items: center;
             font-weight: 600;
+            color: #4a5568;
         }
 
         /* Botão gabarito */
@@ -147,15 +145,6 @@
             cursor: pointer;
             transition: all 0.3s;
             box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .gabarito-btn:hover {
-            transform: scale(1.03);
-            background: linear-gradient(135deg, #38b2ac, #2c7a6e);
-            box-shadow: 0 12px 28px rgba(0,0,0,0.3);
         }
 
         /* Gabarito */
@@ -164,27 +153,22 @@
             border-radius: 48px;
             padding: 30px 35px;
             margin-top: 20px;
-            margin-bottom: 30px;
             display: none;
             border: 2px solid #c7d2fe;
-            animation: fadeInUp 0.5s ease;
         }
 
-        .gabarito.visible {
-            display: block;
-        }
+        .gabarito.visible { display: block; }
 
-        .gabarito ul {
-            list-style: none;
-            padding: 0;
-        }
+        .gabarito h3 { color: #1e3c72; margin-bottom: 20px; }
+
+        .gabarito ul { list-style: none; }
 
         .gabarito li {
             padding: 12px 0;
             border-bottom: 1px solid #cbd5e1;
-            font-size: 1.05rem;
             display: flex;
             align-items: center;
+            font-weight: 500;
         }
 
         .gabarito li strong {
@@ -195,13 +179,15 @@
             margin-right: 15px;
         }
 
+        .footer {
+            text-align: center;
+            color: rgba(255,255,255,0.8);
+            padding: 30px 20px;
+            margin-top: 20px;
+        }
+
         @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-
-        @media (max-width: 768px) {
-            .header h1 { font-size: 2rem; }
-            .questions-card { padding: 20px; }
-        }
     </style>
 </head>
 <body>
@@ -209,8 +195,7 @@
         <div class="header">
             <h1><span>📚</span> Atividades de Revisão <span>✏️</span></h1>
             <div class="subtitle">
-                Prepare-se para a prova! Questões sobre frações, operações, decimais e inteiros.<br>
-                <strong>⚠️ Atenção:</strong> Observe bem os sinais nas operações com números inteiros.
+                Revisão completa para o 7º ano: Frações, Decimais e Números Inteiros (Sinais).
             </div>
         </div>
 
@@ -218,9 +203,9 @@
             <h2>🥧 1. Frações: Equivalência e Simplificação</h2>
             
             <div class="question">
-                <p class="question-text">01. Qual das seguintes frações é equivalente a 
+                <div class="question-text">01. Qual das seguintes frações é equivalente a 
                     <div class="frac"><span class="num">3</span><span class="den">4</span></div> ?
-                </p>
+                </div>
                 <div class="options">
                     <div class="opt-item">A) <div class="frac"><span class="num">6</span><span class="den">9</span></div></div>
                     <div class="opt-item">B) <div class="frac"><span class="num">9</span><span class="den">12</span></div></div>
@@ -230,9 +215,9 @@
             </div>
 
             <div class="question">
-                <p class="question-text">02. Simplifique a fração 
+                <div class="question-text">02. Simplifique a fração 
                     <div class="frac"><span class="num">48</span><span class="den">60</span></div> até sua forma irredutível.
-                </p>
+                </div>
                 <div class="options">
                     <div class="opt-item">A) <div class="frac"><span class="num">4</span><span class="den">5</span></div></div>
                     <div class="opt-item">B) <div class="frac"><span class="num">24</span><span class="den">30</span></div></div>
@@ -241,86 +226,61 @@
                 </div>
             </div>
 
-            <div class="question">
-                <p class="question-text">03. Complete a equivalência: 
-                    <div class="frac"><span class="num">5</span><span class="den">6</span></div> = 
-                    <div class="frac"><span class="num">?</span><span class="den">30</span></div>. O numerador que falta é:
-                </p>
-                <div class="options">
-                    <span>A) 20</span> <span>B) 25</span> <span>C) 30</span> <span>D) 15</span>
-                </div>
-            </div>
-
             <h2>➕ 2. Operações com Frações</h2>
 
             <div class="question">
-                <p class="question-text">04. Calcule 
+                <div class="question-text">04. Calcule 
                     <div class="frac"><span class="num">2</span><span class="den">3</span></div> + 
-                    <div class="frac"><span class="num">1</span><span class="den">4</span></div> e assinale a alternativa correta.
-                </p>
+                    <div class="frac"><span class="num">1</span><span class="den">4</span></div>.
+                </div>
                 <div class="options">
                     <div class="opt-item">A) <div class="frac"><span class="num">3</span><span class="den">7</span></div></div>
                     <div class="opt-item">B) <div class="frac"><span class="num">11</span><span class="den">12</span></div></div>
                     <div class="opt-item">C) <div class="frac"><span class="num">5</span><span class="den">12</span></div></div>
-                    <div class="opt-item">D) <div class="frac"><span class="num">1</span><span class="den">2</span></div></div>
-                </div>
-            </div>
-
-            <div class="question">
-                <p class="question-text">05. Efetue a subtração: 
-                    <div class="frac"><span class="num">7</span><span class="den">8</span></div> − 
-                    <div class="frac"><span class="num">2</span><span class="den">5</span></div>.
-                </p>
-                <div class="options">
-                    <div class="opt-item">A) <div class="frac"><span class="num">5</span><span class="den">3</span></div></div>
-                    <div class="opt-item">B) <div class="frac"><span class="num">19</span><span class="den">40</span></div></div>
-                    <div class="opt-item">C) <div class="frac"><span class="num">35</span><span class="den">40</span></div></div>
-                    <div class="opt-item">D) <div class="frac"><span class="num">19</span><span class="den">20</span></div></div>
-                </div>
-            </div>
-
-            <div class="question">
-                <p class="question-text">06. Multiplique: (
-                    <div class="frac"><span class="num">3</span><span class="den">5</span></div>) × (
-                    <div class="frac"><span class="num">2</span><span class="den">7</span></div>).
-                </p>
-                <div class="options">
-                    <div class="opt-item">A) <div class="frac"><span class="num">6</span><span class="den">35</span></div></div>
-                    <div class="opt-item">B) <div class="frac"><span class="num">5</span><span class="den">12</span></div></div>
-                    <div class="opt-item">C) <div class="frac"><span class="num">6</span><span class="den">12</span></div></div>
-                    <div class="opt-item">D) <div class="frac"><span class="num">5</span><span class="den">35</span></div></div>
-                </div>
-            </div>
-
-            <div class="question">
-                <p class="question-text">07. Divida: (
-                    <div class="frac"><span class="num">4</span><span class="den">9</span></div>) ÷ (
-                    <div class="frac"><span class="num">2</span><span class="den">3</span></div>).
-                </p>
-                <div class="options">
-                    <div class="opt-item">A) <div class="frac"><span class="num">8</span><span class="den">27</span></div></div>
-                    <div class="opt-item">B) <div class="frac"><span class="num">2</span><span class="den">3</span></div></div>
-                    <div class="opt-item">C) <div class="frac"><span class="num">3</span><span class="den">2</span></div></div>
-                    <div class="opt-item">D) <div class="frac"><span class="num">12</span><span class="den">18</span></div></div>
                 </div>
             </div>
 
             <h2>📊 3. Representação Decimal e Percentual</h2>
 
             <div class="question">
-                <p class="question-text">09. Transforme a fração 
-                    <div class="frac"><span class="num">3</span><span class="den">8</span></div> em número decimal e em percentual.
-                </p>
+                <div class="question-text">09. Transforme a fração 
+                    <div class="frac"><span class="num">3</span><span class="den">8</span></div> em decimal e percentual.
+                </div>
                 <div class="options">
-                    <span>A) 0,375 e 37,5%</span> <span>B) 0,38 e 38%</span> <span>C) 0,35 e 35%</span> <span>D) 0,325 e 32,5%</span>
+                    <div class="opt-item">A) 0,375 e 37,5%</div>
+                    <div class="opt-item">B) 0,38 e 38%</div>
+                </div>
+            </div>
+
+            <h2>🔢 4. Números Inteiros – Adição e Subtração</h2>
+
+            <div class="question">
+                <div class="question-text">12. Calcule: (−8) + (+12)</div>
+                <div class="options">
+                    <div class="opt-item">A) 4</div> <div class="opt-item">B) −4</div> <div class="opt-item">C) 20</div>
                 </div>
             </div>
 
             <div class="question">
-                <p class="question-text">10. Escreva 0,625 em forma de fração irredutível.</p>
+                <div class="question-text">13. Efetue: (−15) − (−7)</div>
                 <div class="options">
-                    <div class="opt-item">A) <div class="frac"><span class="num">5</span><span class="den">8</span></div> e 62,5%</div>
-                    <div class="opt-item">B) <div class="frac"><span class="num">625</span><span class="den">1000</span></div> e 62,5%</div>
+                    <div class="opt-item">A) −22</div> <div class="opt-item">B) −8</div> <div class="opt-item">C) 8</div>
+                </div>
+            </div>
+
+            <h2>✖️ 5. Multiplicação e Divisão de Inteiros</h2>
+
+            <div class="question">
+                <div class="question-text">16. Calcule: (−6) × (+4)</div>
+                <div class="options">
+                    <div class="opt-item">A) 24</div> <div class="opt-item">B) −24</div> <div class="opt-item">C) −2</div>
+                </div>
+            </div>
+
+            <div class="question">
+                <div class="question-text">17. Efetue a divisão: (−36) ÷ (−9)</div>
+                <div class="options">
+                    <div class="opt-item">A) −4</div> <div class="opt-item">B) 4</div> <div class="opt-item">C) 5</div>
                 </div>
             </div>
         </div>
@@ -334,35 +294,30 @@
             <ul>
                 <li><strong>01.</strong> B) <div class="frac"><span class="num">9</span><span class="den">12</span></div></li>
                 <li><strong>02.</strong> A) <div class="frac"><span class="num">4</span><span class="den">5</span></div></li>
-                <li><strong>03.</strong> B) 25</li>
                 <li><strong>04.</strong> B) <div class="frac"><span class="num">11</span><span class="den">12</span></div></li>
-                <li><strong>05.</strong> B) <div class="frac"><span class="num">19</span><span class="den">40</span></div></li>
-                <li><strong>06.</strong> A) <div class="frac"><span class="num">6</span><span class="den">35</span></div></li>
-                <li><strong>07.</strong> B) <div class="frac"><span class="num">2</span><span class="den">3</span></div></li>
-                <li><strong>08.</strong> A) <div class="frac"><span class="num">2</span><span class="den">3</span></div></li>
                 <li><strong>09.</strong> A) 0,375 e 37,5%</li>
-                <li><strong>10.</strong> A) <div class="frac"><span class="num">5</span><span class="den">8</span></div> e 62,5%</li>
+                <li><strong>12.</strong> A) 4</li>
+                <li><strong>13.</strong> B) −8</li>
+                <li><strong>16.</strong> B) −24</li>
+                <li><strong>17.</strong> B) 4</li>
             </ul>
         </div>
 
         <div class="footer">
-            <p>🎯 Estude com calma e boa prova!</p>
+            <p>🎓 Pratique bastante a regra de sinais!</p>
         </div>
     </div>
 
     <script>
         const btn = document.getElementById('revelarGabaritoBtn');
         const painel = document.getElementById('gabaritoPanel');
-
         btn.addEventListener('click', () => {
             if (painel.classList.contains('visible')) {
                 painel.classList.remove('visible');
                 btn.innerHTML = '🔓 REVELAR GABARITO 🔓';
-                btn.style.background = "linear-gradient(135deg, #2a9d8f, #21867a)";
             } else {
                 painel.classList.add('visible');
                 btn.innerHTML = '🙈 OCULTAR GABARITO 🙈';
-                btn.style.background = "linear-gradient(135deg, #e76f51, #e95a2a)";
             }
         });
     </script>
