@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💰 Quiz de Educação Financeira - Desafio Acadêmico</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Poppins', 'Quicksand', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* Card do Quiz */
+        .quiz-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 48px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            animation: fadeInUp 0.8s ease;
+        }
+
+        /* Cabeçalho do Card */
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .quiz-header h1 {
+            font-size: 2.2rem;
+            color: #5a3e8c;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        /* Barra de Progresso */
+        .progress-container {
+            width: 100%;
+            height: 12px;
+            background-color: #e9e2ff;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(135deg, #2ec4b6, #20a497);
+            transition: width 0.4s ease;
+        }
+
+        /* Área da Pergunta */
+        .question-box h2 {
+            font-size: 1.4rem;
+            color: #2d3748;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        /* Opções de Resposta */
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .option-btn {
+            background: #f5f0ff;
+            color: #2d3748;
+            border: 2px solid #e9e2ff;
+            padding: 18px 25px;
+            border-radius: 24px;
+            font-size: 1.05rem;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .option-btn:hover:not([disabled]) {
+            transform: translateY(-2px);
+            background: #e9e2ff;
+            border-color: #5a3e8c;
+        }
+
+        /* Estados de Feedback */
+        .option-btn.correct {
+            background: #10b981 !important;
+            color: white !important;
+            border-color: #059669 !important;
+        }
+
+        .option-btn.wrong {
+            background: #ef233c !important;
+            color: white !important;
+            border-color: #d90429 !important;
+        }
+
+        /* Rodapé do Card */
+        .quiz-footer {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .next-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .next-btn:hover:not([disabled]) {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+        }
+
+        .next-btn:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* Tela de Resultados */
+        .results-box {
+            text-align: center;
+            display: none;
+        }
+
+        .results-box .score-badge {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #764ba2;
+            margin: 20px 0;
+        }
+
+        .results-box p {
+            font-size: 1.2rem;
+            color: #4a5568;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        /* Botão Voltar para o Menu */
+        .back-menu-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #2ec4b6, #20a497);
+            color: white;
+            text-decoration: none;
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .back-menu-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+        }
+
+        /* Animações */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .quiz-card { padding: 25px; border-radius: 32px; }
+            .quiz-header h1 { font-size: 1.6rem; }
+            .option-btn { font-size: 0.95rem; padding: 14px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="quiz-card">
+            
+            <div id="quiz-screen">
+                <div class="quiz-header">
+                    <h1><span>💰</span> Quiz: Educação Financeira <span>📊</span></h1>
+                </div>
+
+                <div class="progress-container">
+                    <div id="progress-bar" class="progress-bar"></div>
+                </div>
+
+                <div class="question-box">
+                    <h2 id="question-text">Carregando pergunta...</h2>
+                    <div id="options-container" class="options-list">
+                        </div>
+                </div>
+
+                <div class="quiz-footer">
+                    <button id="next-button" class="next-btn" disabled>
+                        Próxima <span>→</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="results-screen" class="results-box">
+                <div class="quiz-header">
+                    <h1><span>🏆</span> Fim do Jogo! <span>🏆</span></h1>
+                </div>
+                <p>Você concluiu o desafio de Educação Financeira. Veja o seu desempenho:</p>
+                <div id="score-text" class="score-badge">0 / 0</div>
+                <p id="feedback-message">Ótimo esforço!</p>
+                
+                <a href="index.html" class="back-menu-btn">
+                    🏠 Voltar para o Menu Principal
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Banco de dados de questões baseado no PDF fornecido
+        const quizData = [
+            {
+                question: "O que define o conceito de Juros no contexto do mercado econômico?",
+                options: [
+                    "A capacidade de obter recursos financeiros imediatos sem custos adicionais.",
+                    "A remuneração pelo uso do dinheiro ao longo do tempo, representando o custo do capital ou o ganho de uma aplicação.",
+                    "A punição aplicada automaticamente quando o consumidor deixa de usar cartões de crédito.",
+                    "O valor descontado do salário bruto ao realizar compras parceladas em lojas físicas."
+                ],
+                correct: 1
+            },
+            {
+                question: "O que é o Crédito em termos financeiros?",
+                options: [
+                    "A quantia guardada mensalmente na caderneta de poupança clássica.",
+                    "A capacidade de obter recursos no presente com a promessa de pagamento futuro, geralmente acrescido de juros e encargos.",
+                    "O cancelamento definitivo de uma dívida antiga após negociação direta com os bancos.",
+                    "A rentabilidade real acumulada ao investir exclusivamente em títulos públicos de longo prazo."
+                ],
+                correct: 1
+            },
+            {
+                question: "Qual modalidade de juros do cartão de crédito é aplicada automaticamente quando o cliente paga menos que o valor total da fatura (como o valor mínimo)?",
+                options: [
+                    "Juros de Financiamento Habitacional",
+                    "Crédito Direto ao Consumidor (CDC)",
+                    "Juros Rotativos",
+                    "Juros de Mora Estabilizados"
+                ],
+                correct: 2
+            },
+            {
+                question: "O endividamento excessivo pode trazer sérias consequências. Quais são os impactos nas esferas física e mental descritos no material?",
+                options: [
+                    "Aumento de foco, ganho de energia e melhora na capacidade de memorização rápida.",
+                    "Nenhum impacto perceptível na rotina diária ou nas condições de saúde do indivíduo.",
+                    "Estresse, insônia, ansiedade, depressão e perda de autoestima.",
+                    "Apenas impactos de ordem exclusivamente financeira, sem afetar o corpo ou a mente."
+                ],
+                correct: 2
+            },
+            {
+                question: "Na análise e priorização de riscos pessoais, qual deve ser o foco principal ao decidir criar uma proteção (como um fundo de emergência)?",
+                options: [
+                    "Eventos que acontecem todos os dias e possuem baixíssimo impacto financeiro.",
+                    "Eventos de alto impacto financeiro, mesmo que a probabilidade de ocorrência seja baixa.",
+                    "Apenas os riscos relacionados a compras em lojas de departamento e crediários.",
+                    "Eventos de alta probabilidade que não tragam consequências ao orçamento mensal."
+                ],
+                correct: 1
+            },
+            {
+                question: "O que é um Fundo de Emergência e quais critérios de ativos financeiros ele deve cumprir?",
+                options: [
+                    "Uma reserva para compras de bens de luxo, que deve ser aplicada em ações de alto risco.",
+                    "Uma conta destinada a empréstimos para terceiros com retirada bloqueada por 5 anos.",
+                    "Uma reserva destinada a cobrir gastos inesperados, aplicada em ativos de altíssimo risco e baixa liquidez.",
+                    "Uma reserva exclusiva para gastos inesperados e urgentes, aplicada em ativos de baixíssimo risco (Segurança) e resgate rápido (Liquidez)."
+                ],
+                correct: 3
+            }
+        ];
+
+        // Variáveis de controle de estado
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let selectedOptionIndex = null;
+
+        // Elementos do DOM
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultsScreen = document.getElementById('results-screen');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const progressBar = document.getElementById('progress-bar');
+        const nextButton = document.getElementById('next-button');
+        const scoreText = document.getElementById('score-text');
+        const feedbackMessage = document.getElementById('feedback-message');
+
+        // Inicializa o Quiz
+        function startQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            quizScreen.style.display = 'block';
+            resultsScreen.style.display = 'none';
+            loadQuestion();
+        }
+
+        // Carrega a questão atual
+        function loadQuestion() {
+            resetState();
+            const currentQuestion = quizData[currentQuestionIndex];
+            
+            // Atualiza o texto da pergunta
+            questionText.innerText = `${currentQuestionIndex + 1}. ${currentQuestion.question}`;
+            
+            // Atualiza a barra de progresso
+            const progressPercentage = ((currentQuestionIndex) / quizData.length) * 100;
+            progressBar.style.width = `${progressPercentage}%`;
+
+            // Cria os botões de opções
+            currentQuestion.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.innerText = option;
+                button.classList.add('option-btn');
+                button.addEventListener('click', () => selectOption(button, index));
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        // Reseta o estado dos botões para a nova questão
+        function resetState() {
+            selectedOptionIndex = null;
+            nextButton.disabled = true;
+            optionsContainer.innerHTML = '';
+        }
+
+        // Evento de seleção de uma resposta
+        function selectOption(selectedButton, index) {
+            // Impede dupla seleção na mesma pergunta
+            if (selectedOptionIndex !== null) return;
+            
+            selectedOptionIndex = index;
+            const currentQuestion = quizData[currentQuestionIndex];
+            const allButtons = optionsContainer.querySelectorAll('.option-btn');
+
+            // Desabilita todos os botões para evitar cliques extras
+            allButtons.forEach(btn => btn.disabled = true);
+
+            // Verifica se a resposta está certa ou errada
+            if (index === currentQuestion.correct) {
+                selectedButton.classList.add('correct');
+                score++;
+            } else {
+                selectedButton.classList.add('wrong');
+                // Mostra qual era a alternativa correta
+                allButtons[currentQuestion.correct].classList.add('correct');
+            }
+
+            nextButton.disabled = false;
+        }
+
+        // Avança para a próxima pergunta ou encerra o jogo
+        nextButton.addEventListener('click', () => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizData.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        });
+
+        // Exibe a tela final com a pontuação
+        function showResults() {
+            progressBar.style.width = '100%';
+            quizScreen.style.display = 'none';
+            resultsScreen.style.display = 'block';
+            
+            scoreText.innerText = `${score} / ${quizData.length}`;
+
+            // Mensagem personalizada baseada nos acertos
+            const performanceRatio = score / quizData.length;
+            if (performanceRatio === 1) {
+                feedbackMessage.innerText = "Parabéns! Excelente! Você dominou completamente a matéria de Educação Financeira! 💎💰";
+            } else if (performanceRatio >= 0.7) {
+                feedbackMessage.innerText = "Muito bom! Você demonstrou ótimos conhecimentos. Continue revisando para alcançar a nota máxima! 🚀";
+            } else {
+                feedbackMessage.innerText = "Valeu o esforço! Que tal reler o resumo de Educação Financeira e tentar o desafio mais uma vez? Estudar é o segredo! 📚";
+            }
+        }
+
+        // Inicia o script ao carregar a página
+        startQuiz();
+    </script>
+</body>
+</html>
