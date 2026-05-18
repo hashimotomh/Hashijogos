@@ -162,9 +162,9 @@
         .game-icon.fractions { background: linear-gradient(135deg, #2a9d8f, #21867a); }
         .game-icon.notable { background: linear-gradient(135deg, #e76f51, #e95a2a); }
         .game-icon.factoring { background: linear-gradient(135deg, #6b5b95, #4b3b75); }
+        .game-icon.finance { background: linear-gradient(135deg, #2ec4b6, #20a497); }
         .game-icon.math-sim { background: linear-gradient(135deg, #4361ee, #3f37c9); }
         .game-icon.phys-sim { background: linear-gradient(135deg, #ef233c, #d90429); }
-        .game-icon.finance-sim { background: linear-gradient(135deg, #2ec4b6, #011627); }
 
         .game-content {
             padding: 28px;
@@ -193,12 +193,6 @@
             font-size: 0.9rem;
             color: #880808;
             border-radius: 0 10px 10px 0;
-        }
-
-        .formula-alert.finance {
-            background: #f0fff4;
-            border-left: 4px solid #38a169;
-            color: #22543d;
         }
 
         .game-tags {
@@ -238,7 +232,7 @@
 
         .play-btn.math { background: linear-gradient(135deg, #4361ee, #3f37c9); }
         .play-btn.phys { background: linear-gradient(135deg, #ef233c, #d90429); }
-        .play-btn.finance { background: linear-gradient(135deg, #2ec4b6, #20a497); }
+        .play-btn.finance-btn { background: linear-gradient(135deg, #2ec4b6, #20a497); }
 
         .play-btn:hover {
             transform: scale(1.05);
@@ -371,7 +365,7 @@
                 <span>🧮</span>
             </h1>
             <div class="subtitle">
-                Aprenda matemática e física de forma divertida! 
+                Aprenda matemática, física e finanças de forma divertida! 
                 Desafie-se com nossos jogos e prepare-se para a Prova Paulista com simulados exclusivos.
             </div>
         </div>
@@ -410,7 +404,7 @@
         </div>
 
         <div class="games-section">
-            <h2>📝 Simulados e Materiais de Estudo 📝</h2>
+            <h2>📝 Simulados Prova Paulista 📝</h2>
             <div class="games-grid">
                 
                 <div class="game-card">
@@ -445,24 +439,6 @@
                         </div>
                         <a href="simulado prova paulista física.pdf" class="play-btn phys">
                             📖 Abrir Simulado <span>→</span>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="game-card">
-                    <div class="game-icon finance-sim">💰 📊</div>
-                    <div class="game-content">
-                        <h3>Resumo de Educação Financeira</h3>
-                        <p>Domine conceitos essenciais sobre planejamento, juros e controle financeiro para mandar bem nas avaliações e na vida prática.</p>
-                        <div class="formula-alert finance">
-                            <strong>⚠️ Importante:</strong> Estudar Educação Financeira desenvolve sua visão crítica. Compreender estes conceitos é a chave para o seu futuro!
-                        </div>
-                        <div class="game-tags">
-                            <span class="tag">💵 Finanças</span>
-                            <span class="tag">📑 Resumo PDF</span>
-                        </div>
-                        <a href="Resumo matéria EdFinanceira.pdf" class="play-btn finance">
-                            📖 Abrir Resumo <span>→</span>
                         </a>
                     </div>
                 </div>
@@ -519,6 +495,21 @@
                     </div>
                 </div>
 
+                <div class="game-card">
+                    <div class="game-icon finance">💰 📊</div>
+                    <div class="game-content">
+                        <h3>Quiz: Educação Financeira</h3>
+                        <p>Teste seus conhecimentos sobre juros, cartões de crédito, riscos pessoais e a importância do fundo de reserva financeira.</p>
+                        <div class="game-tags">
+                            <span class="tag">💵 Finanças</span>
+                            <span class="tag">🧠 Quiz Ativo</span>
+                        </div>
+                        <a href="quiz-financeira.html" class="play-btn finance-btn">
+                            🎮 Jogar Agora <span>→</span>
+                        </a>
+                    </div>
+                </div>
+
             </div>
         </div>
 
@@ -528,7 +519,7 @@
                 <span class="study-badge">📝 MATERIAL DE REVISÃO</span>
             </div>
             <p>
-                Utilize nossos roteiros de estudo para o 7º ano e 2º ano do Ensino Médio para complementar sua preparação para as provas.
+                Utilize nossos roteiros de estudo para o 7º ano, 2º ano do Ensino Médio e Educação Financeira para complementar sua preparação para as provas.
             </p>
             <div style="display: flex; gap: 15px; flex-wrap: wrap;">
                 <a href="roteiro de estudos mat 2 ano.html" class="study-btn">
@@ -536,6 +527,9 @@
                 </a>
                 <a href="roteiro de estudos 7 ano prova 1.html" class="study-btn" style="background: linear-gradient(135deg, #f59e0b, #b45309);">
                     📖 Roteiro 7º Ano <span>→</span>
+                </a>
+                <a href="Resumo matéria EdFinanceira.pdf" class="study-btn" style="background: linear-gradient(135deg, #2ec4b6, #20a497);">
+                    📖 Roteiro Ed. Financeira <span>→</span>
                 </a>
             </div>
         </div>
