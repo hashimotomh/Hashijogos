@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Painel de Figurinhas - Copa 2026</title>
+    <style>
+        :root {
+            --primary: #8a1538;
+            --missing: #ffebee;
+            --missing-border: #ef9a9a;
+            --owned: #e8f5e9;
+            --owned-border: #a5d6a7;
+            --repeated: #fff8e1;
+            --repeated-border: #ffe082;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 10px;
+            color: #333;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        header {
+            text-align: center;
+            background-color: var(--primary);
+            color: white;
+            padding: 12px 8px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 1.4rem;
+            margin: 0 0 5px 0;
+        }
+
+        header p {
+            font-size: 0.85rem;
+            margin: 0;
+            opacity: 0.9;
+        }
+
+        .tabs-container {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 5px 2px 15px 2px;
+            margin-bottom: 10px;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .tabs-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab-btn {
+            background-color: white;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 10px 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            box-shrink: 0;
+        }
+
+        .tab-btn.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .stickers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
+            gap: 10px;
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            margin-bottom: 30px;
+        }
+
+        .sticker-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 85px;
+            border-radius: 10px;
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+            font-weight: bold;
+            font-size: 1rem;
+            position: relative;
+            box-sizing: border-box;
+            transition: transform 0.05s ease;
+            touch-action: manipulation; /* Melhora resposta ao toque no mobile */
+        }
+
+        .sticker-card:active {
+            transform: scale(0.92);
+        }
+
+        .sticker-card div:first-child {
+            font-size: 0.75rem;
+            opacity: 0.8;
+            margin-bottom: 2px;
+        }
+
+        .status-missing {
+            background-color: var(--missing);
+            border: 2px solid var(--missing-border);
+            color: #c62828;
+        }
+
+        .status-owned {
+            background-color: var(--owned);
+            border: 2px solid var(--owned-border);
+            color: #2e7d32;
+        }
+
+        .status-repeated {
+            background-color: var(--repeated);
+            border: 2px solid var(--repeated-border);
+            color: #ef6c00;
+        }
+
+        .badge-repeated {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #e65100;
+            color: white;
+            font-size: 11px;
+            min-width: 18px;
+            height: 18px;
+            padding: 2px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Álbum Copa 2026 🏆</h1>
+        <p>Toque rápido: adiciona | Segure o dedo: zera para falta</p>
+    </header>
+
+    <div class="tabs-container" id="tabs"></div>
+    <div class="stickers-grid" id="grid"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        // CONFIGURAÇÃO DO FIREBASE (Coloque seus dados aqui)
+        const firebaseConfig = {
+  apiKey: "AIzaSyCON7aE41Jlbin4u724ucljN4lsf1Mlq1w",
+  authDomain: "figurinhas-hashi.firebaseapp.com",
+  projectId: "figurinhas-hashi",
+  storageBucket: "figurinhas-hashi.firebasestorage.app",
+  messagingSenderId: "816491203724",
+  appId: "1:816491203724:web:cd1c684274c9a125acffa9"
+};
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const albumRef = ref(db, 'album2026');
+
+        const secoesAlbum = [
+            { id: 'FWC', nome: 'Especiais (FWC)', total: 20 },
+            { id: 'CAN', nome: 'Canadá (Sede)', total: 20 },
+            { id: 'MEX', nome: 'México (Sede)', total: 20 },
+            { id: 'USA', nome: 'EUA (Sede)', total: 20 },
+            { id: 'ARG', nome: 'Argentina', total: 20 },
+            { id: 'BRA', nome: 'Brasil', total: 20 },
+            { id: 'FRA', nome: 'França', total: 20 },
+            { id: 'ENG', nome: 'Inglaterra', total: 20 },
+            { id: 'ESP', nome: 'Espanha', total: 20 },
+            { id: 'GER', nome: 'Alemanha', total: 20 },
+            { id: 'ITA', nome: 'Itália', total: 20 },
+            { id: 'POR', nome: 'Portugal', total: 20 },
+            { id: 'NED', nome: 'Holanda', total: 20 },
+            { id: 'BEL', nome: 'Bélgica', total: 20 },
+            { id: 'CRO', nome: 'Croácia', total: 20 },
+            { id: 'URU', nome: 'Uruguai', total: 20 },
+            { id: 'COL', nome: 'Colômbia', total: 20 },
+            { id: 'MAR', nome: 'Marrocos', total: 20 },
+            { id: 'SEN', nome: 'Senegal', total: 20 },
+            { id: 'JPN', nome: 'Japão', total: 20 },
+            { id: 'KOR', nome: 'Coreia do Sul', total: 20 }
+        ];
+
+        let dadosAlbum = {};
+        let secaoAtiva = 'FWC';
+
+        // Construir abas
+        const tabsContainer = document.getElementById('tabs');
+        secoesAlbum.forEach((secao, idx) => {
+            const btn = document.createElement('button');
+            btn.className = `tab-btn ${idx === 0 ? 'active' : ''}`;
+            btn.textContent = secao.nome;
+            btn.onclick = () => mudarAba(secao.id, btn);
+            tabsContainer.appendChild(btn);
+        });
+
+        function mudarAba(id, botao) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            botao.classList.add('active');
+            secaoAtiva = id;
+            renderizarGrid();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Renderizar a página de figurinhas
+        function renderizarGrid() {
+            const grid = document.getElementById('grid');
+            grid.innerHTML = '';
+            
+            const secao = secoesAlbum.find(s => s.id === secaoAtiva);
+            
+            for (let i = 1; i <= secao.total; i++) {
+                const codigoFigurinha = `${secao.id}-${i}`;
+                const qtd = dadosAlbum[codigoFigurinha] || 0;
+
+                const card = document.createElement('div');
+                card.className = 'sticker-card ';
+                
+                if (qtd === 0) {
+                    card.className += 'status-missing';
+                    card.innerHTML = `<div>${secao.id}</div><div>${i}</div>`;
+                } else if (qtd === 1) {
+                    card.className += 'status-owned';
+                    card.innerHTML = `<div>${secao.id}</div><div>${i}</div>`;
+                } else {
+                    card.className += 'status-repeated';
+                    card.innerHTML = `<div>${secao.id}</div><div>${i}</div><span class="badge-repeated">${qtd - 1}</span>`;
+                }
+
+                // Nova mecânica de clique/toque híbrida e estável
+                let timerToque = null;
+                let isLongPress = false;
+
+                // Evento de pressionar (Dedo ou Mouse clicado)
+                const aoPressionar = (e) => {
+                    isLongPress = false;
+                    timerToque = setTimeout(() => {
+                        isLongPress = true;
+                        if (confirm(`Deseja resetar a figurinha ${codigoFigurinha} para 'Falta'?`)) {
+                            set(ref(db, `album2026/${codigoFigurinha}`), 0);
+                        }
+                    }, 700); // Tempo necessário segurando (700ms)
+                };
+
+                // Evento de soltar (Retirar o dedo ou soltar o mouse)
+                const aoSoltar = (e) => {
+                    if (timerToque) clearTimeout(timerToque);
+                    
+                    // Se não foi um toque longo, processa como clique normal para adicionar
+                    if (!isLongPress) {
+                        let novaQtd = (qtd === 0) ? 1 : qtd + 1;
+                        
+                        // Atalho caso usem no PC com a tecla Shift
+                        if (e.shiftKey) novaQtd = 0;
+
+                        set(ref(db, `album2026/${codigoFigurinha}`), novaQtd);
+                    }
+                };
+
+                // Evento para cancelar caso o usuário arraste o dedo na tela para rolar a página
+                const aoCancelar = () => {
+                    if (timerToque) clearTimeout(timerToque);
+                };
+
+                // Vincula os eventos universais de toque/ponteiro do navegador ao card
+                card.onpointerdown = aoPressionar;
+                card.onpointerup = aoSoltar;
+                card.onpointercancel = aoCancelar;
+                card.onpointerleave = aoCancelar;
+
+                grid.appendChild(card);
+            }
+        }
+
+        // Sincronização automática com Firebase
+        onValue(albumRef, (snapshot) => {
+            dadosAlbum = snapshot.val() || {};
+            renderizarGrid();
+        });
+    </script>
+</body>
+</html>
