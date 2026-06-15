@@ -69,7 +69,7 @@
             font-weight: bold;
             font-size: 0.9rem;
             white-space: nowrap;
-            box-shrink: 0;
+            flex-shrink: 0;
         }
 
         .tab-btn.active {
@@ -103,7 +103,7 @@
             position: relative;
             box-sizing: border-box;
             transition: transform 0.05s ease;
-            touch-action: manipulation; /* Melhora resposta ao toque no mobile */
+            touch-action: manipulation;
         }
 
         .sticker-card:active {
@@ -156,7 +156,7 @@
 <body>
 
     <header>
-        <h1>Álbum Copa 2026 🏆 REBECA, TAILA E MARCELO</h1>
+        <h1>Álbum Copa 2026 🏆</h1>
         <p>Toque rápido: adiciona | Segure o dedo: zera para falta</p>
     </header>
 
@@ -167,10 +167,11 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // CONFIGURAÇÃO DO FIREBASE (Coloque seus dados aqui)
+        // CONFIGURAÇÃO DO FIREBASE (Substitua pelos dados do seu console)
         const firebaseConfig = {
   apiKey: "AIzaSyCON7aE41Jlbin4u724ucljN4lsf1Mlq1w",
   authDomain: "figurinhas-hashi.firebaseapp.com",
+  databaseURL: "https://figurinhas-hashi-default-rtdb.firebaseio.com",
   projectId: "figurinhas-hashi",
   storageBucket: "figurinhas-hashi.firebasestorage.app",
   messagingSenderId: "816491203724",
@@ -181,34 +182,87 @@
         const db = getDatabase(app);
         const albumRef = ref(db, 'album2026');
 
+        // Estrutura completa: 48 seleções divididas em 12 grupos
         const secoesAlbum = [
             { id: 'FWC', nome: 'Especiais (FWC)', total: 20 },
-            { id: 'CAN', nome: 'Canadá (Sede)', total: 20 },
-            { id: 'MEX', nome: 'México (Sede)', total: 20 },
-            { id: 'USA', nome: 'EUA (Sede)', total: 20 },
-            { id: 'ARG', nome: 'Argentina', total: 20 },
-            { id: 'BRA', nome: 'Brasil', total: 20 },
-            { id: 'FRA', nome: 'França', total: 20 },
-            { id: 'ENG', nome: 'Inglaterra', total: 20 },
-            { id: 'ESP', nome: 'Espanha', total: 20 },
-            { id: 'GER', nome: 'Alemanha', total: 20 },
-            { id: 'ITA', nome: 'Itália', total: 20 },
-            { id: 'POR', nome: 'Portugal', total: 20 },
-            { id: 'NED', nome: 'Holanda', total: 20 },
-            { id: 'BEL', nome: 'Bélgica', total: 20 },
-            { id: 'CRO', nome: 'Croácia', total: 20 },
-            { id: 'URU', nome: 'Uruguai', total: 20 },
-            { id: 'COL', nome: 'Colômbia', total: 20 },
-            { id: 'MAR', nome: 'Marrocos', total: 20 },
-            { id: 'SEN', nome: 'Senegal', total: 20 },
-            { id: 'JPN', nome: 'Japão', total: 20 },
-            { id: 'KOR', nome: 'Coreia do Sul', total: 20 }
+            
+            // GRUPO A
+            { id: 'MEX', nome: 'A1 - México 🇲🇽', total: 20 },
+            { id: 'USA', nome: 'A2 - Estados Unidos 🇺🇸', total: 20 },
+            { id: 'CAN', nome: 'A3 - Canadá 🇨🇦', total: 20 },
+            { id: 'NZL', nome: 'A4 - Nova Zelândia 🇳🇿', total: 20 },
+
+            // GRUPO B
+            { id: 'ARG', nome: 'B1 - Argentina 🇦🇷', total: 20 },
+            { id: 'SWE', nome: 'B2 - Suécia 🇸🇪', total: 20 },
+            { id: 'ECU', nome: 'B3 - Equador 🇪🇨', total: 20 },
+            { id: 'UZB', nome: 'B4 - Uzbequistão 🇺🇿', total: 20 },
+
+            // GRUPO C
+            { id: 'FRA', nome: 'C1 - França 🇫🇷', total: 20 },
+            { id: 'AUT', nome: 'C2 - Áustria 🇦🇹', total: 20 },
+            { id: 'JAM', nome: 'C3 - Jamaica 🇯🇲', total: 20 },
+            { id: 'RSA', nome: 'C4 - África do Sul 🇿🇦', total: 20 },
+
+            // GRUPO D
+            { id: 'ENG', nome: 'D1 - Inglaterra 🏴󠁧󠁢󠁥󠁮󠁧󠁿', total: 20 },
+            { id: 'UKR', nome: 'D2 - Ucrânia 🇺🇦', total: 20 },
+            { id: 'PAN', nome: 'D3 - Panamá 🇵🇦', total: 20 },
+            { id: 'AUS', nome: 'D4 - Austrália 🇦🇺', total: 20 },
+
+            // GRUPO E
+            { id: 'BRA', nome: 'E1 - Brasil 🇧🇷', total: 20 },
+            { id: 'POL', nome: 'E2 - Polônia 🇵🇱', total: 20 },
+            { id: 'CRC', nome: 'E3 - Costa Rica 🇨🇷', total: 20 },
+            { id: 'KSA', nome: 'E4 - Arábia Saudita 🇸🇦', total: 20 },
+
+            // GRUPO F
+            { id: 'POR', nome: 'F1 - Portugal 🇵🇹', total: 20 },
+            { id: 'NED', nome: 'F2 - Holanda 🇳🇱', total: 20 },
+            { id: 'CMR', nome: 'F3 - Camarões 🇨🇲', total: 20 },
+            { id: 'IRQ', nome: 'F4 - Iraque 🇮🇶', total: 20 },
+
+            // GRUPO G
+            { id: 'ESP', nome: 'G1 - Espanha 🇪🇸', total: 20 },
+            { id: 'TUR', nome: 'G2 - Turquia 🇹🇷', total: 20 },
+            { id: 'MLI', nome: 'G3 - Mali 🇲🇱', total: 20 },
+            { id: 'SLV', nome: 'G4 - El Salvador 🇸🇻', total: 20 },
+
+            // GRUPO H
+            { id: 'ITA', nome: 'H1 - Itália 🇮🇹', total: 20 },
+            { id: 'DEN', nome: 'H2 - Dinamarca 🇩🇰', total: 20 },
+            { id: 'TUN', nome: 'H3 - Tunísia 🇹🇳', total: 20 },
+            { id: 'UAE', nome: 'H4 - Emirados Árabes 🇦🇪', total: 20 },
+
+            // GRUPO I
+            { id: 'GER', nome: 'I1 - Alemanha 🇩🇪', total: 20 },
+            { id: 'SUI', nome: 'I2 - Suíça 🇨🇭', total: 20 },
+            { id: 'CHI', nome: 'I3 - Chile 🇨🇱', total: 20 },
+            { id: 'HON', nome: 'I4 - Honduras 🇭🇳', total: 20 },
+
+            // GRUPO J
+            { id: 'BEL', nome: 'J1 - Bélgica 🇧🇪', total: 20 },
+            { id: 'CRO', nome: 'J2 - Croácia 🇭🇷', total: 20 },
+            { id: 'NGA', nome: 'J3 - Nigéria 🇳🇬', total: 20 },
+            { id: 'OMA', nome: 'J4 - Omã 🇴🇲', total: 20 },
+
+            // GRUPO K
+            { id: 'URU', nome: 'K1 - Uruguai 🇺🇾', total: 20 },
+            { id: 'COL', nome: 'K2 - Colômbia 🇨🇴', total: 20 },
+            { id: 'SEN', nome: 'K3 - Senegal 🇸🇳', total: 20 },
+            { id: 'JPN', nome: 'K4 - Japão 🇯🇵', total: 20 },
+
+            // GRUPO L
+            { id: 'MAR', nome: 'L1 - Marrocos 🇲🇦', total: 20 },
+            { id: 'KOR', nome: 'L2 - Coreia do Sul 🇰🇷', total: 20 },
+            { id: 'GHA', nome: 'L3 - Gana 🇬🇭', total: 20 },
+            { id: 'PER', nome: 'L4 - Peru 🇵🇪', total: 20 }
         ];
 
         let dadosAlbum = {};
         let secaoAtiva = 'FWC';
 
-        // Construir abas
+        // Construir abas horizontais
         const tabsContainer = document.getElementById('tabs');
         secoesAlbum.forEach((secao, idx) => {
             const btn = document.createElement('button');
@@ -226,15 +280,19 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Renderizar a página de figurinhas
+        // Desenhar os cartões na tela
         function renderizarGrid() {
             const grid = document.getElementById('grid');
             grid.innerHTML = '';
             
             const secao = secoesAlbum.find(s => s.id === secaoAtiva);
             
-            for (let i = 1; i <= secao.total; i++) {
-                const codigoFigurinha = `${secao.id}-${i}`;
+            // Correção da figurinha 00 na aba FWC
+            const numeroInicial = (secao.id === 'FWC') ? 0 : 1;
+            
+            for (let i = numeroInicial; i <= secao.total; i++) {
+                const numeroExibido = (i === 0) ? '00' : i;
+                const codigoFigurinha = `${secao.id}-${numeroExibido}`;
                 const qtd = dadosAlbum[codigoFigurinha] || 0;
 
                 const card = document.createElement('div');
@@ -242,20 +300,19 @@
                 
                 if (qtd === 0) {
                     card.className += 'status-missing';
-                    card.innerHTML = `<div>${secao.id}</div><div>${i}</div>`;
+                    card.innerHTML = `<div>${secao.id}</div><div>${numeroExibido}</div>`;
                 } else if (qtd === 1) {
                     card.className += 'status-owned';
-                    card.innerHTML = `<div>${secao.id}</div><div>${i}</div>`;
+                    card.innerHTML = `<div>${secao.id}</div><div>${i === 0 ? '00' : i}</div>`;
                 } else {
                     card.className += 'status-repeated';
-                    card.innerHTML = `<div>${secao.id}</div><div>${i}</div><span class="badge-repeated">${qtd - 1}</span>`;
+                    card.innerHTML = `<div>${secao.id}</div><div>${i === 0 ? '00' : i}</div><span class="badge-repeated">${qtd - 1}</span>`;
                 }
 
-                // Nova mecânica de clique/toque híbrida e estável
+                // Mecânica de clique/toque universal com PointerEvents
                 let timerToque = null;
                 let isLongPress = false;
 
-                // Evento de pressionar (Dedo ou Mouse clicado)
                 const aoPressionar = (e) => {
                     isLongPress = false;
                     timerToque = setTimeout(() => {
@@ -263,30 +320,23 @@
                         if (confirm(`Deseja resetar a figurinha ${codigoFigurinha} para 'Falta'?`)) {
                             set(ref(db, `album2026/${codigoFigurinha}`), 0);
                         }
-                    }, 700); // Tempo necessário segurando (700ms)
+                    }, 700);
                 };
 
-                // Evento de soltar (Retirar o dedo ou soltar o mouse)
                 const aoSoltar = (e) => {
                     if (timerToque) clearTimeout(timerToque);
                     
-                    // Se não foi um toque longo, processa como clique normal para adicionar
                     if (!isLongPress) {
                         let novaQtd = (qtd === 0) ? 1 : qtd + 1;
-                        
-                        // Atalho caso usem no PC com a tecla Shift
-                        if (e.shiftKey) novaQtd = 0;
-
+                        if (e.shiftKey) novaQtd = 0; // Atalho de teclado mantido para o PC
                         set(ref(db, `album2026/${codigoFigurinha}`), novaQtd);
                     }
                 };
 
-                // Evento para cancelar caso o usuário arraste o dedo na tela para rolar a página
                 const aoCancelar = () => {
                     if (timerToque) clearTimeout(timerToque);
                 };
 
-                // Vincula os eventos universais de toque/ponteiro do navegador ao card
                 card.onpointerdown = aoPressionar;
                 card.onpointerup = aoSoltar;
                 card.onpointercancel = aoCancelar;
@@ -296,7 +346,7 @@
             }
         }
 
-        // Sincronização automática com Firebase
+        // Escuta as alterações no Firebase em tempo real
         onValue(albumRef, (snapshot) => {
             dadosAlbum = snapshot.val() || {};
             renderizarGrid();
