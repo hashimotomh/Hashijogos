@@ -115,6 +115,248 @@
             color: #4a5568;
         }
 
+        /* ====== SEÇÃO DO ROTEIRO DE ESTUDOS INTEGRADO ====== */
+        .roteiro-container {
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 48px;
+            padding: 40px;
+            margin-bottom: 60px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+            border: 3px solid #764ba2;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .roteiro-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            border-bottom: 3px solid #f0e6ff;
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+        }
+
+        .roteiro-title-group h2 {
+            font-size: 2.2rem;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .roteiro-title-group p {
+            color: #718096;
+            margin-top: 5px;
+            font-size: 1.05rem;
+        }
+
+        .orientacoes-box {
+            background: #fffbeb;
+            border-left: 6px solid #d97706;
+            padding: 20px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            color: #78350f;
+        }
+
+        .orientacoes-box h4 {
+            font-size: 1.15rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .orientacoes-box ul {
+            list-style-position: inside;
+            margin-top: 5px;
+        }
+
+        .orientacoes-box li {
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+        }
+
+        .roteiro-abas {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .roteiro-aba-btn {
+            flex: 1;
+            padding: 16px 20px;
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            color: #4a5568;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 24px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .roteiro-aba-btn:hover {
+            border-color: #764ba2;
+            background: #f5f0ff;
+            color: #764ba2;
+        }
+
+        .roteiro-aba-btn.ativo {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: #764ba2;
+            box-shadow: 0 8px 16px rgba(118, 75, 162, 0.3);
+        }
+
+        .roteiro-conteudo {
+            display: none;
+        }
+
+        .roteiro-conteudo.ativo {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .topicos-lista {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 24px;
+            margin-bottom: 30px;
+            border: 1px solid #e9ecef;
+        }
+
+        .topicos-lista h4 {
+            color: #5a3e8c;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+        }
+
+        .topicos-lista ul {
+            list-style-type: "✓ ";
+            list-style-position: inside;
+            padding-left: 5px;
+        }
+
+        .topicos-lista li {
+            margin-bottom: 8px;
+            color: #495057;
+            font-weight: 500;
+        }
+
+        .questoes-roteiro-title {
+            font-size: 1.5rem;
+            color: #2d3748;
+            margin-bottom: 20px;
+            padding-left: 5px;
+            border-left: 5px solid #667eea;
+        }
+
+        .card-questao {
+            background: white;
+            border: 2px solid #edf2f7;
+            border-radius: 32px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            transition: transform 0.2s;
+        }
+
+        .card-questao:hover {
+            transform: scale(1.01);
+            border-color: #e2e8f0;
+        }
+
+        .card-questao h5 {
+            font-size: 1.15rem;
+            color: #2d3748;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-questao h5 span {
+            background: #f0e6ff;
+            color: #764ba2;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+        }
+
+        .enunciado-questao {
+            font-size: 1.05rem;
+            color: #2d3748;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            background: #fafafa;
+            padding: 15px;
+            border-radius: 16px;
+        }
+
+        .btn-ver-resolucao {
+            background: linear-gradient(135deg, #4a5568, #2d3748);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-ver-resolucao:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .resolucao-box {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0fdf4;
+            border-left: 5px solid #16a34a;
+            border-radius: 16px;
+            color: #14532d;
+            animation: slideDown 0.3s ease;
+        }
+
+        .resolucao-box h6 {
+            font-size: 1.1rem;
+            color: #16a34a;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .resolucao-box p {
+            margin-bottom: 8px;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .grafico-treino {
+            border: 2px dashed #cbd5e1;
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 12px;
+            margin: 12px 0;
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: #475569;
+            text-align: center;
+        }
+
         /* Seção dos jogos e simulados */
         .games-section {
             margin-bottom: 60px;
@@ -314,20 +556,6 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.25);
         }
 
-        /* Estilo específico para o card do 7º ano */
-        .study-highlight.seventh {
-            border: 2px solid #f59e0b;
-            background: linear-gradient(135deg, #fffaf0, #fff5e6);
-        }
-
-        .study-highlight.seventh h2 {
-            color: #b45309;
-        }
-
-        .study-highlight.seventh .study-badge {
-            background: linear-gradient(135deg, #f59e0b, #b45309);
-        }
-
         /* Rodapé */
         .footer {
             text-align: center;
@@ -348,12 +576,23 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; max-height: 0; overflow: hidden; }
+            to { opacity: 1; max-height: 1200px; }
+        }
+
         @media (max-width: 768px) {
             .header h1 { font-size: 2rem; }
-            .intro-card { padding: 25px; }
+            .intro-card, .roteiro-container { padding: 25px; border-radius: 32px; }
             .games-grid { grid-template-columns: 1fr; }
-            .study-highlight { padding: 20px; }
+            .study-highlight { padding: 20px; border-radius: 32px; }
             .study-highlight h2 { font-size: 1.4rem; }
+            .roteiro-abas { flex-direction: column; }
         }
 
         .back-info {
@@ -411,6 +650,213 @@
             </div>
         </div>
 
+        <div class="roteiro-container">
+            <div class="roteiro-header">
+                <div class="roteiro-title-group">
+                    <h2>📚 Roteiro de Estudos Completo</h2>
+                    <p>Treino Reativo Especial para as Provas Dissertativas do 2º Bimestre</p>
+                </div>
+                <span class="study-badge" style="background: linear-gradient(135deg, #667eea, #764ba2);">PROF. MARCELO HASHIMOTO</span>
+            </div>
+
+            <div class="orientacoes-box">
+                <h4>⚠️ Orientações Oficiais de Avaliação:</h4>
+                <ul>
+                    <li><strong>Prova individual e sem qualquer tipo de consulta.</strong></li>
+                    <li><strong>Todas as respostas e conclusões devem ser completamente justificadas!</strong> Respostas finais deixadas sem rastro de cálculos, diagramas ou argumentos adequados não receberão nota.</li>
+                    <li>Operações resolvidas "de cabeça" só serão aceitas para contas puramente básicas.</li>
+                </ul>
+            </div>
+
+            <div class="roteiro-abas">
+                <button class="roteiro-aba-btn ativo" onclick="alternarMateria('mat-roteiro')">📐 Matemática (Exponenciais e Logaritmos)</button>
+                <button class="roteiro-aba-btn" onclick="alternarMateria('phys-roteiro')">⚛️ Física (Termodinâmica Térmica)</button>
+            </div>
+
+            <div id="mat-roteiro" class="roteiro-conteudo ativo">
+                <div class="topicos-lista">
+                    <h4>🎯 Conteúdos Cobrados na Prova:</h4>
+                    <ul>
+                        <li>Equações Exponenciais estruturadas (igualação de bases numéricas).</li>
+                        <li>Modelagem em problemas com Funções Exponenciais (Crescimento/decaimento real).</li>
+                        <li>Definição elementar e consequências das propriedades dos Logaritmos.</li>
+                        <li>Propriedades Operatórias Fundamentais (Logaritmo do Produto, Quociente e Potência).</li>
+                        <li>Mudança de Base aplicada para aproximações.</li>
+                    </ul>
+                </div>
+
+                <h4 class="questoes-roteiro-title">Exercícios Fixação Ideais para Treino (Dissertativos)</h4>
+
+                <div class="card-questao">
+                    <h5>Exercício 1 <span>Equação Exponencial</span></h5>
+                    <div class="enunciado-questao">
+                        Encontre o valor do conjunto solução para a seguinte equação exponencial:<br>
+                        <strong>2<sup>x - 4</sup> = 64</strong>
+                    </div>
+                    <button class="btn-ver-resolucao" onclick="toggleRoteiroResolucao(this)">💡 Ver Resolução Passo a Passo</button>
+                    <div class="resolucao-box">
+                        <h6>✅ Resolução Comentada:</h6>
+                        <p>1. Devemos fatorar o número 64 para decompô-lo na mesma base do primeiro termo (base 2):<br>64 / 2 = 32 / 2 = 16 / 2 = 8 / 2 = 4 / 2 = 2 / 2 = 1 &rarr; <strong>64 = 2<sup>6</sup></strong></p>
+                        <p>2. Substituímos o valor de volta na estrutura da equação:<br><strong>2<sup>x - 4</sup> = 2<sup>6</sup></strong></p>
+                        <p>3. Com as bases perfeitamente igualadas, podemos trabalhar com a equivalência direta dos expoentes:<br>x - 4 = 6<br>x = 6 + 4<br><strong>x = 10</strong></p>
+                    </div>
+                </div>
+
+                <div class="card-questao">
+                    <h5>Exercício 2 <span>Modelagem Exponencial</span></h5>
+                    <div class="enunciado-questao">
+                        O avanço populacional de uma colônia controlada de bactérias é dado através da função matemática <strong>N(t) = 300 · 2<sup>t</sup></strong>, onde <em>t</em> representa o tempo decorrido medido em horas e <em>N(t)</em> aponta o número total de bactérias ativas. Responda justificando rigorosamente:<br><br>
+                        a) Qual é o montante da população inicial desta cultura?<br>
+                        b) Após quanto tempo a quantidade de bactérias atingirá a marca de 19.200?
+                    </div>
+                    <button class="btn-ver-resolucao" onclick="toggleRoteiroResolucao(this)">💡 Ver Resolução Passo a Passo</button>
+                    <div class="resolucao-box">
+                        <h6>✅ Resolução Comentada:</h6>
+                        <p><strong>Item a)</strong> O instante inicial refere-se ao tempo <strong>t = 0</strong>:<br>
+                        N(0) = 300 · 2<sup>0</sup><br>
+                        Como qualquer número diferente de zero elevado a 0 vale 1 (2<sup>0</sup> = 1):<br>
+                        N(0) = 300 · 1 = <strong>300 bactérias iniciais</strong>.</p>
+                        <br>
+                        <p><strong>Item b)</strong> Substituímos N(t) por 19.200 para isolar a variável tempo:<br>
+                        19.200 = 300 · 2<sup>t</sup><br>
+                        Isolando o termo exponencial, passamos o 300 dividindo:<br>
+                        19.200 / 300 = 2<sup>t</sup><br>
+                        64 = 2<sup>t</sup><br>
+                        Sabendo que 64 fatorado é igual a 2<sup>6</sup>:<br>
+                        2<sup>6</sup> = 2<sup>t</sup> &rarr; <strong>t = 6 horas</strong>.</p>
+                    </div>
+                </div>
+
+                <div class="card-questao">
+                    <h5>Exercício 3 <span>Definição de Logaritmos</span></h5>
+                    <div class="enunciado-questao">
+                        Calcule o valor exato de cada um dos logaritmos propostos abaixo aplicando os conceitos de definição:<br><br>
+                        a) log<sub>2</sub> 128<br>
+                        b) log<sub>5</sub> 0,04<br>
+                        c) log<sub>1666</sub> 1<br>
+                        d) log<sub>458</sub> 458
+                    </div>
+                    <button class="btn-ver-resolucao" onclick="toggleRoteiroResolucao(this)">💡 Ver Resolução Passo a Passo</button>
+                    <div class="resolucao-box">
+                        <h6>✅ Resolução Comentada:</h6>
+                        <p><strong>a) log<sub>2</sub> 128 = x</strong> &rarr; 2<sup>x</sup> = 128. Fatorando o 128 encontramos 2<sup>7</sup>. Logo, 2<sup>x</sup> = 2<sup>7</sup> &rarr; <strong>x = 7</strong>.</p>
+                        <p><strong>b) log<sub>5</sub> 0,04 = x</strong> &rarr; 5<sup>x</sup> = 0,04. Transformamos o decimal em fração: 0,04 = 4/100 = 1/25. Como 1/25 = 5<sup>-2</sup>, temos: 5<sup>x</sup> = 5<sup>-2</sup> &rarr; <strong>x = -2</strong>.</p>
+                        <p><strong>c) log<sub>1666</sub> 1 = x</strong> &rarr; Pela propriedade imediata da definição, qualquer logaritmo cuja base seja válida e o logaritmando seja 1, o resultado será sempre igual a <strong>0</strong> (pois 1666<sup>0</sup> = 1).</p>
+                        <p><strong>d) log<sub>458</sub> 458 = x</strong> &rarr; Sempre que a base for idêntica ao logaritmando, o resultado será igual a <strong>1</strong> (pois 458<sup>1</sup> = 458).</p>
+                    </div>
+                </div>
+
+                <div class="card-questao">
+                    <h5>Exercício 4 <span>Propriedades Operatórias</span></h5>
+                    <div class="enunciado-questao">
+                        Considerando as aproximações de valores decimais fornecidas como <strong>log 2 = 0,3</strong> e <strong>log 3 = 0,47</strong>, calcule os logaritmos decimais estruturados:<br><br>
+                        a) log 80<br>
+                        b) log 270
+                    </div>
+                    <button class="btn-ver-resolucao" onclick="toggleRoteiroResolucao(this)">💡 Ver Resolução Passo a Passo</button>
+                    <div class="resolucao-box">
+                        <h6>✅ Resolução Comentada:</h6>
+                        <p><strong>a) log 80:</strong> Decompomos o 80 utilizando os fatores 2 e 10 (já que a base omitida é 10): 80 = 8 · 10 = 2<sup>3</sup> · 10.<br>
+                        log(2<sup>3</sup> · 10) = log(2<sup>3</sup>) + log 10 &rarr; Aplicando o peteleco no expoente: 3 · log 2 + log 10.<br>
+                        Substituindo os valores (sabendo que log 10 = 1): 3 · (0,3) + 1 = 0,9 + 1 = <strong>1,9</strong>.</p>
+                        <br>
+                        <p><strong>b) log 270:</strong> Decompomos o 270: 270 = 27 · 10 = 3<sup>3</sup> · 10.<br>
+                        log(3<sup>3</sup> · 10) = log(3<sup>3</sup>) + log 10 &rarr; 3 · log 3 + log 10.<br>
+                        Substituindo os valores conhecidos: 3 · (0,47) + 1 = 1,41 + 1 = <strong>2,41</strong>.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="phys-roteiro" class="roteiro-conteudo">
+                <div class="topicos-lista">
+                    <h4>🎯 Conteúdos Cobrados na Prova:</h4>
+                    <ul>
+                        <li>Primeira Lei da Termodinâmica aplicada (&Delta;U = Q - W) com foco rigoroso em sinais.</li>
+                        <li>Variação da Energia Interna dependendo diretamente do comportamento da Temperatura.</li>
+                        <li>Trabalho mecânico em transformações (Pressão constante e cálculo geométrico de área em curvas P x V).</li>
+                        <li>Princípio e ciclo de rendimento em Máquinas Térmicas padrão (&eta; = W / Q<sub>q</sub>).</li>
+                        <li>O Ciclo de Carnot e a determinação do teto máximo de rendimento usando Kelvin.</li>
+                    </ul>
+                </div>
+
+                <h4 class="questoes-roteiro-title">Exercícios Fixação Ideais para Treino (Dissertativos)</h4>
+
+                <div class="card-questao">
+                    <h5>Exercício 1 <span>Primeira Lei da Termodinâmica</span></h5>
+                    <div class="enunciado-questao">
+                        Com total embasamento teórico nas propriedades da 1ª Lei da Termodinâmica, disserte explicando textualmente o que se sucede com a <strong>Energia Interna (&Delta;U)</strong> e a <strong>Temperatura (T)</strong> de um gás ideal sob as seguintes condições isoladas:<br><br>
+                        a) O sistema gasoso recebe calor do meio externo.<br>
+                        b) O sistema sofre uma compressão rápida (Sem tempo hábil para troca térmica).
+                    </div>
+                    <button class="btn-ver-resolucao" onclick="toggleRoteiroResolucao(this)">💡 Ver Resolução Passo a Passo</button>
+                    <div class="resolucao-box">
+                        <h6>✅ Resolução Comentada:</h6>
+                        <p>A lei rege que a variação da energia interna obedece a: <strong>&Delta;U = Q - W</strong></p>
+                        <p><strong>Item a)</strong> Ao receber calor externo mantendo o volume ou sem realizar trabalho excessivo, o valor de <strong>Q é positivo (Q > 0)</strong>. Isso implica diretamente em um aumento no saldo de &Delta;U. Como a energia interna é diretamente ligada à agitação das partículas, a <strong>Energia Interna aumenta e a Temperatura também se eleva</strong>.</p>
+                        <br>
+                        <p><strong>Item b)</strong> Uma compressão rápida caracteriza um processo adiabático, ou seja, sem trocas térmicas com o meio (<strong>Q = 0</strong>). Como o meio externo realiza trabalho sobre o gás comprimindo-o, o trabalho mecânico do gás é considerado <strong>negativo (W < 0)</strong>.<br>
+                        Substituindo: &Delta;U = 0 - (-W) &rarr; &Delta;U = +W. Portanto, a <strong>Energia Interna aumenta e a Temperatura sobe durante a compressão adiabática</strong>.</p>
+                    </div>
+                </div>
+
+                <div class="card-questao">
+                    <h5>Exercício 2 <span>Análise de Trabalho Geométrico</span></h5>
+                    <div class="enunciado-questao">
+                        Um determinado gás ideal é deslocado de um estado inicial A até atingir um estado final estável B por caminhos distintos em um gráfico de Pressão por Volume (P x V). No Caminho 1, o gás evolui em uma reta diagonal direta ligando os pontos. No Caminho 2, ele sofre uma queda de pressão isocórica vertical e depois expande horizontalmente até B. Justifique geometricamente qual dos caminhos realiza o <strong>maior trabalho mecânico</strong>.
+                    </div>
+                    <button class="btn-ver-resolucao" onclick="toggleRoteiroResolucao(this)">💡 Ver Resolução Passo a Passo</button>
+                    <div class="resolucao-box">
+                        <h6>✅ Resolução Comentada:</h6>
+                        <p>1. No escopo da termodinâmica gráfica (P x V), o trabalho gerado é quantificado numericamente através do cálculo da <strong>área geométrica total contida abaixo da linha representativa do percurso</strong> até alcançar o eixo horizontal (do Volume).</p>
+                        <p>2. Analisando as trajetórias: o Caminho 1 projeta uma área em formato de trapézio completo. O Caminho 2, por descer verticalmente antes de expandir, projeta apenas uma área retangular baixa (referente apenas ao trecho horizontal de expansão).</p>
+                        <p>3. Portanto, o <strong>Caminho 1 realiza maior trabalho mecânico</strong>, pois sua projeção de área no gráfico P x V é visivelmente superior à do Caminho 2.</p>
+                    </div>
+                </div>
+
+                <div class="card-questao">
+                    <h5>Exercício 3 <span>Trabalho Líquido em Ciclos</span></h5>
+                    <div class="enunciado-questao">
+                        Um gás ideal descreve um ciclo termodinâmico completo em formato retangular ABCD no sentido horário. Sabe-se que a Pressão máxima nos pontos superiores é 15 Pa e nos inferiores é 5 Pa. O Volume inicial nos pontos da esquerda é de 2 m³ e o máximo à direita atinge 6 m³. Determine o valor do <strong>trabalho líquido</strong> desenvolvido a cada ciclo completo executado.
+                    </div>
+                    <button class="btn-ver-resolucao" onclick="toggleRoteiroResolucao(this)">💡 Ver Resolução Passo a Passo</button>
+                    <div class="resolucao-box">
+                        <h6>✅ Resolução Comentada:</h6>
+                        <div class="grafico-treino">
+                            Cálculo da área interna da figura:<br>
+                            Base (&Delta;V) = 6m³ - 2m³ = 4m³<br>
+                            Altura (&Delta;P) = 15 Pa - 5 Pa = 10 Pa
+                        </div>
+                        <p>1. O trabalho resultante de um ciclo fechado equivale estritamente ao cálculo da <strong>área geométrica delimitada internamente pela figura</strong>.</p>
+                        <p>2. Por tratar-se de um formato retangular, aplicamos a equação padrão de Área = Base × Altura:<br>
+                        &bull; Base (Variação de volume) = 6 - 2 = 4 m³<br>
+                        &bull; Altura (Variação de pressão) = 15 - 5 = 10 Pa</p>
+                        <p>3. Multiplicando as grandezas: W = 4 × 10 = <strong>40 J</strong>.<br>
+                        Como o trajeto do ciclo se moveu no sentido <strong>horário</strong>, o sinal do trabalho líquido é obrigatoriamente <strong>positivo (+40 J)</strong>.</p>
+                    </div>
+                </div>
+
+                <div class="card-questao">
+                    <h5>Exercício 4 <span>Máquinas Térmicas e Carnot</span></h5>
+                    <div class="enunciado-questao">
+                        Uma máquina térmica de alta performance opera baseada nas diretrizes ideais do famoso Ciclo de Carnot. A fonte quente trabalha a uma temperatura constante de 327 °C, enquanto a fonte fria rejeita energia térmica estabilizada em 27 °C. Justifique detalhadamente as etapas de cálculo e determine o <strong>rendimento máximo teórico</strong> desta máquina.
+                    </div>
+                    <button class="btn-ver-resolucao" onclick="toggleRoteiroResolucao(this)">💡 Ver Resolução Passo a Passo</button>
+                    <div class="resolucao-box">
+                        <h6>✅ Resolução Comentada:</h6>
+                        <p><strong>⚠️ Regra de Ouro Crucial:</strong> Em qualquer cálculo envolvendo as leis térmicas e fórmulas de rendimento, as temperaturas em graus Celsius devem obrigatoriamente ser convertidas para a escala absoluta <strong>Kelvin (K)</strong> antes de aplicar as equações.</p>
+                        <p>1. Realizando a conversão das temperaturas (T<sub>K</sub> = T<sub>C</sub> + 273):<br>
+                        &bull; Fonte Quente: T<sub>q</sub> = 327 + 273 = <strong>600 K</strong><br>
+                        &bull; Fonte Fria: T<sub>f</sub> = 27 + 273 = <strong>300 K</strong></p>
+                        <p>2. Aplicando a fórmula de eficiência máxima determinada por Carnot:<br>
+                        &eta;<sub>max</sub> = 1 - (T<sub>f</sub> / T<sub>q</sub>)<br>
+                        &eta;<sub>max</sub> = 1 - (300 / 600)<br>
+                        &eta;<sub>max</sub> = 1 - 0,5 = 0,5</p>
+                        <p>3. Convertendo o índice decimal para termos percentuais informativos:<br>
+                        0,5 × 100 = <strong>50% de rendimento máximo</strong>.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="games-section">
             <h2>📝 Simulados Prova Paulista 📝</h2>
             <div class="games-grid">
@@ -542,15 +988,15 @@
 
         <div class="study-highlight">
             <div class="highlight-header">
-                <h2>📘 Roteiros de Apoio</h2>
-                <span class="study-badge">📝 MATERIAL DE REVISÃO</span>
+                <h2>📘 Outros Roteiros de Apoio</h2>
+                <span class="study-badge">📝 ARQUIVOS EXTRA</span>
             </div>
             <p>
-                Utilize nossos roteiros de estudo para o 7º ano, 2º ano do Ensino Médio e Educação Financeira para complementar sua preparação para as provas.
+                Utilize os roteiros adicionais para complementar o estudo de outras turmas e matérias específicas.
             </p>
             <div style="display: flex; gap: 15px; flex-wrap: wrap;">
                 <a href="roteiro de estudos mat 2 ano.html" class="study-btn">
-                    📖 Roteiro 2º Ano <span>→</span>
+                    📖 Roteiro 2º Ano Anterior <span>→</span>
                 </a>
                 <a href="roteiro de estudos 7 ano prova 1.html" class="study-btn" style="background: linear-gradient(135deg, #f59e0b, #b45309);">
                     📖 Roteiro 7º Ano <span>→</span>
@@ -565,9 +1011,37 @@
             <p>🎓 Desenvolvido para auxiliar no aprendizado de Matemática e Física</p>
             <p style="margin-top: 10px;">📢 <strong>Dica de Ouro:</strong> Além de resolver o simulado, tente explicar a matéria para um colega. Ensinar é a melhor forma de aprender!</p>
             <div class="back-info">
-                💡 Use o botão "Voltar" do navegador para retornar a este menu principal.
+                💡 Caso queira salvar o progresso ou reiniciar o treino das resoluções, basta atualizar a página principal.
             </div>
         </div>
     </div>
+
+    <script>
+        function alternarMateria(idMateria) {
+            // Desativa todas as abas e esconde os conteúdos
+            document.querySelectorAll('.roteiro-aba-btn').forEach(btn => btn.classList.remove('ativo'));
+            document.querySelectorAll('.roteiro-conteudo').forEach(content => content.classList.remove('ativo'));
+
+            // Ativa o botão clicado e mostra o bloco correto
+            const botaoClicado = event.currentTarget;
+            botaoClicado.classList.add('ativo');
+            document.getElementById(idMateria).classList.add('ativo');
+        }
+
+        function toggleRoteiroResolucao(botao) {
+            // Encontra a caixa de resolução imediatamente após o botão
+            const resolucaoBox = botao.nextElementSibling;
+            
+            if (resolucaoBox.style.display === "block") {
+                resolucaoBox.style.display = "none";
+                botao.innerHTML = "💡 Ver Resolução Passo a Passo";
+                botao.style.background = "linear-gradient(135deg, #4a5568, #2d3748)";
+            } else {
+                resolucaoBox.style.display = "block";
+                botao.innerHTML = "🙈 Ocultar Explicação";
+                botao.style.background = "linear-gradient(135deg, #dc2626, #991b1b)";
+            }
+        }
+    </script>
 </body>
 </html>
