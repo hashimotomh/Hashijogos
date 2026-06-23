@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HashiEstudos - Roteiro de Revisão</title>
+    <style>
+        :root {
+            --bg-principal: #121214;
+            --bg-card: #202024;
+            --cor-primaria: #00adb5;
+            --cor-secundaria: #393e46;
+            --texto-claro: #eeeeee;
+            --texto-mutado: #a8a8b3;
+            --sucesso: #04d361;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-principal);
+            color: var(--texto-claro);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, var(--bg-card), #29292e);
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border-bottom: 4px solid var(--cor-primaria);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        header h1 {
+            color: var(--cor-primaria);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            color: var(--texto-mutado);
+            font-style: italic;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .orientacoes {
+            background-color: var(--bg-card);
+            border-left: 5px solid #ffb86c;
+            padding: 20px;
+            border-radius: 4px 12px 12px 4px;
+            margin-bottom: 30px;
+        }
+
+        .orientacoes h2 {
+            color: #ffb86c;
+            margin-bottom: 10px;
+        }
+
+        .orientacoes ul {
+            list-style-position: inside;
+            margin-top: 10px;
+        }
+
+        .orientacoes li {
+            margin-bottom: 8px;
+            color: var(--texto-claro);
+        }
+
+        .abas {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .aba-btn {
+            flex: 1;
+            padding: 15px;
+            background-color: var(--bg-card);
+            border: 2px solid var(--cor-secundaria);
+            color: var(--texto-claro);
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .aba-btn:hover {
+            border-color: var(--cor-primaria);
+            background-color: rgba(0, 173, 181, 0.1);
+        }
+
+        .aba-btn.ativo {
+            background-color: var(--cor-primaria);
+            color: #fff;
+            border-color: var(--cor-primaria);
+            box-shadow: 0 0 15px rgba(0, 173, 181, 0.4);
+        }
+
+        .conteudo-secao {
+            display: none;
+        }
+
+        .conteudo-secao.ativo {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .topicos {
+            background-color: var(--bg-card);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .topicos h3 {
+            color: var(--cor-primaria);
+            margin-bottom: 12px;
+            border-bottom: 1px solid var(--cor-secundaria);
+            padding-bottom: 6px;
+        }
+
+        .topicos ul {
+            list-style-type: "✓ ";
+            list-style-position: inside;
+            padding-left: 10px;
+        }
+
+        .topicos li {
+            margin-bottom: 6px;
+        }
+
+        .exercicio-card {
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .exercicio-card h4 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .exercicio-card h4 span {
+            color: var(--cor-primaria);
+        }
+
+        .enunciado {
+            margin-bottom: 20px;
+            font-size: 1.05rem;
+        }
+
+        .btn-resolucao {
+            background-color: var(--cor-secundaria);
+            color: var(--texto-claro);
+            border: none;
+            padding: 10px 200px;
+            max-width: 100%;
+            width: auto;
+            display: inline-block;
+            text-align: center;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+
+        .btn-resolucao:hover {
+            background-color: #4f5b66;
+        }
+
+        .resolucao {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: rgba(4, 211, 97, 0.05);
+            border-left: 4px solid var(--sucesso);
+            border-radius: 4px;
+            animation: slideDown 0.3s ease;
+        }
+
+        .resolucao h5 {
+            color: var(--sucesso);
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; max-height: 0; overflow: hidden; }
+            to { opacity: 1; max-height: 1000px; }
+        }
+
+        .grafico-falso {
+            border: 2px dashed var(--cor-secundaria);
+            padding: 15px;
+            text-align: center;
+            margin: 15px 0;
+            background-color: rgba(0,0,0,0.2);
+            font-family: monospace;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>HashiEstudos</h1>
+            <p>"Por não saber que era impossível, ele(a) foi lá e fez"</p>
+        </header>
+
+        <section class="orientacoes">
+            <h2>Orientações para a Prova</h2>
+            <p>Fique atento às seguintes regras do Professor Marcelo Hashimoto:</p>
+            <ul>
+                <li><strong>Prova individual e sem consulta.</strong> Todo o material deve ser guardado.</li>
+                <li><strong>Todas as respostas devem ser justificadas!</strong> Respostas sem contas, diagramas ou argumentações adequadas não serão validadas.</li>
+                <li>Contas "de cabeça" só serão aceitas para operações básicas e muito pequenas. Desenvolva o raciocínio no papel.</li>
+            </ul>
+        </section>
+
+        <div class="abas">
+            <button class="aba-btn ativo" onclick="alternarAba('matematica')">Matemática (Exponenciais e Logaritmos)</button>
+            <button class="aba-btn" onclick="alternarAba('fisica')">Física (Termodinâmica)</button>
+        </div>
+
+        <div id="matematica" class="conteudo-secao ativo">
+            <div class="topicos">
+                <h3>Conteúdos Cobrados</h3>
+                <ul>
+                    <li>Equações Exponenciais (Igualdade de bases).</li>
+                    <li>Modelagem de Problemas com Funções Exponenciais (Ex: Crescimento bacteriano).</li>
+                    <li>Definição e Propriedades Fundamentais dos Logaritmos.</li>
+                    <li>Operações com Logaritmos (Produto, Quociente e Potência) usando bases decimais dadas.</li>
+                    <li>Mudança de Base de Logaritmos.</li>
+                </ul>
+            </div>
+
+            <h3>Exercícios Fixação - Modelo Dissertativo</h3>
+            <br>
+
+            <div class="exercicio-card">
+                <h4><span>Exercício 1</span> Equação Exponencial</h4>
+                <div class="enunciado">
+                    Resolva a seguinte equação exponencial: <br>
+                    <strong>3<sup>x - 2</sup> = 81</strong>
+                </div>
+                <button class="btn-resolucao" onclick="toggleResolucao(this)">Ver Resolução</button>
+                <div class="resolucao">
+                    <h5>Resolução Passo a Passo:</h5>
+                    <p>1. Primeiramente, fatora-se o número 81 para que fique na mesma base do primeiro membro (base 3):<br>
+                    81 = 3<sup>4</sup></p>
+                    <p>2. Substituindo na equação original:<br>
+                    3<sup>x - 2</sup> = 3<sup>4</sup></p>
+                    <p>3. Como as bases são iguais, podemos igualar os expoentes:<br>
+                    x - 2 = 4<br>
+                    x = 4 + 2<br>
+                    <strong>x = 6</strong></p>
+                </div>
+            </div>
+
+            <div class="exercicio-card">
+                <h4><span>Exercício 2</span> Modelagem e Função Exponencial</h4>
+                <div class="enunciado">
+                    O crescimento de uma cultura de bactérias é modelado pela função <strong>N(t) = 200 · 2<sup>t</sup></strong>, onde <em>t</em> é o tempo em horas e <em>N(t)</em> é o número de bactérias. Responda justificando com os cálculos:<br><br>
+                    a) Qual é a população inicial desta cultura?<br>
+                    b) Depois de quantas horas a população de bactérias atingirá o total de 12.800?
+                </div>
+                <button class="btn-resolucao" onclick="toggleResolucao(this)">Ver Resolução</button>
+                <div class="resolucao">
+                    <h5>Resolução Passo a Passo:</h5>
+                    <p><strong>a) População inicial (quando t = 0):</strong><br>
+                    N(0) = 200 · 2<sup>0</sup><br>
+                    Como todo número elevado a zero é 1 (2<sup>0</sup> = 1):<br>
+                    N(0) = 200 · 1 = <strong>200 bactérias</strong>.</p>
+                    <br>
+                    <p><strong>b) Determinar o tempo para N(t) = 12.800:</strong><br>
+                    12.800 = 200 · 2<sup>t</sup><br>
+                    Passamos o 200 dividindo:<br>
+                    12.800 / 200 = 2<sup>t</sup><br>
+                    64 = 2<sup>t</sup><br>
+                    Fatorando o 64 na base 2 (64 = 2<sup>6</sup>):<br>
+                    2<sup>6</sup> = 2<sup>t</sup><br>
+                    <strong>t = 6 horas</strong>.</p>
+                </div>
+            </div>
+
+            <div class="exercicio-card">
+                <h4><span>Exercício 3</span> Cálculo de Logaritmos pela Definição</h4>
+                <div class="enunciado">
+                    Determine os valores dos logaritmos abaixo utilizando as propriedades e definição:<br><br>
+                    a) log<sub>3</sub> 243<br>
+                    b) log<sub>2</sub> 0,125<br>
+                    c) log<sub>2026</sub> 1<br>
+                    d) log<sub>87</sub> 87
+                </div>
+                <button class="btn-resolucao" onclick="toggleResolucao(this)">Ver Resolução</button>
+                <div class="resolucao">
+                    <h5>Resolução Passo a Passo:</h5>
+                    <p><strong>a) log<sub>3</sub> 243 = x</strong> &rArr; 3<sup>x</sup> = 243 &rArr; 3<sup>x</sup> = 3<sup>5</sup> &rArr; <strong>x = 5</strong></p>
+                    <p><strong>b) log<sub>2</sub> 0,125 = x</strong> &rArr; 2<sup>x</sup> = 0,125. <br>Transformando em fração: 0,125 = 125/1000 = 1/8. <br>Como 1/8 = 2<sup>-3</sup>, temos: 2<sup>x</sup> = 2<sup>-3</sup> &rArr; <strong>x = -3</strong></p>
+                    <p><strong>c) log<sub>2026</sub> 1 = x</strong> &rArr; Qualquer logaritmo de 1 em qualquer base válida é sempre igual a <strong>0</strong> (pois 2026<sup>0</sup> = 1).</p>
+                    <p><strong>d) log<sub>87</sub> 87 = x</strong> &rArr; Quando a base é igual ao logaritmando, o resultado é sempre <strong>1</strong> (pois 87<sup>1</sup> = 87).</p>
+                </div>
+            </div>
+
+            <div class="exercicio-card">
+                <h4><span>Exercício 4</span> Propriedades Operatórias (Base 10)</h4>
+                <div class="enunciado">
+                    Utilizando <strong>log 2 = 0,30</strong> e <strong>log 3 = 0,47</strong>, calcule:<br><br>
+                    a) log 60<br>
+                    b) log 0,0004
+                </div>
+                <button class="btn-resolucao" onclick="toggleResolucao(this)">Ver Resolução</button>
+                <div class="resolucao">
+                    <h5>Resolução Passo a Passo:</h5>
+                    <p><strong>a) log 60:</strong><br>
+                    Podemos decompor 60 em fatores conhecidos e na base 10: 60 = 2 · 3 · 10.<br>
+                    log 60 = log(2 · 3 · 10) = log 2 + log 3 + log 10<br>
+                    Sabemos que log 10 = 1 (base igual ao logaritmando).<br>
+                    log 60 = 0,30 + 0,47 + 1 = <strong>1,77</strong></p>
+                    <br>
+                    <p><strong>b) log 0,0004:</strong><br>
+                    Em notação científica: 0,0004 = 4 · 10<sup>-4</sup> = 2<sup>2</sup> · 10<sup>-4</sup>.<br>
+                    log(2<sup>2</sup> · 10<sup>-4</sup>) = log(2<sup>2</sup>) + log(10<sup>-4</sup>)<br>
+                    Aplicando a regra do peteleco (expoente): 2 · log 2 + (-4) · log 10<br>
+                    = 2 · (0,30) - 4 · (1) = 0,60 - 4 = <strong>-3,40</strong></p>
+                </div>
+            </div>
+
+            <div class="exercicio-card">
+                <h4><span>Exercício 5</span> Mudança de Base</h4>
+                <div class="enunciado">
+                    Utilizando <strong>log 2 = 0,30</strong> e <strong>log 3 = 0,47</strong>, mude de base e calcule o valor aproximado de:<br><br>
+                    <strong>log<sub>6</sub> 18</strong>
+                </div>
+                <button class="btn-resolucao" onclick="toggleResolucao(this)">Ver Resolução</button>
+                <div class="resolucao">
+                    <h5>Resolução Passo a Passo:</h5>
+                    <p>1. Aplicando a fórmula da mudança de base para a base 10:<br>
+                    log<sub>6</sub> 18 = log 18 / log 6</p>
+                    <p>2. Decompondo os números:<br>
+                    18 = 2 · 3<sup>2</sup> &rArr; log 18 = log 2 + log(3<sup>2</sup>) = log 2 + 2 · log 3<br>
+                    log 18 = 0,30 + 2 · (0,47) = 0,30 + 0,94 = 1,24<br><br>
+                    6 = 2 · 3 &rArr; log 6 = log 2 + log 3<br>
+                    log 6 = 0,30 + 0,47 = 0,77</p>
+                    <p>3. Efetuando a divisão final:<br>
+                    log<sub>6</sub> 18 = 1,24 / 0,77 &asymp; <strong>1,61</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <div id="fisica" class="conteudo-secao">
+            <div class="topicos">
+                <h3>Conteúdos Cobrados</h3>
+                <ul>
+                    <li>Primeira Lei da Termodinâmica (&Delta;U = Q - W) e convenções de sinais.</li>
+                    <li>Relação entre Energia Interna e Temperatura.</li>
+                    <li>Trabalho em transformações gasosas (W = P · &Delta;V e cálculo por meio da área sob o gráfico P x V).</li>
+                    <li>Máquinas Térmicas (Trabalho por ciclo e Rendimento: &eta; = W / Q<sub>q</sub>).</li>
+                    <li>Ciclo de Carnot e Rendimento Máximo (uso das temperaturas absolutas em Kelvin).</li>
+                </ul>
+            </div>
+
+            <h3>Exercícios Fixação - Modelo Dissertativo</h3>
+            <br>
+
+            <div class="exercicio-card">
+                <h4><span>Exercício 1</span> 1ª Lei da Termodinâmica (Conceitual)</h4>
+                <div class="enunciado">
+                    Com base na Primeira Lei da Termodinâmica, explique o que acontece com a <strong>Energia Interna (&Delta;U)</strong> e a <strong>Temperatura (T)</strong> de um gás ideal quando ocorrem os seguintes processos isolados:<br><br>
+                    a) O gás recebe calor sem realizar trabalho.<br>
+                    b) O gás é comprimido rapidamente sem trocar calor com o ambiente (Adiafática).
+                </div>
+                <button class="btn-resolucao" onclick="toggleResolucao(this)">Ver Resolução</button>
+                <div class="resolucao">
+                    <h5>Resolução Passo a Passo:</h5>
+                    <p>A Primeira Lei é dada por: <strong>&Delta;U = Q - W</strong></p>
+                    <p><strong>a) Recebe calor (Q > 0) sem realizar trabalho (W = 0):</strong><br>
+                    &Delta;U = Q - 0 &rArr; &Delta;U > 0. Portanto, a <strong>Energia Interna aumenta</strong> e, consequentemente, a <strong>Temperatura também aumenta</strong>.</p>
+                    <br>
+                    <p><strong>b) É comprimido (W < 0) sem trocar calor (Q = 0):</strong><br>
+                    &Delta;U = 0 - (W<sub>negativo</sub>) &rArr; &Delta;U = -(-W) &rArr; &Delta;U > 0.<br>
+                    No processo de compressão adiabática, o trabalho é realizado sobre o gás, fazendo com que sua <strong>Energia Interna aumente</strong> e sua <strong>Temperatura se eleve</strong>.</p>
+                </div>
+            </div>
+
+            <div class="exercicio-card">
+                <h4><span>Exercício 2</span> Trabalho e Caminhos em Gráficos P x V</h4>
+                <div class="enunciado">
+                    Um gás vai do estado inicial A para o estado final B. Ele pode fazer isso por dois caminhos no gráfico PxV:<br>
+                    <strong>Caminho 1:</strong> Passando direto por uma linha reta de A até B.<br>
+                    <strong>Caminho 2:</strong> Indo verticalmente de A para um ponto C (mesmo volume de A, menor pressão) e depois horizontalmente de C para B.<br><br>
+                    Indique qual caminho realiza o <strong>maior trabalho</strong> e justifique matematicamente/geometricamente.
+                </div>
+                <button class="btn-resolucao" onclick="toggleResolucao(this)">Ver Resolução</button>
+                <div class="resolucao">
+                    <h5>Resolução Passo a Passo:</h5>
+                    <p>1. No gráfico Pressão por Volume (P x V), o trabalho executado é numericamente igual à <strong>área sob a curva/reta</strong> que representa o processo.</p>
+                    <p>2. Ao analisar geometricamente, a área formada abaixo da reta do <strong>Caminho 1</strong> (um trapézio que vai até o eixo do volume) é claramente <strong>maior</strong> do que a área abaixo do trecho horizontal CB do Caminho 2 (um retângulo menor).</p>
+                    <p>3. Portanto, o <strong>Caminho 1 realiza maior trabalho</strong> porque projeta uma área maior no gráfico P x V.</p>
+                </div>
+            </div>
+
+            <div class="exercicio-card">
+                <h4><span>Exercício 3</span> Trabalho em um Ciclo Fechado</h4>
+                <div class="enunciado">
+                    Um gás realiza o ciclo termodinâmico retangular ABCD no sentido horário. Os vértices possuem as seguintes coordenadas no gráfico PxV:<br>
+                    Pressão de A e B = 20 Pa; Pressão de C e D = 5 Pa.<br>
+                    Volume de A e D = 2 m³; Volume de B e C = 8 m³.<br><br>
+                    Determine o <strong>trabalho líquido</strong> executado pelo gás em cada ciclo completo.
+                </div>
+                <button class="btn-resolucao" onclick="toggleResolucao(this)">Ver Resolução</button>
+                <div class="resolucao">
+                    <h5>Resolução Passo a Passo:</h5>
+                    <div class="grafico-falso">
+                        Visualização da área interna do Retângulo:<br>
+                        Base = Vf - Vi = 8 - 2 = 6 m³<br>
+                        Altura = Pmax - Pmin = 20 - 5 = 15 Pa
+                    </div>
+                    <p>1. O trabalho em um ciclo fechado é dado pela <strong>área interna da figura</strong> formada no gráfico.</p>
+                    <p>2. A figura é um retângulo, cuja área é dada por Base &times; Altura:<br>
+                    &bull; Base (variação de volume &Delta;V) = 8 - 2 = 6 m³<br>
+                    &bull; Altura (variação de pressão &Delta;P) = 20 - 5 = 15 Pa</p>
+                    <p>3. Calculando a área:<br>
+                    W = Base &times; Altura = 6 &times; 15 = <strong>90 J</strong>.</p>
+                    <p><em>Nota de sinal:</em> Como o ciclo ocorre no sentido <strong>horário</strong>, o trabalho líquido é <strong>positivo (+90 J)</strong>.</p>
+                </div>
+            </div>
+
+            <div class="exercicio-card">
+                <h4><span>Exercício 4</span> Rendimento de Máquina Térmica Comum</h4>
+                <div class="enunciado">
+                    Uma máquina térmica recebe 800 J de calor de uma fonte quente (Q<sub>q</sub>) e rejeita 200 J para a fonte fria (Q<sub>f</sub>) a cada ciclo. Calcule de forma dissertativa:<br><br>
+                    a) Qual é o trabalho executado por essa máquina a cada ciclo?<br>
+                    b) Qual é o rendimento (&eta;) dessa máquina?
+                </div>
+                <button class="btn-resolucao" onclick="toggleResolucao(this)">Ver Resolução</button>
+                <div class="resolucao">
+                    <h5>Resolução Passo a Passo:</h5>
+                    <p><strong>a) Cálculo do Trabalho (W):</strong><br>
+                    Pela conservação de energia em máquinas térmicas:<br>
+                    W = Q<sub>q</sub> - Q<sub>f</sub><br>
+                    W = 800 - 200 = <strong>600 J</strong></p>
+                    <br>
+                    <p><strong>b) Cálculo do Rendimento (&eta;):</strong><br>
+                    O rendimento é a razão entre o que é aproveitado (trabalho) e o que foi fornecido (calor quente):<br>
+                    &eta; = W / Q<sub>q</sub><br>
+                    &eta; = 600 / 800 = 0,75<br>
+                    Multiplicando por 100 para obter em porcentagem:<br>
+                    &eta; = <strong>75%</strong></p>
+                </div>
+            </div>
+
+            <div class="exercicio-card">
+                <h4><span>Exercício 5</span> Rendimento Máximo (Ciclo de Carnot)</h4>
+                <div class="enunciado">
+                    Uma máquina térmica opera segundo o Ciclo de Carnot com uma fonte quente a 227 °C e uma fonte fria a 27 °C. Justifique seus passos e determine o <strong>rendimento máximo teirico</strong> dessa máquina.
+                </div>
+                <button class="btn-resolucao" onclick="toggleResolucao(this)">Ver Resolução</button>
+                <div class="resolucao">
+                    <h5>Resolução Passo a Passo:</h5>
+                    <p><strong>Alerta crítico:</strong> As temperaturas na termodinâmica devem sempre estar na escala absoluta (Kelvin). Nunca use graus Celsius direto na fórmula do rendimento!</p>
+                    <p>1. Converter as temperaturas para Kelvin (T<sub>K</sub> = T<sub>C</sub> + 273):<br>
+                    &bull; T<sub>quente</sub> = 227 + 273 = 500 K<br>
+                    &bull; T<sub>fria</sub> = 27 + 273 = 300 K</p>
+                    <p>2. Aplicar a fórmula de rendimento do Ciclo de Carnot:<br>
+                    &eta;<sub>max</sub> = 1 - (T<sub>fria</sub> / T<sub>quente</sub>)<br>
+                    &eta;<sub>max</sub> = 1 - (300 / 500)<br>
+                    &eta;<sub>max</sub> = 1 - 0,60 = 0,40</p>
+                    <p>3. Convertendo para porcentagem:<br>
+                    &eta;<sub>max</sub> = 0,40 &times; 100 = <strong>40%</strong></p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function alternarAba(materia) {
+            // Remove a classe ativo de todos os botões e seções
+            document.querySelectorAll('.aba-btn').forEach(btn => btn.classList.remove('ativo'));
+            document.querySelectorAll('.conteudo-secao').forEach(sec => sec.classList.remove('ativo'));
+
+            // Adiciona a classe ativo no elemento clicado correspondente
+            if (materia === 'matematica') {
+                document.querySelector('button[onclick*="matematica"]').classList.add('ativo');
+                document.getElementById('matematica').classList.add('ativo');
+            } else {
+                document.querySelector('button[onclick*="fisica"]').classList.add('ativo');
+                document.getElementById('fisica').classList.add('ativo');
+            }
+        }
+
+        function toggleResolucao(botao) {
+            // Encontra o bloco de resolução adjacente ao botão clicado
+            const blocoResolucao = botao.nextElementSibling;
+            
+            if (blocoResolucao.style.display === 'block') {
+                blocoResolucao.style.display = 'none';
+                botao.textContent = 'Ver Resolução';
+                botao.style.backgroundColor = 'var(--cor-secundaria)';
+            } else {
+                blocoResolucao.style.display = 'block';
+                botao.textContent = 'Ocultar Resolução';
+                botao.style.backgroundColor = '#e0a800'; // Destaca o botão quando ativo
+            }
+        }
+    </script>
+</body>
+</html>
