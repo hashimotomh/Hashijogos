@@ -13,6 +13,8 @@
             --owned-border: #a5d6a7;
             --repeated: #fff8e1;
             --repeated-border: #ffe082;
+            --completed-bg: #c8e6c9;
+            --completed-border: #2e7d32;
         }
 
         body {
@@ -45,38 +47,112 @@
             opacity: 0.9;
         }
 
-        .tabs-container {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            padding: 5px 2px 15px 2px;
-            margin-bottom: 10px;
-            scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch;
+        /* --- VISÃO 1: GRADE DE SELEÇÃO DE PAÍSES --- */
+        .countries-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            margin-bottom: 30px;
         }
 
-        .tabs-container::-webkit-scrollbar {
-            display: none;
-        }
-
-        .tab-btn {
-            background-color: white;
-            border: 2px solid var(--primary);
-            color: var(--primary);
-            padding: 10px 18px;
-            border-radius: 25px;
+        .country-card {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            padding: 12px 8px;
+            text-align: center;
             cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: transform 0.1s, border-color 0.2s, background-color 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 70px;
+            position: relative;
+        }
+
+        .country-card:active {
+            transform: scale(0.95);
+        }
+
+        .country-card .code {
+            font-size: 0.75rem;
+            color: #777;
             font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .country-card .name {
             font-size: 0.9rem;
-            white-space: nowrap;
-            flex-shrink: 0;
+            font-weight: bold;
+            color: #222;
+            line-height: 1.2;
         }
 
-        .tab-btn.active {
-            background-color: var(--primary);
+        /* Estilo para País Completo */
+        .country-card.completed {
+            background-color: var(--completed-bg) !important;
+            border-color: var(--completed-border) !important;
+        }
+
+        .country-card.completed .name {
+            color: #1b5e20;
+        }
+
+        .country-card.completed .code {
+            color: #2e7d32;
+        }
+
+        .completed-badge {
+            font-size: 0.65rem;
+            background: #2e7d32;
             color: white;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-top: 4px;
+            font-weight: bold;
         }
 
+        .country-card.special {
+            background-color: #fff3e0;
+            border-color: #ffe082;
+            grid-column: 1 / -1; /* Ocupa a largura inteira */
+            flex-direction: row;
+            gap: 10px;
+            font-size: 1.1rem;
+        }
+
+        /* --- NAVEGAÇÃO E VOLTAR --- */
+        .navigation-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .btn-back {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .current-title {
+            font-weight: bold;
+            font-size: 1.05rem;
+            color: var(--primary);
+        }
+
+        /* --- VISÃO 2: GRADE DE FIGURINHAS --- */
         .stickers-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
@@ -151,23 +227,37 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
             font-weight: bold;
         }
+
+        .hidden {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
 
     <header>
         <h1>Álbum Copa 2026 🏆</h1>
-        <p>Toque rápido: adiciona | Segure o dedo: zera para falta</p>
+        <p id="header-subtitle">Escolha um país para ver as figurinhas</p>
     </header>
 
-    <div class="tabs-container" id="tabs"></div>
-    <div class="stickers-grid" id="grid"></div>
+    <!-- TELA 1: MENU COM TODOS OS PAÍSES DE UMA VEZ -->
+    <div id="countries-view">
+        <div class="countries-grid" id="countries-grid"></div>
+    </div>
+
+    <!-- TELA 2: GRADE DE FIGURINHAS DO PAÍS SELECIONADO -->
+    <div id="stickers-view" class="hidden">
+        <div class="navigation-bar">
+            <button class="btn-back" id="btn-back">← Voltar</button>
+            <span class="current-title" id="current-title"></span>
+        </div>
+        <div class="stickers-grid" id="stickers-grid"></div>
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // CONFIGURAÇÃO DO FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyCON7aE41Jlbin4u724ucljN4lsf1Mlq1w",
             authDomain: "figurinhas-hashi.firebaseapp.com",
@@ -182,77 +272,52 @@
         const db = getDatabase(app);
         const albumRef = ref(db, 'album2026');
 
-        // Estrutura das 48 seleções atualizadas com siglas limpas e corretas
         const secoesAlbum = [
             { id: 'FWC', nome: 'Especiais (FWC)', total: 20 },
-            
-            // GRUPO A
             { id: 'MEX', nome: 'A1 - México 🇲🇽', total: 20 },
             { id: 'RSA', nome: 'A2 - África do Sul 🇿🇦', total: 20 },
             { id: 'KOR', nome: 'A3 - Coreia do Sul 🇰🇷', total: 20 },
             { id: 'CZE', nome: 'A4 - Rep. Tcheca 🇨🇿', total: 20 },
-
-            // GRUPO B
             { id: 'CAN', nome: 'B1 - Canadá 🇨🇦', total: 20 },
             { id: 'SUI', nome: 'B2 - Suíça 🇨🇭', total: 20 },
             { id: 'BIH', nome: 'B3 - Bósnia e Herz. 🇧🇦', total: 20 },
             { id: 'QAT', nome: 'B4 - Catar 🇶🇦', total: 20 },
-
-            // GRUPO C
             { id: 'BRA', nome: 'C1 - Brasil 🇧🇷', total: 20 },
             { id: 'MAR', nome: 'C2 - Marrocos 🇲🇦', total: 20 },
             { id: 'SCO', nome: 'C3 - Escócia 🏴󠁧󠁢󠁳󠁣󠁴󠁿', total: 20 },
             { id: 'HAI', nome: 'C4 - Haiti 🇭🇹', total: 20 },
-
-            // GRUPO D
             { id: 'USA', nome: 'D1 - Estados Unidos 🇺🇸', total: 20 },
             { id: 'AUS', nome: 'D2 - Austrália 🇦🇺', total: 20 },
             { id: 'PAR', nome: 'D3 - Paraguai 🇵🇾', total: 20 },
             { id: 'TUR', nome: 'D4 - Turquia 🇹🇷', total: 20 },
-
-            // GRUPO E
             { id: 'GER', nome: 'E1 - Alemanha 🇩🇪', total: 20 },
             { id: 'CIV', nome: 'E2 - Costa do Marfim 🇨🇮', total: 20 },
             { id: 'ECU', nome: 'E3 - Equador 🇪🇨', total: 20 },
             { id: 'CUW', nome: 'E4 - Curaçau 🇨🇼', total: 20 },
-
-            // GRUPO F
             { id: 'NED', nome: 'F1 - Holanda 🇳🇱', total: 20 },
             { id: 'JPN', nome: 'F2 - Japão 🇯🇵', total: 20 },
             { id: 'SWE', nome: 'F3 - Suécia 🇸🇪', total: 20 },
             { id: 'TUN', nome: 'F4 - Tunísia 🇹🇳', total: 20 },
-
-            // GRUPO G
             { id: 'BEL', nome: 'G1 - Bélgica 🇧🇪', total: 20 },
             { id: 'EGY', nome: 'G2 - Egito 🇪🇬', total: 20 },
             { id: 'IRN', nome: 'G3 - Irã 🇮🇷', total: 20 },
             { id: 'NZL', nome: 'G4 - Nova Zelândia 🇳🇿', total: 20 },
-
-            // GRUPO H
             { id: 'ESP', nome: 'H1 - Espanha 🇪🇸', total: 20 },
             { id: 'CPV', nome: 'H2 - Cabo Verde 🇨🇻', total: 20 },
             { id: 'URU', nome: 'H3 - Uruguai 🇺🇾', total: 20 },
             { id: 'KSA', nome: 'H4 - Arábia Saudita 🇸🇦', total: 20 },
-
-            // GRUPO I
             { id: 'FRA', nome: 'I1 - França 🇫🇷', total: 20 },
             { id: 'NOR', nome: 'I2 - Noruega 🇳🇴', total: 20 },
             { id: 'SEN', nome: 'I3 - Senegal 🇸🇳', total: 20 },
             { id: 'IRQ', nome: 'I4 - Iraque 🇮🇶', total: 20 },
-
-            // GRUPO J
             { id: 'ARG', nome: 'J1 - Argentina 🇦🇷', total: 20 },
             { id: 'AUT', nome: 'J2 - Áustria 🇦🇹', total: 20 },
             { id: 'ALG', nome: 'J3 - Argélia 🇩🇿', total: 20 },
             { id: 'JOR', nome: 'J4 - Jordânia 🇯🇴', total: 20 },
-
-            // GRUPO K
             { id: 'COL', nome: 'K1 - Colômbia 🇨🇴', total: 20 },
             { id: 'POR', nome: 'K2 - Portugal 🇵🇹', total: 20 },
             { id: 'COD', nome: 'K3 - RD Congo 🇨🇩', total: 20 },
             { id: 'UZB', nome: 'K4 - Uzbequistão 🇺🇿', total: 20 },
-
-            // GRUPO L
             { id: 'ENG', nome: 'L1 - Inglaterra 🏴󠁧󠁢󠁥󠁮󠁧󠁿', total: 20 },
             { id: 'CRO', nome: 'L2 - Croácia 🇭🇷', total: 20 },
             { id: 'GHA', nome: 'L3 - Gana 🇬🇭', total: 20 },
@@ -260,34 +325,89 @@
         ];
 
         let dadosAlbum = {};
-        let secaoAtiva = 'FWC';
+        let secaoAtiva = null;
 
-        // Construir abas horizontais
-        const tabsContainer = document.getElementById('tabs');
-        secoesAlbum.forEach((secao, idx) => {
-            const btn = document.createElement('button');
-            btn.className = `tab-btn ${idx === 0 ? 'active' : ''}`;
-            btn.textContent = secao.nome;
-            btn.onclick = () => mudarAba(secao.id, btn);
-            tabsContainer.appendChild(btn);
-        });
+        // Elementos DOM
+        const countriesView = document.getElementById('countries-view');
+        const stickersView = document.getElementById('stickers-view');
+        const countriesGrid = document.getElementById('countries-grid');
+        const headerSubtitle = document.getElementById('header-subtitle');
+        const currentTitle = document.getElementById('current-title');
+        const btnBack = document.getElementById('btn-back');
 
-        function mudarAba(id, botao) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            botao.classList.add('active');
+        // Função para checar se a seção está 100% concluída
+        function estaCompleto(secao) {
+            const numeroInicial = (secao.id === 'FWC') ? 0 : 1;
+            for (let i = numeroInicial; i <= secao.total; i++) {
+                const num = (i === 0) ? '00' : i;
+                const key = `${secao.id}-${num}`;
+                if (!dadosAlbum[key] || dadosAlbum[key] === 0) {
+                    return false; // Falta pelo menos 1
+                }
+            }
+            return true; // Possui todas
+        }
+
+        // Renderizar Menu Principal de Países
+        function renderizarMenuPaises() {
+            countriesGrid.innerHTML = '';
+            secoesAlbum.forEach(secao => {
+                const completo = estaCompleto(secao);
+                const card = document.createElement('div');
+                card.className = `country-card ${secao.id === 'FWC' ? 'special' : ''} ${completo ? 'completed' : ''}`;
+                
+                let conteudoHTML = '';
+                if (secao.id === 'FWC') {
+                    conteudoHTML = `<span class="name">✨ ${secao.nome}</span>`;
+                } else {
+                    conteudoHTML = `
+                        <span class="code">${secao.id}</span>
+                        <span class="name">${secao.nome}</span>
+                    `;
+                }
+
+                if (completo) {
+                    conteudoHTML += `<span class="completed-badge">✓ Completo</span>`;
+                }
+
+                card.innerHTML = conteudoHTML;
+                card.onclick = () => abrirSecao(secao.id);
+                countriesGrid.appendChild(card);
+            });
+        }
+
+        // Navegar para o País Selecionado
+        function abrirSecao(id) {
             secaoAtiva = id;
-            renderizarGrid();
+            const secao = secoesAlbum.find(s => s.id === id);
+            
+            currentTitle.textContent = secao.nome;
+            headerSubtitle.textContent = "Toque: adiciona | Segure: zera";
+
+            countriesView.classList.add('hidden');
+            stickersView.classList.remove('hidden');
+
+            renderizarGridFigurinhas();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Desenhar os cartões na tela
-        function renderizarGrid() {
-            const grid = document.getElementById('grid');
+        // Voltar ao Menu Principal
+        btnBack.onclick = () => {
+            secaoAtiva = null;
+            stickersView.classList.add('hidden');
+            countriesView.classList.remove('hidden');
+            headerSubtitle.textContent = "Escolha um país para ver as figurinhas";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        // Renderizar Figurinhas do País Ativo
+        function renderizarGridFigurinhas() {
+            if (!secaoAtiva) return;
+
+            const grid = document.getElementById('stickers-grid');
             grid.innerHTML = '';
             
             const secao = secoesAlbum.find(s => s.id === secaoAtiva);
-            
-            // Correção da figurinha 00 na aba FWC
             const numeroInicial = (secao.id === 'FWC') ? 0 : 1;
             
             for (let i = numeroInicial; i <= secao.total; i++) {
@@ -303,13 +423,13 @@
                     card.innerHTML = `<div>${secao.id}</div><div>${numeroExibido}</div>`;
                 } else if (qtd === 1) {
                     card.className += 'status-owned';
-                    card.innerHTML = `<div>${secao.id}</div><div>${i === 0 ? '00' : i}</div>`;
+                    card.innerHTML = `<div>${secao.id}</div><div>${numeroExibido}</div>`;
                 } else {
                     card.className += 'status-repeated';
-                    card.innerHTML = `<div>${secao.id}</div><div>${i === 0 ? '00' : i}</div><span class="badge-repeated">${qtd - 1}</span>`;
+                    card.innerHTML = `<div>${secao.id}</div><div>${numeroExibido}</div><span class="badge-repeated">${qtd - 1}</span>`;
                 }
 
-                // Mecânica de clique/toque universal com PointerEvents
+                // Interações de toque
                 let timerToque = null;
                 let isLongPress = false;
 
@@ -328,7 +448,7 @@
                     
                     if (!isLongPress) {
                         let novaQtd = (qtd === 0) ? 1 : qtd + 1;
-                        if (e.shiftKey) novaQtd = 0; // Atalho de teclado mantido para o PC
+                        if (e.shiftKey) novaQtd = 0;
                         set(ref(db, `album2026/${codigoFigurinha}`), novaQtd);
                     }
                 };
@@ -346,10 +466,17 @@
             }
         }
 
-        // Escuta as alterações no Firebase em tempo real
+        // Conexão em Tempo Real
         onValue(albumRef, (snapshot) => {
             dadosAlbum = snapshot.val() || {};
-            renderizarGrid();
+            
+            // Atualiza os seletores de países (atualiza o status de concluído)
+            renderizarMenuPaises();
+
+            // Se estiver dentro de um país no momento, atualiza a grade de figurinhas dele
+            if (secaoAtiva) {
+                renderizarGridFigurinhas();
+            }
         });
     </script>
 </body>
