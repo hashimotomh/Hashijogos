@@ -47,6 +47,29 @@
             opacity: 0.9;
         }
 
+        /* --- BOTÃO DE RESUMO --- */
+        .summary-btn-container {
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .btn-summary {
+            background-color: #1976d2;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+            transition: background-color 0.2s;
+        }
+
+        .btn-summary:active {
+            background-color: #1565c0;
+        }
+
         /* --- VISÃO 1: GRADE DE SELEÇÃO DE PAÍSES --- */
         .countries-grid {
             display: grid;
@@ -117,7 +140,16 @@
         .country-card.special {
             background-color: #fff3e0;
             border-color: #ffe082;
-            grid-column: 1 / -1; /* Ocupa a largura inteira */
+            grid-column: 1 / -1;
+            flex-direction: row;
+            gap: 10px;
+            font-size: 1.1rem;
+        }
+
+        .country-card.cocacola {
+            background-color: #ffebee;
+            border-color: #ef9a9a;
+            grid-column: 1 / -1;
             flex-direction: row;
             gap: 10px;
             font-size: 1.1rem;
@@ -228,6 +260,91 @@
             font-weight: bold;
         }
 
+        /* --- MODAL DE RESUMO --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 15px;
+            box-sizing: border-box;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .modal-header {
+            background: var(--primary);
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        .btn-close-modal {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.3rem;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .modal-body {
+            padding: 15px;
+            overflow-y: auto;
+            font-size: 0.9rem;
+        }
+
+        .summary-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            transition: background-color 0.15s;
+            border-radius: 8px;
+        }
+
+        .summary-item:active {
+            background-color: #f0f0f0;
+        }
+
+        .summary-item-header {
+            font-weight: bold;
+            color: var(--primary);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .summary-item-numbers {
+            color: #c62828;
+            font-weight: 500;
+            word-wrap: break-word;
+        }
+
         .hidden {
             display: none !important;
         }
@@ -242,6 +359,9 @@
 
     <!-- TELA 1: MENU COM TODOS OS PAÍSES DE UMA VEZ -->
     <div id="countries-view">
+        <div class="summary-btn-container">
+            <button class="btn-summary" id="btn-open-summary">📋 Ver Figurinhas Faltantes</button>
+        </div>
         <div class="countries-grid" id="countries-grid"></div>
     </div>
 
@@ -252,6 +372,17 @@
             <span class="current-title" id="current-title"></span>
         </div>
         <div class="stickers-grid" id="stickers-grid"></div>
+    </div>
+
+    <!-- MODAL DE RESUMO DE FIGURINHAS FALTANTES -->
+    <div id="summary-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Figurinhas Restantes</h2>
+                <button class="btn-close-modal" id="btn-close-summary">✕</button>
+            </div>
+            <div class="modal-body" id="summary-body"></div>
+        </div>
     </div>
 
     <script type="module">
@@ -321,7 +452,8 @@
             { id: 'ENG', nome: 'L1 - Inglaterra 🏴󠁧󠁢󠁥󠁮󠁧󠁿', total: 20 },
             { id: 'CRO', nome: 'L2 - Croácia 🇭🇷', total: 20 },
             { id: 'GHA', nome: 'L3 - Gana 🇬🇭', total: 20 },
-            { id: 'PAN', nome: 'L4 - Panamá 🇵🇦', total: 20 }
+            { id: 'PAN', nome: 'L4 - Panamá 🇵🇦', total: 20 },
+            { id: 'CC', nome: 'Coca-Cola (CC1 - CC14) 🥤', total: 14 }
         ];
 
         let dadosAlbum = {};
@@ -335,17 +467,28 @@
         const currentTitle = document.getElementById('current-title');
         const btnBack = document.getElementById('btn-back');
 
-        // Função para checar se a seção está 100% concluída
-        function estaCompleto(secao) {
+        const summaryModal = document.getElementById('summary-modal');
+        const summaryBody = document.getElementById('summary-body');
+        const btnOpenSummary = document.getElementById('btn-open-summary');
+        const btnCloseSummary = document.getElementById('btn-close-summary');
+
+        // Retorna a lista de figurinhas faltantes formatadas com o código oficial (ex: BRA12)
+        function obterFaltantesFormatados(secao) {
+            const faltantes = [];
             const numeroInicial = (secao.id === 'FWC') ? 0 : 1;
             for (let i = numeroInicial; i <= secao.total; i++) {
-                const num = (i === 0) ? '00' : i;
-                const key = `${secao.id}-${num}`;
+                const numStr = (secao.id === 'CC') ? `${i}` : ((i === 0) ? '00' : `${i}`);
+                const key = `${secao.id}-${numStr}`;
                 if (!dadosAlbum[key] || dadosAlbum[key] === 0) {
-                    return false; // Falta pelo menos 1
+                    faltantes.push(`${secao.id}${numStr}`);
                 }
             }
-            return true; // Possui todas
+            return faltantes;
+        }
+
+        // Função para checar se a seção está 100% concluída
+        function estaCompleto(secao) {
+            return obterFaltantesFormatados(secao).length === 0;
         }
 
         // Renderizar Menu Principal de Países
@@ -354,11 +497,18 @@
             secoesAlbum.forEach(secao => {
                 const completo = estaCompleto(secao);
                 const card = document.createElement('div');
-                card.className = `country-card ${secao.id === 'FWC' ? 'special' : ''} ${completo ? 'completed' : ''}`;
+                
+                let extraClass = '';
+                if (secao.id === 'FWC') extraClass = 'special';
+                if (secao.id === 'CC') extraClass = 'cocacola';
+
+                card.className = `country-card ${extraClass} ${completo ? 'completed' : ''}`;
                 
                 let conteudoHTML = '';
                 if (secao.id === 'FWC') {
                     conteudoHTML = `<span class="name">✨ ${secao.nome}</span>`;
+                } else if (secao.id === 'CC') {
+                    conteudoHTML = `<span class="name">${secao.nome}</span>`;
                 } else {
                     conteudoHTML = `
                         <span class="code">${secao.id}</span>
@@ -411,7 +561,7 @@
             const numeroInicial = (secao.id === 'FWC') ? 0 : 1;
             
             for (let i = numeroInicial; i <= secao.total; i++) {
-                const numeroExibido = (i === 0) ? '00' : i;
+                const numeroExibido = (secao.id === 'CC') ? `${i}` : ((i === 0) ? '00' : `${i}`);
                 const codigoFigurinha = `${secao.id}-${numeroExibido}`;
                 const qtd = dadosAlbum[codigoFigurinha] || 0;
 
@@ -466,14 +616,61 @@
             }
         }
 
+        // --- LÓGICA DO RESUMO DE FALTANTES ---
+        function abrirResumo() {
+            summaryBody.innerHTML = '';
+            let totalFaltantesGeral = 0;
+
+            secoesAlbum.forEach(secao => {
+                const faltantes = obterFaltantesFormatados(secao);
+                if (faltantes.length > 0) {
+                    totalFaltantesGeral += faltantes.length;
+
+                    const item = document.createElement('div');
+                    item.className = 'summary-item';
+                    
+                    item.innerHTML = `
+                        <div class="summary-item-header">
+                            <span>${secao.nome}</span>
+                            <span>Faltam: ${faltantes.length}</span>
+                        </div>
+                        <div class="summary-item-numbers">
+                            ${faltantes.join(', ')}
+                        </div>
+                    `;
+
+                    // Clique na linha do país no resumo abre a página dele
+                    item.onclick = () => {
+                        summaryModal.classList.add('hidden');
+                        abrirSecao(secao.id);
+                    };
+
+                    summaryBody.appendChild(item);
+                }
+            });
+
+            if (totalFaltantesGeral === 0) {
+                summaryBody.innerHTML = '<p style="text-align: center; color: #2e7d32; font-weight: bold;">Parabéns! Você completou o álbum inteiro! 🎉</p>';
+            }
+
+            summaryModal.classList.remove('hidden');
+        }
+
+        btnOpenSummary.onclick = abrirResumo;
+        btnCloseSummary.onclick = () => summaryModal.classList.add('hidden');
+
+        // Fechar modal ao clicar fora dele
+        summaryModal.onclick = (e) => {
+            if (e.target === summaryModal) {
+                summaryModal.classList.add('hidden');
+            }
+        };
+
         // Conexão em Tempo Real
         onValue(albumRef, (snapshot) => {
             dadosAlbum = snapshot.val() || {};
-            
-            // Atualiza os seletores de países (atualiza o status de concluído)
             renderizarMenuPaises();
 
-            // Se estiver dentro de um país no momento, atualiza a grade de figurinhas dele
             if (secaoAtiva) {
                 renderizarGridFigurinhas();
             }
