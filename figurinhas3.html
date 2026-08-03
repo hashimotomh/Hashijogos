@@ -30,7 +30,7 @@
             text-align: center;
             background-color: var(--primary);
             color: white;
-            padding: 12px 8px;
+            padding: 14px 10px;
             border-radius: 12px;
             margin-bottom: 15px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -38,13 +38,24 @@
 
         header h1 {
             font-size: 1.4rem;
-            margin: 0 0 5px 0;
+            margin: 0 0 4px 0;
         }
 
         header p {
             font-size: 0.85rem;
-            margin: 0;
+            margin: 0 0 8px 0;
             opacity: 0.9;
+        }
+
+        /* --- CONTADOR NO HEADER --- */
+        .header-counter {
+            background: rgba(255, 255, 255, 0.15);
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         /* --- BOTÃO DE RESUMO --- */
@@ -355,6 +366,7 @@
     <header>
         <h1>Álbum Copa 2026 🏆</h1>
         <p id="header-subtitle">Escolha um país para ver as figurinhas</p>
+        <div class="header-counter" id="header-counter">Carregando contador...</div>
     </header>
 
     <!-- TELA 1: MENU COM TODOS OS PAÍSES DE UMA VEZ -->
@@ -464,6 +476,7 @@
         const stickersView = document.getElementById('stickers-view');
         const countriesGrid = document.getElementById('countries-grid');
         const headerSubtitle = document.getElementById('header-subtitle');
+        const headerCounter = document.getElementById('header-counter');
         const currentTitle = document.getElementById('current-title');
         const btnBack = document.getElementById('btn-back');
 
@@ -486,9 +499,32 @@
             return faltantes;
         }
 
-        // Função para checar se a seção está 100% concluída
+        // Checa se a seção está 100% concluída
         function estaCompleto(secao) {
             return obterFaltantesFormatados(secao).length === 0;
+        }
+
+        // Atualiza o contador do topo do app
+        function atualizarContadorTopo() {
+            let totalAlbum = 0;
+            let totalFaltantes = 0;
+
+            secoesAlbum.forEach(secao => {
+                const numInicial = (secao.id === 'FWC') ? 0 : 1;
+                const totalDaSecao = (secao.id === 'FWC') ? (secao.total + 1) : secao.total;
+                totalAlbum += totalDaSecao;
+
+                totalFaltantes += obterFaltantesFormatados(secao).length;
+            });
+
+            const obtidas = totalAlbum - totalFaltantes;
+            const pct = ((obtidas / totalAlbum) * 100).toFixed(1);
+
+            if (totalFaltantes === 0) {
+                headerCounter.innerHTML = `🎉 Álbum Completo! (100%)`;
+            } else {
+                headerCounter.innerHTML = `Faltam <strong>${totalFaltantes}</strong> figurinhas (${pct}% concluído)`;
+            }
         }
 
         // Renderizar Menu Principal de Países
@@ -545,136 +581,4 @@
         btnBack.onclick = () => {
             secaoAtiva = null;
             stickersView.classList.add('hidden');
-            countriesView.classList.remove('hidden');
-            headerSubtitle.textContent = "Escolha um país para ver as figurinhas";
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
-
-        // Renderizar Figurinhas do País Ativo
-        function renderizarGridFigurinhas() {
-            if (!secaoAtiva) return;
-
-            const grid = document.getElementById('stickers-grid');
-            grid.innerHTML = '';
             
-            const secao = secoesAlbum.find(s => s.id === secaoAtiva);
-            const numeroInicial = (secao.id === 'FWC') ? 0 : 1;
-            
-            for (let i = numeroInicial; i <= secao.total; i++) {
-                const numeroExibido = (secao.id === 'CC') ? `${i}` : ((i === 0) ? '00' : `${i}`);
-                const codigoFigurinha = `${secao.id}-${numeroExibido}`;
-                const qtd = dadosAlbum[codigoFigurinha] || 0;
-
-                const card = document.createElement('div');
-                card.className = 'sticker-card ';
-                
-                if (qtd === 0) {
-                    card.className += 'status-missing';
-                    card.innerHTML = `<div>${secao.id}</div><div>${numeroExibido}</div>`;
-                } else if (qtd === 1) {
-                    card.className += 'status-owned';
-                    card.innerHTML = `<div>${secao.id}</div><div>${numeroExibido}</div>`;
-                } else {
-                    card.className += 'status-repeated';
-                    card.innerHTML = `<div>${secao.id}</div><div>${numeroExibido}</div><span class="badge-repeated">${qtd - 1}</span>`;
-                }
-
-                // Interações de toque
-                let timerToque = null;
-                let isLongPress = false;
-
-                const aoPressionar = (e) => {
-                    isLongPress = false;
-                    timerToque = setTimeout(() => {
-                        isLongPress = true;
-                        if (confirm(`Deseja resetar a figurinha ${codigoFigurinha} para 'Falta'?`)) {
-                            set(ref(db, `album2026/${codigoFigurinha}`), 0);
-                        }
-                    }, 700);
-                };
-
-                const aoSoltar = (e) => {
-                    if (timerToque) clearTimeout(timerToque);
-                    
-                    if (!isLongPress) {
-                        let novaQtd = (qtd === 0) ? 1 : qtd + 1;
-                        if (e.shiftKey) novaQtd = 0;
-                        set(ref(db, `album2026/${codigoFigurinha}`), novaQtd);
-                    }
-                };
-
-                const aoCancelar = () => {
-                    if (timerToque) clearTimeout(timerToque);
-                };
-
-                card.onpointerdown = aoPressionar;
-                card.onpointerup = aoSoltar;
-                card.onpointercancel = aoCancelar;
-                card.onpointerleave = aoCancelar;
-
-                grid.appendChild(card);
-            }
-        }
-
-        // --- LÓGICA DO RESUMO DE FALTANTES ---
-        function abrirResumo() {
-            summaryBody.innerHTML = '';
-            let totalFaltantesGeral = 0;
-
-            secoesAlbum.forEach(secao => {
-                const faltantes = obterFaltantesFormatados(secao);
-                if (faltantes.length > 0) {
-                    totalFaltantesGeral += faltantes.length;
-
-                    const item = document.createElement('div');
-                    item.className = 'summary-item';
-                    
-                    item.innerHTML = `
-                        <div class="summary-item-header">
-                            <span>${secao.nome}</span>
-                            <span>Faltam: ${faltantes.length}</span>
-                        </div>
-                        <div class="summary-item-numbers">
-                            ${faltantes.join(', ')}
-                        </div>
-                    `;
-
-                    // Clique na linha do país no resumo abre a página dele
-                    item.onclick = () => {
-                        summaryModal.classList.add('hidden');
-                        abrirSecao(secao.id);
-                    };
-
-                    summaryBody.appendChild(item);
-                }
-            });
-
-            if (totalFaltantesGeral === 0) {
-                summaryBody.innerHTML = '<p style="text-align: center; color: #2e7d32; font-weight: bold;">Parabéns! Você completou o álbum inteiro! 🎉</p>';
-            }
-
-            summaryModal.classList.remove('hidden');
-        }
-
-        btnOpenSummary.onclick = abrirResumo;
-        btnCloseSummary.onclick = () => summaryModal.classList.add('hidden');
-
-        // Fechar modal ao clicar fora dele
-        summaryModal.onclick = (e) => {
-            if (e.target === summaryModal) {
-                summaryModal.classList.add('hidden');
-            }
-        };
-
-        // Conexão em Tempo Real
-        onValue(albumRef, (snapshot) => {
-            dadosAlbum = snapshot.val() || {};
-            renderizarMenuPaises();
-
-            if (secaoAtiva) {
-                renderizarGridFigurinhas();
-            }
-        });
-    </script>
-</body>
-</html>
