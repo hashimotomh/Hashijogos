@@ -26,6 +26,58 @@
             -webkit-tap-highlight-color: transparent;
         }
 
+        /* --- TELA DE LOGIN --- */
+        .login-container {
+            max-width: 360px;
+            margin: 60px auto 0;
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .login-container h2 {
+            color: var(--primary);
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+
+        .btn-login {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-login:active {
+            background: #6b0f2a;
+        }
+
+        .login-error {
+            color: #c62828;
+            font-size: 0.85rem;
+            margin-top: 10px;
+            display: none;
+        }
+
+        /* --- INTERFACE PRINCIPAL --- */
         header {
             text-align: center;
             background-color: var(--primary);
@@ -34,6 +86,7 @@
             border-radius: 12px;
             margin-bottom: 15px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: relative;
         }
 
         header h1 {
@@ -47,7 +100,19 @@
             opacity: 0.9;
         }
 
-        /* --- CONTADOR NO HEADER --- */
+        .btn-logout {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.4);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+
         .header-counter {
             background: rgba(255, 255, 255, 0.15);
             display: inline-block;
@@ -56,9 +121,9 @@
             font-size: 0.85rem;
             font-weight: bold;
             border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: background-color 0.3s;
         }
 
-        /* --- BOTÃO DE RESUMO --- */
         .summary-btn-container {
             margin-bottom: 15px;
             text-align: center;
@@ -74,14 +139,8 @@
             font-size: 0.9rem;
             cursor: pointer;
             box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-            transition: background-color 0.2s;
         }
 
-        .btn-summary:active {
-            background-color: #1565c0;
-        }
-
-        /* --- VISÃO 1: GRADE DE SELEÇÃO DE PAÍSES --- */
         .countries-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
@@ -97,13 +156,12 @@
             text-align: center;
             cursor: pointer;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            transition: transform 0.1s, border-color 0.2s, background-color 0.2s;
+            transition: transform 0.1s;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             min-height: 70px;
-            position: relative;
         }
 
         .country-card:active {
@@ -124,18 +182,25 @@
             line-height: 1.2;
         }
 
-        /* Estilo para País Completo */
         .country-card.completed {
             background-color: var(--completed-bg) !important;
             border-color: var(--completed-border) !important;
         }
 
-        .country-card.completed .name {
-            color: #1b5e20;
+        .country-card.special {
+            background-color: #fff3e0;
+            border-color: #ffe082;
+            grid-column: 1 / -1;
+            flex-direction: row;
+            gap: 10px;
         }
 
-        .country-card.completed .code {
-            color: #2e7d32;
+        .country-card.cocacola {
+            background-color: #ffebee;
+            border-color: #ef9a9a;
+            grid-column: 1 / -1;
+            flex-direction: row;
+            gap: 10px;
         }
 
         .completed-badge {
@@ -148,25 +213,6 @@
             font-weight: bold;
         }
 
-        .country-card.special {
-            background-color: #fff3e0;
-            border-color: #ffe082;
-            grid-column: 1 / -1;
-            flex-direction: row;
-            gap: 10px;
-            font-size: 1.1rem;
-        }
-
-        .country-card.cocacola {
-            background-color: #ffebee;
-            border-color: #ef9a9a;
-            grid-column: 1 / -1;
-            flex-direction: row;
-            gap: 10px;
-            font-size: 1.1rem;
-        }
-
-        /* --- NAVEGAÇÃO E VOLTAR --- */
         .navigation-bar {
             display: flex;
             align-items: center;
@@ -195,7 +241,6 @@
             color: var(--primary);
         }
 
-        /* --- VISÃO 2: GRADE DE FIGURINHAS --- */
         .stickers-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
@@ -221,7 +266,6 @@
             font-size: 1rem;
             position: relative;
             box-sizing: border-box;
-            transition: transform 0.05s ease;
             touch-action: manipulation;
         }
 
@@ -267,17 +311,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
             font-weight: bold;
         }
 
-        /* --- MODAL DE RESUMO --- */
         .modal-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             background: rgba(0,0,0,0.5);
             display: flex;
             align-items: center;
@@ -295,7 +335,6 @@
             max-height: 80vh;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
             overflow: hidden;
         }
 
@@ -308,10 +347,7 @@
             align-items: center;
         }
 
-        .modal-header h2 {
-            margin: 0;
-            font-size: 1.1rem;
-        }
+        .modal-header h2 { margin: 0; font-size: 1.1rem; }
 
         .btn-close-modal {
             background: transparent;
@@ -319,7 +355,6 @@
             color: white;
             font-size: 1.3rem;
             cursor: pointer;
-            font-weight: bold;
         }
 
         .modal-body {
@@ -335,12 +370,6 @@
             display: flex;
             flex-direction: column;
             gap: 4px;
-            transition: background-color 0.15s;
-            border-radius: 8px;
-        }
-
-        .summary-item:active {
-            background-color: #f0f0f0;
         }
 
         .summary-item-header {
@@ -356,49 +385,60 @@
             word-wrap: break-word;
         }
 
-        .hidden {
-            display: none !important;
-        }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Álbum Copa 2026 🏆</h1>
-        <p id="header-subtitle">Escolha um país para ver as figurinhas</p>
-        <div class="header-counter" id="header-counter">Carregando contador...</div>
-    </header>
-
-    <!-- TELA 1: MENU COM TODOS OS PAÍSES DE UMA VEZ -->
-    <div id="countries-view">
-        <div class="summary-btn-container">
-            <button class="btn-summary" id="btn-open-summary">📋 Ver Figurinhas Faltantes</button>
-        </div>
-        <div class="countries-grid" id="countries-grid"></div>
+    <!-- TELA DE LOGIN -->
+    <div id="login-view" class="login-container">
+        <h2>Álbum Copa 2026 🏆</h2>
+        <form id="login-form">
+            <input type="email" id="login-email" class="login-input" placeholder="Seu e-mail" required />
+            <input type="password" id="login-password" class="login-input" placeholder="Sua senha" required />
+            <button type="submit" class="btn-login">Entrar</button>
+        </form>
+        <div id="login-error" class="login-error">E-mail ou senha incorretos.</div>
     </div>
 
-    <!-- TELA 2: GRADE DE FIGURINHAS DO PAÍS SELECIONADO -->
-    <div id="stickers-view" class="hidden">
-        <div class="navigation-bar">
-            <button class="btn-back" id="btn-back">← Voltar</button>
-            <span class="current-title" id="current-title"></span>
-        </div>
-        <div class="stickers-grid" id="stickers-grid"></div>
-    </div>
+    <!-- TELA PRINCIPAL (OCULTA POR PADRÃO) -->
+    <div id="app-view" class="hidden">
+        <header>
+            <button class="btn-logout" id="btn-logout">Sair 🚪</button>
+            <h1>Álbum Copa 2026 🏆</h1>
+            <p id="header-subtitle">Escolha um país para ver as figurinhas</p>
+            <div class="header-counter" id="header-counter">Carregando dados...</div>
+        </header>
 
-    <!-- MODAL DE RESUMO DE FIGURINHAS FALTANTES -->
-    <div id="summary-modal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Figurinhas Restantes</h2>
-                <button class="btn-close-modal" id="btn-close-summary">✕</button>
+        <div id="countries-view">
+            <div class="summary-btn-container">
+                <button class="btn-summary" id="btn-open-summary">📋 Ver Figurinhas Faltantes</button>
             </div>
-            <div class="modal-body" id="summary-body"></div>
+            <div class="countries-grid" id="countries-grid"></div>
+        </div>
+
+        <div id="stickers-view" class="hidden">
+            <div class="navigation-bar">
+                <button class="btn-back" id="btn-back">← Voltar</button>
+                <span class="current-title" id="current-title"></span>
+            </div>
+            <div class="stickers-grid" id="stickers-grid"></div>
+        </div>
+
+        <div id="summary-modal" class="modal-overlay hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Figurinhas Restantes</h2>
+                    <button class="btn-close-modal" id="btn-close-summary">✕</button>
+                </div>
+                <div class="modal-body" id="summary-body"></div>
+            </div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         const firebaseConfig = {
@@ -412,6 +452,7 @@
         };
 
         const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
         const db = getDatabase(app);
         const albumRef = ref(db, 'album2026');
 
@@ -427,7 +468,7 @@
             { id: 'QAT', nome: 'B4 - Catar 🇶🇦', total: 20 },
             { id: 'BRA', nome: 'C1 - Brasil 🇧🇷', total: 20 },
             { id: 'MAR', nome: 'C2 - Marrocos 🇲🇦', total: 20 },
-            { id: 'SCO', nome: 'C3 - Escócia 🏴󠁧󠁢󠁳󠁣󠁴󠁿', total: 20 },
+            { id: 'SCO', nome: 'C3 - Escócia 🏴󠁧󠁢󠁥󠁮󠁧󠁿', total: 20 },
             { id: 'HAI', nome: 'C4 - Haiti 🇭🇹', total: 20 },
             { id: 'USA', nome: 'D1 - Estados Unidos 🇺🇸', total: 20 },
             { id: 'AUS', nome: 'D2 - Austrália 🇦🇺', total: 20 },
@@ -472,6 +513,12 @@
         let secaoAtiva = null;
 
         // Elementos DOM
+        const loginView = document.getElementById('login-view');
+        const appView = document.getElementById('app-view');
+        const loginForm = document.getElementById('login-form');
+        const loginError = document.getElementById('login-error');
+        const btnLogout = document.getElementById('btn-logout');
+
         const countriesView = document.getElementById('countries-view');
         const stickersView = document.getElementById('stickers-view');
         const countriesGrid = document.getElementById('countries-grid');
@@ -485,7 +532,56 @@
         const btnOpenSummary = document.getElementById('btn-open-summary');
         const btnCloseSummary = document.getElementById('btn-close-summary');
 
-        // Retorna a lista de figurinhas faltantes formatadas com o código oficial (ex: BRA12)
+        // --- GERENCIAMENTO DE AUTENTICAÇÃO ---
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            loginError.style.display = 'none';
+
+            signInWithEmailAndPassword(auth, email, password)
+                .catch((error) => {
+                    loginError.style.display = 'block';
+                    loginError.textContent = "Erro ao entrar: E-mail ou senha inválidos.";
+                });
+        });
+
+        btnLogout.onclick = () => {
+            signOut(auth);
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Usuário logado
+                loginView.classList.add('hidden');
+                appView.classList.remove('hidden');
+                iniciarEscutaBanco();
+            } else {
+                // Usuário deslogado
+                appView.classList.add('hidden');
+                loginView.classList.remove('hidden');
+                dadosAlbum = {};
+            }
+        });
+
+        // --- ESCUTA DO BANCO DE DADOS ---
+        function iniciarEscutaBanco() {
+            onValue(albumRef, (snapshot) => {
+                headerCounter.style.backgroundColor = "rgba(255, 255, 255, 0.15)";
+                dadosAlbum = snapshot.val() || {};
+                atualizarContadorTopo();
+                renderizarMenuPaises();
+
+                if (secaoAtiva) {
+                    renderizarGridFigurinhas();
+                }
+            }, (error) => {
+                headerCounter.style.backgroundColor = "#c62828";
+                headerCounter.innerHTML = `⚠️ Acesso negado.`;
+            });
+        }
+
+        // --- LÓGICA DO ÁLBUM ---
         function obterFaltantesFormatados(secao) {
             const faltantes = [];
             const numeroInicial = (secao.id === 'FWC') ? 0 : 1;
@@ -499,21 +595,17 @@
             return faltantes;
         }
 
-        // Checa se a seção está 100% concluída
         function estaCompleto(secao) {
             return obterFaltantesFormatados(secao).length === 0;
         }
 
-        // Atualiza o contador do topo do app
         function atualizarContadorTopo() {
             let totalAlbum = 0;
             let totalFaltantes = 0;
 
             secoesAlbum.forEach(secao => {
-                const numInicial = (secao.id === 'FWC') ? 0 : 1;
                 const totalDaSecao = (secao.id === 'FWC') ? (secao.total + 1) : secao.total;
                 totalAlbum += totalDaSecao;
-
                 totalFaltantes += obterFaltantesFormatados(secao).length;
             });
 
@@ -527,7 +619,6 @@
             }
         }
 
-        // Renderizar Menu Principal de Países
         function renderizarMenuPaises() {
             countriesGrid.innerHTML = '';
             secoesAlbum.forEach(secao => {
@@ -562,7 +653,6 @@
             });
         }
 
-        // Navegar para o País Selecionado
         function abrirSecao(id) {
             secaoAtiva = id;
             const secao = secoesAlbum.find(s => s.id === id);
@@ -577,7 +667,6 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Voltar ao Menu Principal
         btnBack.onclick = () => {
             secaoAtiva = null;
             stickersView.classList.add('hidden');
@@ -586,7 +675,6 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
-        // Renderizar Figurinhas do País Ativo
         function renderizarGridFigurinhas() {
             if (!secaoAtiva) return;
 
@@ -615,11 +703,10 @@
                     card.innerHTML = `<div>${secao.id}</div><div>${numeroExibido}</div><span class="badge-repeated">${qtd - 1}</span>`;
                 }
 
-                // Interações de toque
                 let timerToque = null;
                 let isLongPress = false;
 
-                const aoPressionar = (e) => {
+                const aoPressionar = () => {
                     isLongPress = false;
                     timerToque = setTimeout(() => {
                         isLongPress = true;
@@ -631,7 +718,6 @@
 
                 const aoSoltar = (e) => {
                     if (timerToque) clearTimeout(timerToque);
-                    
                     if (!isLongPress) {
                         let novaQtd = (qtd === 0) ? 1 : qtd + 1;
                         if (e.shiftKey) novaQtd = 0;
@@ -652,7 +738,6 @@
             }
         }
 
-        // --- LÓGICA DO RESUMO DE FALTANTES ---
         function abrirResumo() {
             summaryBody.innerHTML = '';
             let totalFaltantesGeral = 0;
@@ -699,18 +784,6 @@
                 summaryModal.classList.add('hidden');
             }
         };
-
-        // Conexão em Tempo Real
-        onValue(albumRef, (snapshot) => {
-            dadosAlbum = snapshot.val() || {};
-            
-            atualizarContadorTopo();
-            renderizarMenuPaises();
-
-            if (secaoAtiva) {
-                renderizarGridFigurinhas();
-            }
-        });
     </script>
 </body>
 </html>
