@@ -581,4 +581,136 @@
         btnBack.onclick = () => {
             secaoAtiva = null;
             stickersView.classList.add('hidden');
+            countriesView.classList.remove('hidden');
+            headerSubtitle.textContent = "Escolha um país para ver as figurinhas";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        // Renderizar Figurinhas do País Ativo
+        function renderizarGridFigurinhas() {
+            if (!secaoAtiva) return;
+
+            const grid = document.getElementById('stickers-grid');
+            grid.innerHTML = '';
             
+            const secao = secoesAlbum.find(s => s.id === secaoAtiva);
+            const numeroInicial = (secao.id === 'FWC') ? 0 : 1;
+            
+            for (let i = numeroInicial; i <= secao.total; i++) {
+                const numeroExibido = (secao.id === 'CC') ? `${i}` : ((i === 0) ? '00' : `${i}`);
+                const codigoFigurinha = `${secao.id}-${numeroExibido}`;
+                const qtd = dadosAlbum[codigoFigurinha] || 0;
+
+                const card = document.createElement('div');
+                card.className = 'sticker-card ';
+                
+                if (qtd === 0) {
+                    card.className += 'status-missing';
+                    card.innerHTML = `<div>${secao.id}</div><div>${numeroExibido}</div>`;
+                } else if (qtd === 1) {
+                    card.className += 'status-owned';
+                    card.innerHTML = `<div>${secao.id}</div><div>${numeroExibido}</div>`;
+                } else {
+                    card.className += 'status-repeated';
+                    card.innerHTML = `<div>${secao.id}</div><div>${numeroExibido}</div><span class="badge-repeated">${qtd - 1}</span>`;
+                }
+
+                // Interações de toque
+                let timerToque = null;
+                let isLongPress = false;
+
+                const aoPressionar = (e) => {
+                    isLongPress = false;
+                    timerToque = setTimeout(() => {
+                        isLongPress = true;
+                        if (confirm(`Deseja resetar a figurinha ${codigoFigurinha} para 'Falta'?`)) {
+                            set(ref(db, `album2026/${codigoFigurinha}`), 0);
+                        }
+                    }, 700);
+                };
+
+                const aoSoltar = (e) => {
+                    if (timerToque) clearTimeout(timerToque);
+                    
+                    if (!isLongPress) {
+                        let novaQtd = (qtd === 0) ? 1 : qtd + 1;
+                        if (e.shiftKey) novaQtd = 0;
+                        set(ref(db, `album2026/${codigoFigurinha}`), novaQtd);
+                    }
+                };
+
+                const aoCancelar = () => {
+                    if (timerToque) clearTimeout(timerToque);
+                };
+
+                card.onpointerdown = aoPressionar;
+                card.onpointerup = aoSoltar;
+                card.onpointercancel = aoCancelar;
+                card.onpointerleave = aoCancelar;
+
+                grid.appendChild(card);
+            }
+        }
+
+        // --- LÓGICA DO RESUMO DE FALTANTES ---
+        function abrirResumo() {
+            summaryBody.innerHTML = '';
+            let totalFaltantesGeral = 0;
+
+            secoesAlbum.forEach(secao => {
+                const faltantes = obterFaltantesFormatados(secao);
+                if (faltantes.length > 0) {
+                    totalFaltantesGeral += faltantes.length;
+
+                    const item = document.createElement('div');
+                    item.className = 'summary-item';
+                    
+                    item.innerHTML = `
+                        <div class="summary-item-header">
+                            <span>${secao.nome}</span>
+                            <span>Faltam: ${faltantes.length}</span>
+                        </div>
+                        <div class="summary-item-numbers">
+                            ${faltantes.join(', ')}
+                        </div>
+                    `;
+
+                    item.onclick = () => {
+                        summaryModal.classList.add('hidden');
+                        abrirSecao(secao.id);
+                    };
+
+                    summaryBody.appendChild(item);
+                }
+            });
+
+            if (totalFaltantesGeral === 0) {
+                summaryBody.innerHTML = '<p style="text-align: center; color: #2e7d32; font-weight: bold;">Parabéns! Você completou o álbum inteiro! 🎉</p>';
+            }
+
+            summaryModal.classList.remove('hidden');
+        }
+
+        btnOpenSummary.onclick = abrirResumo;
+        btnCloseSummary.onclick = () => summaryModal.classList.add('hidden');
+
+        summaryModal.onclick = (e) => {
+            if (e.target === summaryModal) {
+                summaryModal.classList.add('hidden');
+            }
+        };
+
+        // Conexão em Tempo Real
+        onValue(albumRef, (snapshot) => {
+            dadosAlbum = snapshot.val() || {};
+            
+            atualizarContadorTopo();
+            renderizarMenuPaises();
+
+            if (secaoAtiva) {
+                renderizarGridFigurinhas();
+            }
+        });
+    </script>
+</body>
+</html>
