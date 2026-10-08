@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Passa para Lá - Equações do 1º Grau</title>
+    <title>Passa para Lá - Arraste e Solte</title>
     <style>
         :root {
             --primary: #58cc02;
@@ -14,10 +14,11 @@
             --error-bg: #ffdfe0;
             --success-bg: #d7ffb8;
             --text-main: #3c3c3c;
-            --text-muted: #afafaf;
+            --text-muted: #888888;
             --bg-app: #ffffff;
             --bg-card: #f8f9fa;
             --border: #e5e5e5;
+            --warning: #ff922b;
         }
 
         * {
@@ -25,6 +26,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
+            user-select: none;
         }
 
         body {
@@ -39,7 +41,7 @@
 
         .game-container {
             width: 100%;
-            max-width: 720px;
+            max-width: 760px;
             background: var(--bg-app);
             min-height: 100vh;
             display: flex;
@@ -89,9 +91,34 @@
 
         .btn-sys:hover { background: #e9ecef; }
         .btn-reset { background: #ffe3e3; color: var(--error); border-color: #ffa8a8; }
-        .btn-reset:hover { background: #ffc9c9; }
         .btn-finish { background: #e7f5ff; color: var(--secondary-dark); border-color: #a5d8ff; }
         .btn-switch { background: #e6fcf5; color: #0ca678; border-color: #96f2d7; }
+
+        /* Seletor de Modo de Jogo */
+        .mode-selector {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .btn-mode {
+            flex: 1;
+            padding: 10px;
+            font-weight: 800;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+
+        .btn-mode.active {
+            border-color: var(--secondary);
+            background: #e7f5ff;
+            color: var(--secondary-dark);
+        }
 
         .player-bar {
             display: flex;
@@ -112,13 +139,25 @@
         }
 
         .timer-display {
-            font-weight: 700;
-            font-size: 15px;
+            font-weight: 800;
+            font-size: 16px;
             background: #fff3bf;
             color: #f59f00;
-            padding: 6px 12px;
+            padding: 6px 14px;
             border-radius: 20px;
             border: 1px solid #ffe066;
+        }
+
+        .timer-display.danger {
+            background: #ffe3e3;
+            color: var(--error);
+            border-color: #ffa8a8;
+            animation: blink 0.5s infinite alternate;
+        }
+
+        @keyframes blink {
+            from { opacity: 1; }
+            to { opacity: 0.5; }
         }
 
         .progress-wrapper {
@@ -148,7 +187,7 @@
             font-weight: 700;
             font-size: 14px;
             color: var(--text-main);
-            min-width: 70px;
+            min-width: 80px;
             text-align: right;
         }
 
@@ -160,7 +199,7 @@
             gap: 20px;
         }
 
-        /* Seção de Seleção de Aluno */
+        /* Tela de Seleção */
         .setup-screen {
             display: flex;
             flex-direction: column;
@@ -173,7 +212,7 @@
             grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
             gap: 10px;
             margin-top: 10px;
-            max-height: 70vh;
+            max-height: 60vh;
             overflow-y: auto;
             padding-right: 5px;
         }
@@ -206,7 +245,7 @@
         .btn-student .name { font-weight: 700; font-size: 13px; text-transform: uppercase; }
         .btn-student .status { font-size: 11px; color: var(--text-muted); }
 
-        /* Tela de Ranking */
+        /* Ranking */
         .ranking-screen {
             display: none;
             flex-direction: column;
@@ -245,7 +284,7 @@
             border-radius: 16px;
             padding: 20px;
             min-height: 180px;
-            max-height: 380px;
+            max-height: 320px;
             overflow-y: auto;
         }
 
@@ -299,66 +338,80 @@
             padding-top: 15px;
         }
 
+        .instructions-hint {
+            font-size: 13px;
+            color: var(--text-muted);
+            text-align: center;
+            font-weight: 600;
+        }
+
+        /* Área de Arraste */
         .terms-editor {
             display: flex;
             justify-content: space-between;
             align-items: center;
             background: #f1f3f5;
-            padding: 15px;
-            border-radius: 14px;
+            padding: 20px 15px;
+            border-radius: 16px;
             gap: 10px;
-            flex-wrap: wrap;
+            min-height: 110px;
         }
 
         .side-box {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             align-items: center;
             flex-wrap: wrap;
             flex: 1;
             justify-content: center;
+            min-height: 70px;
+            padding: 8px;
+            border: 2px dashed #ced4da;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.5);
+            transition: all 0.2s;
         }
 
+        .side-box.drag-over {
+            background: #e7f5ff;
+            border-color: var(--secondary);
+            transform: scale(1.02);
+        }
+
+        /* Card Interativo */
         .term-card {
             background: white;
             border: 2px solid var(--secondary);
-            border-radius: 10px;
-            padding: 6px 10px;
+            border-radius: 12px;
+            padding: 10px 16px;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            gap: 5px;
-            box-shadow: 0 3px 0 var(--border);
+            justify-content: center;
+            box-shadow: 0 4px 0 var(--secondary-dark);
+            cursor: grab;
+            touch-action: none;
+            transition: transform 0.1s, box-shadow 0.1s, border-color 0.2s;
+            position: relative;
+        }
+
+        .term-card:active {
+            cursor: grabbing;
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
         }
 
         .term-val {
-            font-size: 18px;
-            font-weight: 700;
-        }
-
-        .term-actions {
-            display: flex;
-            gap: 4px;
-        }
-
-        .btn-mini {
-            font-size: 11px;
-            padding: 4px 8px;
-            border: none;
-            border-radius: 4px;
-            font-weight: 700;
-            cursor: pointer;
-            background: #e9ecef;
+            font-size: 22px;
+            font-weight: 800;
             color: var(--text-main);
-            transition: all 0.1s;
+            pointer-events: none;
         }
-        .btn-mini:hover { background: #dee2e6; }
-        .btn-move { background: #ffe3e3; color: #d9480f; }
 
         .equals-sign {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: 800;
             color: var(--secondary);
+            padding: 0 5px;
         }
 
         .action-row {
@@ -457,7 +510,7 @@
 <div class="game-container">
     <header>
         <div class="header-top">
-            <h1>Passa para Lá</h1>
+            <h1>Passa para Lá ✋</h1>
             <div class="system-controls">
                 <button class="btn-sys btn-switch" id="header-switch-btn" onclick="backToSelect()" style="display:none;">👤 Trocar Aluno</button>
                 <button class="btn-sys btn-finish" onclick="showRanking()">🏆 Ranking / Finalizar</button>
@@ -482,9 +535,15 @@
     </header>
 
     <main>
-        <!-- Tela de Seleção de Aluno -->
+        <!-- Tela de Seleção de Aluno e Modo -->
         <div class="setup-screen" id="setup-screen">
-            <h2>Selecione o Aluno para a Lousa</h2>
+            <h2>Selecione o Modo e o Aluno</h2>
+            
+            <div class="mode-selector">
+                <button class="btn-mode active" id="mode-normal-btn" onclick="setGameMode('normal')">📘 Modo Normal (50 Qs)</button>
+                <button class="btn-mode" id="mode-attack-btn" onclick="setGameMode('attack')">⚡ Minute Attack (1 Min)</button>
+            </div>
+
             <div class="students-grid" id="students-grid"></div>
         </div>
 
@@ -493,16 +552,21 @@
             <div class="history-container" id="history-box"></div>
 
             <div class="controls-area" id="controls-panel">
+                <div class="instructions-hint">
+                    💡 <b>Arraste</b> o termo para trocar de lado (inverte o sinal).<br>
+                    ✌️ <b>Toque duplo / Clique duplo</b> no termo para alterar o sinal (+/-).
+                </div>
+
                 <div class="terms-editor">
-                    <div class="side-box" id="left-side"></div>
+                    <div class="side-box" id="left-side" data-side="left"></div>
                     <div class="equals-sign">=</div>
-                    <div class="side-box" id="right-side"></div>
+                    <div class="side-box" id="right-side" data-side="right"></div>
                 </div>
 
                 <div class="action-row">
                     <button class="btn-action primary" onclick="reduceTerms()">Efetuar Operações (Somar/Subtrair)</button>
                     <div class="divide-control">
-                        <span>Dividir ambos por:</span>
+                        <span>Dividir por:</span>
                         <select id="divisor-select">
                             <option value="2">2</option>
                             <option value="3">3</option>
@@ -513,7 +577,7 @@
                             <option value="8">8</option>
                             <option value="9">9</option>
                         </select>
-                        <button class="btn-mini" style="padding:6px 10px; background:var(--secondary); color:white;" onclick="applyDivision()">ok</button>
+                        <button class="btn-mini" style="padding:6px 10px; background:var(--secondary); color:white; border-radius:6px; border:none; font-weight:700; cursor:pointer;" onclick="applyDivision()">ok</button>
                     </div>
                 </div>
             </div>
@@ -521,9 +585,9 @@
 
         <!-- Tela de Ranking Final -->
         <div class="ranking-screen" id="ranking-screen">
-            <h2>🏆 Ranking do Desafio</h2>
+            <h2 id="ranking-title">🏆 Ranking do Desafio</h2>
             <div class="ranking-list" id="ranking-list"></div>
-            <button class="btn-action primary" style="margin-top:15px;" onclick="backToSelect()">Voltar para Seleção de Alunos</button>
+            <button class="btn-action primary" style="margin-top:15px;" onclick="backToSelect()">Voltar para Seleção</button>
         </div>
     </main>
 
@@ -539,7 +603,6 @@
 <script>
     const EMOJIS = ['🐶', '🐱', '🦊', '🦁', '🐸', '🐵', '🦄', '🐼', '🐯', '🐨', '🐙', '🦖', '🤖', '🚀', '⭐', '🍎', '⚽', '🎨'];
     
-    // Lista com a ordem e nomes exatos da foto enviada
     const OFFICIAL_STUDENTS = [
         "ALUNO TESTE",
         "1. ALYCE F.", "2. ANA CLARA", "3. ANA JÚLIA", "4. ANGEL R.",
@@ -553,9 +616,12 @@
 
     let students = [];
     let activeStudent = null;
+    let currentGameMode = 'normal'; // 'normal' ou 'attack'
+    let attackScore = 0;
+    let attackTimeLeft = 60;
 
     function initStudents() {
-        let saved = localStorage.getItem('passa_para_la_students_v2');
+        let saved = localStorage.getItem('passa_para_la_v3');
         if(saved) {
             students = JSON.parse(saved);
         } else {
@@ -565,14 +631,15 @@
                 isTest: idx === 0,
                 emoji: idx === 0 ? '⚙️' : EMOJIS[Math.floor(Math.random() * EMOJIS.length)],
                 completed: 0,
-                totalTime: 0
+                totalTime: 0,
+                attackRecord: 0
             }));
             saveStudents();
         }
     }
 
     function saveStudents() {
-        localStorage.setItem('passa_para_la_students_v2', JSON.stringify(students));
+        localStorage.setItem('passa_para_la_v3', JSON.stringify(students));
     }
 
     // Cronômetro
@@ -582,19 +649,40 @@
 
     function startTimer() {
         stopTimer();
-        startTime = Date.now();
-        timerInterval = setInterval(() => {
-            let currentSession = Math.floor((Date.now() - startTime) / 1000);
-            let displayTime = elapsedSeconds + currentSession;
-            document.getElementById('timer-display').innerText = `⏱️ ${formatTime(displayTime)}`;
-        }, 1000);
+        const timerDisplay = document.getElementById('timer-display');
+        timerDisplay.classList.remove('danger');
+
+        if(currentGameMode === 'normal') {
+            startTime = Date.now();
+            timerInterval = setInterval(() => {
+                let currentSession = Math.floor((Date.now() - startTime) / 1000);
+                let displayTime = elapsedSeconds + currentSession;
+                timerDisplay.innerText = `⏱️ ${formatTime(displayTime)}`;
+            }, 1000);
+        } else {
+            // Minute Attack Mode (60 segundos regressivos)
+            attackTimeLeft = 60;
+            timerDisplay.innerText = `⚡ 01:00`;
+            timerInterval = setInterval(() => {
+                attackTimeLeft--;
+                if(attackTimeLeft <= 10) timerDisplay.classList.add('danger');
+                
+                let s = attackTimeLeft.toString().padStart(2, '0');
+                timerDisplay.innerText = `⚡ 00:${s}`;
+
+                if(attackTimeLeft <= 0) {
+                    stopTimer();
+                    finishMinuteAttack();
+                }
+            }, 1000);
+        }
     }
 
     function stopTimer() {
         if(timerInterval) {
             clearInterval(timerInterval);
             timerInterval = null;
-            if(startTime > 0) {
+            if(currentGameMode === 'normal' && startTime > 0) {
                 elapsedSeconds += Math.floor((Date.now() - startTime) / 1000);
                 startTime = 0;
             }
@@ -607,10 +695,10 @@
         return `${m}:${s}`;
     }
 
-    // Gerador de Equações
+    // Gerador e Embaralhador de Equações Dinâmicas
     function generateEquations() {
         let eqList = [];
-        while(eqList.length < 50) {
+        while(eqList.length < 100) { // Gera bastantes equações aleatórias
             let x = Math.floor(Math.random() * 12) - 5;
             if(x === 0) x = 2;
             let a = Math.floor(Math.random() * 7) + 2;
@@ -625,6 +713,13 @@
                 targetX: x
             });
         }
+        
+        // Algoritmo Fisher-Yates para garantir aleatoriedade real
+        for (let i = eqList.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [eqList[i], eqList[j]] = [eqList[j], eqList[i]];
+        }
+
         return eqList;
     }
 
@@ -689,9 +784,16 @@
         } catch(e) {}
     }
 
+    function setGameMode(mode) {
+        currentGameMode = mode;
+        document.getElementById('mode-normal-btn').className = `btn-mode ${mode === 'normal' ? 'active' : ''}`;
+        document.getElementById('mode-attack-btn').className = `btn-mode ${mode === 'attack' ? 'active' : ''}`;
+        renderSetupScreen();
+    }
+
     function renderSetupScreen() {
         stopTimer();
-        if(activeStudent) {
+        if(activeStudent && currentGameMode === 'normal') {
             activeStudent.totalTime = elapsedSeconds;
             saveStudents();
         }
@@ -705,24 +807,38 @@
         document.getElementById('header-switch-btn').style.display = 'none';
 
         const grid = document.getElementById('students-grid');
-        grid.innerHTML = students.map(s => `
-            <button class="btn-student ${s.isTest ? 'is-test' : ''}" onclick="selectStudent(${s.id})">
-                <span class="emoji">${s.emoji}</span>
-                <span class="name">${s.name}</span>
-                <span class="status">${s.completed}/50 res. (${formatTime(s.totalTime)})</span>
-            </button>
-        `).join('');
+        grid.innerHTML = students.map(s => {
+            let statusText = currentGameMode === 'normal' 
+                ? `${s.completed}/50 res. (${formatTime(s.totalTime)})`
+                : `Recorde: ${s.attackRecord || 0} eq/min`;
+
+            return `
+                <button class="btn-student ${s.isTest ? 'is-test' : ''}" onclick="selectStudent(${s.id})">
+                    <span class="emoji">${s.emoji}</span>
+                    <span class="name">${s.name}</span>
+                    <span class="status">${statusText}</span>
+                </button>
+            `;
+        }).join('');
     }
 
     function selectStudent(id) {
         activeStudent = students.find(s => s.id === id);
-        currentIdx = activeStudent.completed;
-        elapsedSeconds = activeStudent.totalTime;
+        challenges = generateEquations(); // Gera nova sequência randomizada
 
-        if(currentIdx >= 50) {
-            alert(`${activeStudent.name} já concluiu as 50 equações!`);
-            showRanking();
-            return;
+        if(currentGameMode === 'normal') {
+            currentIdx = activeStudent.completed;
+            elapsedSeconds = activeStudent.totalTime;
+
+            if(currentIdx >= 50) {
+                alert(`${activeStudent.name} já completou todas as 50 equações!`);
+                showRanking();
+                return;
+            }
+        } else {
+            // Minute Attack
+            attackScore = 0;
+            currentIdx = 0;
         }
 
         document.getElementById('setup-screen').style.display = 'none';
@@ -742,12 +858,17 @@
 
     function loadLevel() {
         isFinished = false;
-        let c = challenges[currentIdx];
+        let c = challenges[currentIdx % challenges.length];
         currentState = JSON.parse(JSON.stringify({ left: c.left, right: c.right }));
         historySteps = [];
         
-        document.getElementById('progress-bar').style.width = ((currentIdx + 1) / 50 * 100) + '%';
-        document.getElementById('stats-display').innerText = `Nível ${currentIdx + 1}/50`;
+        if(currentGameMode === 'normal') {
+            document.getElementById('progress-bar').style.width = ((currentIdx + 1) / 50 * 100) + '%';
+            document.getElementById('stats-display').innerText = `Nível ${currentIdx + 1}/50`;
+        } else {
+            document.getElementById('progress-bar').style.width = '100%';
+            document.getElementById('stats-display').innerText = `Acertos: ${attackScore}`;
+        }
         
         document.getElementById('feedback-footer').className = "";
         document.getElementById('feedback-text').style.display = 'none';
@@ -804,21 +925,116 @@
         const leftEl = document.getElementById('left-side');
         const rightEl = document.getElementById('right-side');
 
-        leftEl.innerHTML = currentState.left.map((t, i) => createTermCard(t, 'left', i)).join('');
-        rightEl.innerHTML = currentState.right.map((t, i) => createTermCard(t, 'right', i)).join('');
+        leftEl.innerHTML = currentState.left.map((t, i) => createTermCardHTML(t, 'left', i)).join('');
+        rightEl.innerHTML = currentState.right.map((t, i) => createTermCardHTML(t, 'right', i)).join('');
+
+        setupDragAndDropAndDoubleTap();
     }
 
-    function createTermCard(term, side, index) {
+    function createTermCardHTML(term, side, index) {
         let label = formatTerm(term, true);
         return `
-            <div class="term-card">
+            <div class="term-card" 
+                 data-side="${side}" 
+                 data-index="${index}" 
+                 draggable="true">
                 <span class="term-val">${label}</span>
-                <div class="term-actions">
-                    <button class="btn-mini btn-move" onclick="moveTerm('${side}', ${index})">Mover ⇄</button>
-                    <button class="btn-mini" onclick="toggleSign('${side}', ${index})">+/-</button>
-                </div>
             </div>
         `;
+    }
+
+    // Lógica Drag & Drop + Duplo Toque
+    let draggedItemInfo = null;
+
+    function setupDragAndDropAndDoubleTap() {
+        const cards = document.querySelectorAll('.term-card');
+        const boxes = document.querySelectorAll('.side-box');
+
+        cards.forEach(card => {
+            // Duplo clique (Desktop)
+            card.addEventListener('dblclick', (e) => {
+                if(isFinished) return;
+                let side = card.getAttribute('data-side');
+                let index = parseInt(card.getAttribute('data-index'));
+                toggleSign(side, index);
+            });
+
+            // Duplo toque (Lousa / Mobile)
+            let lastTapTime = 0;
+            card.addEventListener('touchend', (e) => {
+                if(isFinished) return;
+                let currentTime = new Date().getTime();
+                let tapLength = currentTime - lastTapTime;
+
+                if (tapLength < 300 && tapLength > 0) {
+                    e.preventDefault();
+                    let side = card.getAttribute('data-side');
+                    let index = parseInt(card.getAttribute('data-index'));
+                    toggleSign(side, index);
+                    lastTapTime = 0;
+                } else {
+                    lastTapTime = currentTime;
+                }
+            });
+
+            // Arraste Mouse
+            card.addEventListener('dragstart', (e) => {
+                if(isFinished) return;
+                draggedItemInfo = {
+                    side: card.getAttribute('data-side'),
+                    index: parseInt(card.getAttribute('data-index'))
+                };
+                e.dataTransfer.setData('text/plain', JSON.stringify(draggedItemInfo));
+            });
+
+            // Arraste Touch
+            card.addEventListener('touchstart', (e) => {
+                if(isFinished) return;
+                draggedItemInfo = {
+                    side: card.getAttribute('data-side'),
+                    index: parseInt(card.getAttribute('data-index'))
+                };
+            }, {passive: true});
+
+            card.addEventListener('touchend', (e) => {
+                if(!draggedItemInfo || isFinished) return;
+                let touch = e.changedTouches[0];
+                let targetEl = document.elementFromPoint(touch.clientX, touch.clientY);
+                if(targetEl) {
+                    let box = targetEl.closest('.side-box');
+                    if(box) {
+                        let targetSide = box.getAttribute('data-side');
+                        if(targetSide !== draggedItemInfo.side) {
+                            moveTerm(draggedItemInfo.side, draggedItemInfo.index);
+                        }
+                    }
+                }
+                draggedItemInfo = null;
+            });
+        });
+
+        boxes.forEach(box => {
+            box.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                box.classList.add('drag-over');
+            });
+
+            box.addEventListener('dragleave', () => {
+                box.classList.remove('drag-over');
+            });
+
+            box.addEventListener('drop', (e) => {
+                e.preventDefault();
+                box.classList.remove('drag-over');
+                if(!draggedItemInfo || isFinished) return;
+                
+                let targetSide = box.getAttribute('data-side');
+                if(targetSide !== draggedItemInfo.side) {
+                    moveTerm(draggedItemInfo.side, draggedItemInfo.index);
+                }
+                draggedItemInfo = null;
+            });
+        });
     }
 
     function moveTerm(fromSide, index) {
@@ -828,14 +1044,14 @@
         term.coef = -term.coef;
         currentState[targetSide].push(term);
         
-        addHistoryStep("Troca de lado (Muda Sinal)", renderMathHTML(currentState));
+        addHistoryStep("Arrastou para o outro lado (Inverte Sinal)", renderMathHTML(currentState));
         renderEditor();
     }
 
     function toggleSign(side, index) {
         if(isFinished) return;
         currentState[side][index].coef = -currentState[side][index].coef;
-        addHistoryStep("Alteração de Sinal", renderMathHTML(currentState));
+        addHistoryStep("Duplo toque: Inverteu o Sinal (+/-)", renderMathHTML(currentState));
         renderEditor();
     }
 
@@ -880,7 +1096,7 @@
     function checkOrNext() {
         if(!isFinished) {
             let xVal = null;
-            let target = challenges[currentIdx].targetX;
+            let target = challenges[currentIdx % challenges.length].targetX;
 
             if(currentState.left.length === 1 && currentState.left[0].var === 'x' && currentState.left[0].coef === 1 && currentState.right.length === 1 && currentState.right[0].var === '') {
                 xVal = currentState.right[0].coef;
@@ -890,26 +1106,39 @@
 
             if(xVal === target) {
                 isFinished = true;
-                stopTimer();
 
-                activeStudent.completed += 1;
-                activeStudent.totalTime = elapsedSeconds;
-                saveStudents();
+                if(currentGameMode === 'normal') {
+                    stopTimer();
+                    activeStudent.completed += 1;
+                    activeStudent.totalTime = elapsedSeconds;
+                    saveStudents();
 
-                document.getElementById('feedback-footer').className = "correct";
-                document.getElementById('feedback-text').innerText = `Excelente! Solução Correta: x = ${target} 🎉`;
-                document.getElementById('feedback-text').style.display = 'block';
-                document.getElementById('action-btn').innerText = "PRÓXIMO DESAFIO DO MESMO ALUNO";
-                document.getElementById('switch-after-btn').style.display = 'block';
+                    document.getElementById('feedback-footer').className = "correct";
+                    document.getElementById('feedback-text').innerText = `Excelente! Solução Correta: x = ${target} 🎉`;
+                    document.getElementById('feedback-text').style.display = 'block';
+                    document.getElementById('action-btn').innerText = "PRÓXIMO DESAFIO DO MESMO ALUNO";
+                    document.getElementById('switch-after-btn').style.display = 'block';
+                } else {
+                    // Minute Attack: vai para a próxima imediatamente
+                    attackScore++;
+                    if(attackScore > (activeStudent.attackRecord || 0)) {
+                        activeStudent.attackRecord = attackScore;
+                        saveStudents();
+                    }
+                    triggerConfetti();
+                    currentIdx++;
+                    loadLevel();
+                    return;
+                }
                 
                 triggerConfetti();
                 playApplaud();
             } else {
-                alert("A equação ainda não está totalmente resolvida isolando o 'x' corretamente! Continue os passos.");
+                alert("A equação ainda não está totalmente resolvida isolando o 'x' corretamente!");
             }
         } else {
             currentIdx++;
-            if(currentIdx >= 50) {
+            if(currentIdx >= 50 && currentGameMode === 'normal') {
                 alert(`Parabéns ${activeStudent.name}! Você completou todas as 50 equações!`);
                 showRanking();
             } else {
@@ -919,6 +1148,17 @@
         }
     }
 
+    function finishMinuteAttack() {
+        alert(`⏰ TEMPO ESGOTADO! ${activeStudent.name} resolveu ${attackScore} equações em 1 minuto!`);
+        
+        if(attackScore > (activeStudent.attackRecord || 0)) {
+            activeStudent.attackRecord = attackScore;
+            saveStudents();
+        }
+
+        renderSetupScreen();
+    }
+
     function switchAfterSuccess() {
         currentIdx++;
         renderSetupScreen();
@@ -926,7 +1166,7 @@
 
     function showRanking() {
         stopTimer();
-        if(activeStudent) {
+        if(activeStudent && currentGameMode === 'normal') {
             activeStudent.totalTime = elapsedSeconds;
             saveStudents();
         }
@@ -939,19 +1179,32 @@
         document.getElementById('feedback-footer').style.display = 'none';
         document.getElementById('header-switch-btn').style.display = 'none';
 
-        // Filtra para remover o aluno de teste do ranking final de competição (opcional)
+        document.getElementById('ranking-title').innerText = currentGameMode === 'normal' 
+            ? '🏆 Ranking do Modo Normal (50 Equações)' 
+            : '⚡ Ranking Minute Attack (Equações em 1 min)';
+
         let sorted = [...students].sort((a, b) => {
-            if (b.completed !== a.completed) return b.completed - a.completed;
-            return a.totalTime - b.totalTime;
+            if(currentGameMode === 'normal') {
+                if (b.completed !== a.completed) return b.completed - a.completed;
+                return a.totalTime - b.totalTime;
+            } else {
+                return (b.attackRecord || 0) - (a.attackRecord || 0);
+            }
         });
 
         const list = document.getElementById('ranking-list');
-        list.innerHTML = sorted.map((s, idx) => `
-            <div class="ranking-item">
-                <span>#${idx + 1} ${s.emoji} ${s.name}</span>
-                <span>${s.completed} resolvidas (${formatTime(s.totalTime)})</span>
-            </div>
-        `).join('');
+        list.innerHTML = sorted.map((s, idx) => {
+            let scoreText = currentGameMode === 'normal'
+                ? `${s.completed} resolvidas (${formatTime(s.totalTime)})`
+                : `${s.attackRecord || 0} equações/min`;
+
+            return `
+                <div class="ranking-item">
+                    <span>#${idx + 1} ${s.emoji} ${s.name}</span>
+                    <span>${scoreText}</span>
+                </div>
+            `;
+        }).join('');
     }
 
     function backToSelect() {
@@ -959,8 +1212,8 @@
     }
 
     function resetAll() {
-        if(confirm("Deseja resetar o progresso e tempos de TODOS os alunos?")) {
-            localStorage.removeItem('passa_para_la_students_v2');
+        if(confirm("Deseja resetar o progresso, tempos e recordes de TODOS os alunos?")) {
+            localStorage.removeItem('passa_para_la_v3');
             initStudents();
             activeStudent = null;
             renderSetupScreen();
