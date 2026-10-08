@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Passa para Lá - Arraste e Solte</title>
+    <title>Passa para Lá - Equações</title>
     <style>
         :root {
             --primary: #58cc02;
@@ -11,14 +11,11 @@
             --secondary: #1cb0f6;
             --secondary-dark: #1899d6;
             --error: #ea2b2b;
-            --error-bg: #ffdfe0;
-            --success-bg: #d7ffb8;
             --text-main: #3c3c3c;
-            --text-muted: #888888;
+            --text-muted: #777777;
             --bg-app: #ffffff;
             --bg-card: #f8f9fa;
             --border: #e5e5e5;
-            --warning: #ff922b;
         }
 
         * {
@@ -36,17 +33,16 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            overflow-x: hidden;
         }
 
         .game-container {
             width: 100%;
-            max-width: 760px;
+            max-width: 1100px;
             background: var(--bg-app);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 0 20px rgba(0,0,0,0.05);
+            box-shadow: 0 0 20px rgba(0,0,0,0.08);
             position: relative;
         }
 
@@ -56,6 +52,7 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
+            background: #fff;
         }
 
         .header-top {
@@ -67,9 +64,9 @@
         }
 
         h1 {
-            font-size: 20px;
-            color: var(--secondary);
-            font-weight: 700;
+            font-size: 22px;
+            color: var(--secondary-dark);
+            font-weight: 800;
         }
 
         .system-controls {
@@ -86,9 +83,7 @@
             font-weight: 700;
             cursor: pointer;
             font-size: 13px;
-            transition: all 0.2s;
         }
-
         .btn-sys:hover { background: #e9ecef; }
         .btn-reset { background: #ffe3e3; color: var(--error); border-color: #ffa8a8; }
         .btn-finish { background: #e7f5ff; color: var(--secondary-dark); border-color: #a5d8ff; }
@@ -103,13 +98,12 @@
 
         .btn-mode {
             flex: 1;
-            padding: 10px;
+            padding: 12px;
             font-weight: 800;
             border: 2px solid var(--border);
             border-radius: 10px;
             background: white;
             cursor: pointer;
-            transition: all 0.2s;
             font-size: 14px;
         }
 
@@ -151,12 +145,6 @@
             background: #ffe3e3;
             color: var(--error);
             border-color: #ffa8a8;
-            animation: blink 0.5s infinite alternate;
-        }
-
-        @keyframes blink {
-            from { opacity: 1; }
-            to { opacity: 0.5; }
         }
 
         .progress-wrapper {
@@ -185,8 +173,7 @@
         .stats {
             font-weight: 700;
             font-size: 14px;
-            color: var(--text-main);
-            min-width: 80px;
+            min-width: 90px;
             text-align: right;
         }
 
@@ -195,9 +182,9 @@
             padding: 20px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
         }
 
+        /* TELA DE SELEÇÃO DE ALUNOS */
         .setup-screen {
             display: flex;
             flex-direction: column;
@@ -225,7 +212,7 @@
             flex-direction: column;
             align-items: center;
             gap: 4px;
-            transition: all 0.2s;
+            transition: transform 0.1s;
         }
 
         .btn-student:hover {
@@ -243,6 +230,215 @@
         .btn-student .name { font-weight: 700; font-size: 13px; text-transform: uppercase; }
         .btn-student .status { font-size: 11px; color: var(--text-muted); }
 
+        /* LAYOUT EM 2 COLUNAS DO JOGO */
+        .two-columns-layout {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 20px;
+            width: 100%;
+            height: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .two-columns-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .column-panel {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .panel-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--secondary-dark);
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* COLUNA 1: MANIPULAÇÃO */
+        .instructions-hint {
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.4;
+            background: #fff;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px dashed var(--border);
+        }
+
+        .terms-editor {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #ffffff;
+            padding: 15px 10px;
+            border-radius: 12px;
+            gap: 6px;
+            border: 2px solid var(--border);
+            min-height: 120px;
+        }
+
+        .side-box {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+            flex: 1;
+            justify-content: center;
+            min-height: 80px;
+            padding: 8px;
+            border: 2px dashed #ced4da;
+            border-radius: 10px;
+            background: #f8f9fa;
+        }
+
+        .side-box.drag-over {
+            background: #e7f5ff;
+            border-color: var(--secondary);
+        }
+
+        .term-card {
+            background: white;
+            border: 2px solid var(--secondary);
+            border-radius: 10px;
+            padding: 8px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 0 var(--secondary-dark);
+            cursor: grab;
+            touch-action: none;
+        }
+
+        .term-card:active {
+            cursor: grabbing;
+            transform: scale(1.05);
+        }
+
+        .term-val {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--text-main);
+            pointer-events: none;
+        }
+
+        .equals-sign {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--secondary);
+        }
+
+        .action-column {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-action {
+            background: white;
+            border: 2px solid var(--border);
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 3px 0 var(--border);
+            text-align: center;
+            font-size: 14px;
+        }
+        .btn-action:active { transform: translateY(2px); box-shadow: none; }
+        .btn-action.primary { 
+            background: var(--secondary); 
+            color: white; 
+            border-color: var(--secondary-dark); 
+            box-shadow: 0 3px 0 var(--secondary-dark); 
+        }
+
+        .divide-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: white;
+            border: 2px solid var(--border);
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-weight: 700;
+            justify-content: space-between;
+        }
+
+        select {
+            padding: 4px 8px;
+            font-weight: 700;
+            font-size: 15px;
+            border-radius: 6px;
+            border: 2px solid var(--border);
+        }
+
+        /* COLUNA 2: HISTÓRICO / RESUMO DO PASSO A PASSO */
+        .history-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .history-step {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding: 10px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+        }
+
+        .step-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .math-display {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+            font-weight: 800;
+            font-size: 18px;
+            color: var(--text-main);
+        }
+
+        .fraction {
+            display: inline-flex;
+            flex-direction: column;
+            vertical-align: middle;
+            text-align: center;
+            padding: 0 4px;
+        }
+        .fraction .numerator {
+            border-bottom: 2px solid var(--text-main);
+            padding-bottom: 1px;
+        }
+        .fraction .denominator {
+            padding-top: 1px;
+        }
+
+        /* TELA DE RANKING */
         .ranking-screen {
             display: none;
             flex-direction: column;
@@ -268,202 +464,21 @@
             font-weight: 700;
         }
 
-        .ranking-item:nth-child(1) { border-color: #ffd43b; background: #fff9db; }
-        .ranking-item:nth-child(2) { border-color: #ced4da; background: #f8f9fa; }
-        .ranking-item:nth-child(3) { border-color: #d9480f; background: #ffe8cc; }
-
-        .history-container {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            background: var(--bg-card);
-            border: 2px solid var(--border);
-            border-radius: 16px;
-            padding: 20px;
-            min-height: 180px;
-            max-height: 320px;
-            overflow-y: auto;
-        }
-
-        .history-step {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px;
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 20px;
-        }
-
-        .step-num {
-            font-size: 13px;
-            background: var(--secondary);
-            color: white;
-            border-radius: 6px;
-            padding: 3px 8px;
-        }
-
-        .math-display {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .fraction {
-            display: inline-flex;
-            flex-direction: column;
-            vertical-align: middle;
-            text-align: center;
-            padding: 0 4px;
-        }
-        .fraction .numerator {
-            border-bottom: 2px solid var(--text-main);
-            padding-bottom: 2px;
-        }
-        .fraction .denominator {
-            padding-top: 2px;
-        }
-
-        .controls-area {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            border-top: 2px dashed var(--border);
-            padding-top: 15px;
-        }
-
-        .instructions-hint {
-            font-size: 13px;
-            color: var(--text-muted);
-            text-align: center;
-            font-weight: 600;
-        }
-
-        .terms-editor {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #f1f3f5;
-            padding: 20px 15px;
-            border-radius: 16px;
-            gap: 10px;
-            min-height: 110px;
-        }
-
-        .side-box {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            flex-wrap: wrap;
-            flex: 1;
-            justify-content: center;
-            min-height: 70px;
-            padding: 8px;
-            border: 2px dashed #ced4da;
-            border-radius: 12px;
-            background: rgba(255,255,255,0.5);
-            transition: all 0.2s;
-        }
-
-        .side-box.drag-over {
-            background: #e7f5ff;
-            border-color: var(--secondary);
-            transform: scale(1.02);
-        }
-
-        .term-card {
-            background: white;
-            border: 2px solid var(--secondary);
-            border-radius: 12px;
-            padding: 10px 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 0 var(--secondary-dark);
-            cursor: grab;
-            touch-action: none;
-            transition: transform 0.1s, box-shadow 0.1s, border-color 0.2s;
-            position: relative;
-        }
-
-        .term-card:active {
-            cursor: grabbing;
-            transform: scale(1.05);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-        }
-
-        .term-val {
-            font-size: 22px;
-            font-weight: 800;
-            color: var(--text-main);
-            pointer-events: none;
-        }
-
-        .equals-sign {
-            font-size: 28px;
-            font-weight: 800;
-            color: var(--secondary);
-            padding: 0 5px;
-        }
-
-        .action-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        .btn-action {
-            background: white;
-            border: 2px solid var(--border);
-            padding: 12px;
-            border-radius: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 3px 0 var(--border);
-            transition: all 0.1s;
-            text-align: center;
-        }
-        .btn-action:active { transform: translateY(2px); box-shadow: none; }
-        .btn-action.primary { background: var(--secondary); color: white; border-color: var(--secondary-dark); box-shadow: 0 3px 0 var(--secondary-dark); }
-
-        .divide-control {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: white;
-            border: 2px solid var(--border);
-            padding: 8px 12px;
-            border-radius: 12px;
-            font-weight: 700;
-            justify-content: center;
-        }
-
-        select {
-            padding: 6px 10px;
-            font-weight: 700;
-            font-size: 16px;
-            border-radius: 8px;
-            border: 2px solid var(--border);
-        }
-
         footer {
             padding: 15px 20px;
             border-top: 2px solid var(--border);
             background: white;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            min-height: 85px;
+            flex-direction: column;
             gap: 10px;
+            align-items: center;
         }
 
         .feedback-message {
             display: none;
             font-size: 16px;
-            font-weight: 700;
+            font-weight: 800;
+            color: #58a700;
         }
 
         .footer-buttons {
@@ -476,18 +491,14 @@
             background: var(--primary);
             color: white;
             border: none;
-            border-radius: 14px;
+            border-radius: 12px;
             padding: 14px 20px;
             font-size: 16px;
-            font-weight: 700;
+            font-weight: 800;
             cursor: pointer;
-            box-shadow: 0 5px 0 var(--primary-dark);
+            box-shadow: 0 4px 0 var(--primary-dark);
             flex: 1;
         }
-
-        footer.correct { background-color: var(--success-bg); border-top-color: #b8f28b; }
-        footer.correct .feedback-message { display: block; color: #58a700; }
-        footer.correct .main-btn { background: #58a700; box-shadow: 0 5px 0 #3e7500; }
 
         #confetti-canvas {
             position: fixed;
@@ -507,9 +518,9 @@
         <div class="header-top">
             <h1>Passa para Lá ✋</h1>
             <div class="system-controls">
-                <button class="btn-sys btn-switch" id="header-switch-btn" onclick="backToSelect()" style="display:none;">👤 Trocar Aluno</button>
-                <button class="btn-sys btn-finish" onclick="showRanking()">🏆 Ranking / Finalizar</button>
-                <button class="btn-sys btn-reset" onclick="resetAll()">🔄 Resetar Tudo</button>
+                <button class="btn-sys btn-switch" id="header-switch-btn" onclick="backToSelect()" style="display:none;">👤 Mudar Aluno</button>
+                <button class="btn-sys btn-finish" onclick="showRanking()">🏆 Ranking</button>
+                <button class="btn-sys btn-reset" onclick="resetAll()">🔄 Reiniciar Tudo</button>
             </div>
         </div>
         
@@ -530,7 +541,7 @@
     </header>
 
     <main>
-        <!-- Tela de Seleção de Aluno e Modo -->
+        <!-- Tela de Seleção -->
         <div class="setup-screen" id="setup-screen">
             <h2>Selecione o Modo e o Aluno</h2>
             
@@ -542,43 +553,57 @@
             <div class="students-grid" id="students-grid"></div>
         </div>
 
-        <!-- Interface do Jogo -->
-        <div id="game-screen" style="display:none; flex-direction:column; gap:20px;">
-            <div class="history-container" id="history-box"></div>
+        <!-- Tela do Jogo em 2 Colunas -->
+        <div id="game-screen" style="display:none; width: 100%;">
+            <div class="two-columns-layout">
+                
+                <!-- COLUNA 1: MANIPULAÇÃO -->
+                <div class="column-panel">
+                    <div class="panel-title">🛠️ Área de Manipulação</div>
+                    
+                    <div class="instructions-hint">
+                        • <b>Arraste</b> o termo para o outro lado para inverter o sinal.<br>
+                        • <b>Clique duplo</b> no termo para alterar o sinal (+/-).
+                    </div>
 
-            <div class="controls-area" id="controls-panel">
-                <div class="instructions-hint">
-                    💡 <b>Arraste</b> o termo para trocar de lado (inverte o sinal).<br>
-                    ✌️ <b>Toque duplo / Clique duplo</b> no termo para alterar o sinal (+/-).
-                </div>
+                    <div class="terms-editor">
+                        <div class="side-box" id="left-side" data-side="left"></div>
+                        <div class="equals-sign">=</div>
+                        <div class="side-box" id="right-side" data-side="right"></div>
+                    </div>
 
-                <div class="terms-editor">
-                    <div class="side-box" id="left-side" data-side="left"></div>
-                    <div class="equals-sign">=</div>
-                    <div class="side-box" id="right-side" data-side="right"></div>
-                </div>
-
-                <div class="action-row">
-                    <button class="btn-action primary" onclick="reduceTerms()">Efetuar Operações (Somar/Subtrair)</button>
-                    <div class="divide-control">
-                        <span>Dividir por:</span>
-                        <select id="divisor-select">
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                            <option value="6">6</option>
-                            <option value="7">7</option>
-                            <option value="8">8</option>
-                            <option value="9">9</option>
-                        </select>
-                        <button class="btn-mini" style="padding:6px 10px; background:var(--secondary); color:white; border-radius:6px; border:none; font-weight:700; cursor:pointer;" onclick="applyDivision()">ok</button>
+                    <div class="action-column">
+                        <button class="btn-action primary" onclick="reduceTerms()">⚡ Somar / Subtrair Termos</button>
+                        
+                        <div class="divide-control">
+                            <span>Dividir ambos os lados por:</span>
+                            <div style="display:flex; gap:6px;">
+                                <select id="divisor-select">
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                </select>
+                                <button class="btn-sys" style="background:var(--secondary); color:white;" onclick="applyDivision()">ok</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
+                <!-- COLUNA 2: HISTÓRICO DAS ETAPAS -->
+                <div class="column-panel">
+                    <div class="panel-title">📋 Lousa de Resolução</div>
+                    <div class="history-container" id="history-box"></div>
+                </div>
+
             </div>
         </div>
 
-        <!-- Tela de Ranking Final -->
+        <!-- Tela de Ranking -->
         <div class="ranking-screen" id="ranking-screen">
             <h2 id="ranking-title">🏆 Ranking do Desafio</h2>
             <div class="ranking-list" id="ranking-list"></div>
@@ -587,10 +612,10 @@
     </main>
 
     <footer id="feedback-footer" style="display:none;">
-        <div class="feedback-message" id="feedback-text">Equação Resolvida com Sucesso! 🎉</div>
+        <div class="feedback-message" id="feedback-text">Equação Resolvida! 🎉</div>
         <div class="footer-buttons">
             <button class="main-btn" id="action-btn" onclick="checkOrNext()">VERIFICAR SOLUÇÃO</button>
-            <button class="main-btn" id="switch-after-btn" onclick="switchAfterSuccess()" style="display:none; background:#1cb0f6; box-shadow: 0 5px 0 #1899d6;">PRÓXIMO ALUNO 👤</button>
+            <button class="main-btn" id="switch-after-btn" onclick="switchAfterSuccess()" style="display:none; background:#1cb0f6;">PRÓXIMO ALUNO 👤</button>
         </div>
     </footer>
 </div>
@@ -614,10 +639,11 @@
     let currentGameMode = 'normal';
     let attackScore = 0;
     let attackTimeLeft = 60;
+    const STORAGE_KEY = 'passa_para_la_v5';
 
     function initStudents() {
         try {
-            let saved = localStorage.getItem('passa_para_la_v4');
+            let saved = localStorage.getItem(STORAGE_KEY);
             if(saved) {
                 students = JSON.parse(saved);
             } else {
@@ -642,7 +668,7 @@
     }
 
     function saveStudents() {
-        localStorage.setItem('passa_para_la_v4', JSON.stringify(students));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(students));
     }
 
     let timerInterval = null;
@@ -667,7 +693,6 @@
             timerInterval = setInterval(() => {
                 attackTimeLeft--;
                 if(attackTimeLeft <= 10 && timerDisplay) timerDisplay.classList.add('danger');
-                
                 let s = attackTimeLeft.toString().padStart(2, '0');
                 if(timerDisplay) timerDisplay.innerText = `⚡ 00:${s}`;
 
@@ -698,13 +723,13 @@
 
     function generateEquations() {
         let eqList = [];
-        while(eqList.length < 100) {
-            let x = Math.floor(Math.random() * 12) - 5;
-            if(x === 0) x = 2;
-            let a = Math.floor(Math.random() * 7) + 2;
-            let c = Math.floor(Math.random() * 5) + 1;
-            if(a === c) a += 2;
-            let d = Math.floor(Math.random() * 15) - 7;
+        for(let i = 0; i < 60; i++) {
+            let x = Math.floor(Math.random() * 10) - 4;
+            if(x === 0) x = 3;
+            let a = Math.floor(Math.random() * 5) + 2;
+            let c = Math.floor(Math.random() * 3) + 1;
+            if(a === c) a += 1;
+            let d = Math.floor(Math.random() * 12) - 5;
             let b = c * x + d - a * x;
 
             eqList.push({
@@ -713,23 +738,16 @@
                 targetX: x
             });
         }
-        
-        for (let i = eqList.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [eqList[i], eqList[j]] = [eqList[j], eqList[i]];
-        }
-
         return eqList;
     }
 
-    let challenges = generateEquations();
+    let challenges = [];
     let currentIdx = 0;
     let currentState = { left: [], right: [] };
     let historySteps = [];
     let isFinished = false;
 
-    let canvas, ctx;
-    let confetes = [];
+    let canvas, ctx, confetes = [];
 
     function initCanvas() {
         canvas = document.getElementById('confetti-canvas');
@@ -751,7 +769,7 @@
         if(!canvas || !ctx) return;
         confetes = [];
         const colors = ['#58cc02', '#1cb0f6', '#ffc904', '#ff4b4b'];
-        for (let i = 0; i < 90; i++) {
+        for (let i = 0; i < 80; i++) {
             confetes.push({
                 x: Math.random() * canvas.width, y: Math.random() * canvas.height - canvas.height,
                 r: Math.random() * 6 + 4, cor: colors[Math.floor(Math.random() * colors.length)],
@@ -800,7 +818,7 @@
         const grid = document.getElementById('students-grid');
         grid.innerHTML = students.map(s => {
             let statusText = currentGameMode === 'normal' 
-                ? `${s.completed}/50 res. (${formatTime(s.totalTime)})`
+                ? `${s.completed}/50 (${formatTime(s.totalTime)})`
                 : `Recorde: ${s.attackRecord || 0} eq/min`;
 
             return `
@@ -832,7 +850,7 @@
         }
 
         document.getElementById('setup-screen').style.display = 'none';
-        document.getElementById('game-screen').style.display = 'flex';
+        document.getElementById('game-screen').style.display = 'block';
         document.getElementById('ranking-screen').style.display = 'none';
         document.getElementById('player-bar').style.display = 'flex';
         document.getElementById('progress-wrapper').style.display = 'flex';
@@ -860,17 +878,14 @@
             document.getElementById('stats-display').innerText = `Acertos: ${attackScore}`;
         }
         
-        document.getElementById('feedback-footer').className = "";
         document.getElementById('feedback-text').style.display = 'none';
         document.getElementById('switch-after-btn').style.display = 'none';
         
         const actionBtn = document.getElementById('action-btn');
         actionBtn.innerText = "VERIFICAR SOLUÇÃO";
         actionBtn.style.display = "block";
-        
-        document.getElementById('controls-panel').style.display = 'flex';
 
-        addHistoryStep("Equação Inicial", renderMathHTML(currentState));
+        addHistoryStep("Início da Equação", renderMathHTML(currentState));
         renderEditor();
     }
 
@@ -904,7 +919,10 @@
         const box = document.getElementById('history-box');
         box.innerHTML = historySteps.map((step, idx) => `
             <div class="history-step">
-                <span class="step-num">${idx + 1}º Passo</span>
+                <div class="step-header">
+                    <span>${idx + 1}º Passo</span>
+                    <span>${step.label}</span>
+                </div>
                 <div class="math-display">${step.html}</div>
             </div>
         `).join('');
@@ -940,40 +958,22 @@
         const boxes = document.querySelectorAll('.side-box');
 
         cards.forEach(card => {
-            card.addEventListener('dblclick', (e) => {
+            card.addEventListener('dblclick', () => {
                 if(isFinished) return;
                 let side = card.getAttribute('data-side');
                 let index = parseInt(card.getAttribute('data-index'));
                 toggleSign(side, index);
             });
 
-            let lastTapTime = 0;
-            card.addEventListener('touchend', (e) => {
-                if(isFinished) return;
-                let currentTime = new Date().getTime();
-                let tapLength = currentTime - lastTapTime;
-
-                if (tapLength < 300 && tapLength > 0) {
-                    e.preventDefault();
-                    let side = card.getAttribute('data-side');
-                    let index = parseInt(card.getAttribute('data-index'));
-                    toggleSign(side, index);
-                    lastTapTime = 0;
-                } else {
-                    lastTapTime = currentTime;
-                }
-            });
-
-            card.addEventListener('dragstart', (e) => {
+            card.addEventListener('dragstart', () => {
                 if(isFinished) return;
                 draggedItemInfo = {
                     side: card.getAttribute('data-side'),
                     index: parseInt(card.getAttribute('data-index'))
                 };
-                e.dataTransfer.setData('text/plain', JSON.stringify(draggedItemInfo));
             });
 
-            card.addEventListener('touchstart', (e) => {
+            card.addEventListener('touchstart', () => {
                 if(isFinished) return;
                 draggedItemInfo = {
                     side: card.getAttribute('data-side'),
@@ -1004,9 +1004,7 @@
                 box.classList.add('drag-over');
             });
 
-            box.addEventListener('dragleave', () => {
-                box.classList.remove('drag-over');
-            });
+            box.addEventListener('dragleave', () => box.classList.remove('drag-over'));
 
             box.addEventListener('drop', (e) => {
                 e.preventDefault();
@@ -1029,14 +1027,14 @@
         term.coef = -term.coef;
         currentState[targetSide].push(term);
         
-        addHistoryStep("Arrastou para o outro lado (Inverte Sinal)", renderMathHTML(currentState));
+        addHistoryStep("Passou para o outro lado", renderMathHTML(currentState));
         renderEditor();
     }
 
     function toggleSign(side, index) {
         if(isFinished) return;
         currentState[side][index].coef = -currentState[side][index].coef;
-        addHistoryStep("Duplo toque: Inverteu o Sinal (+/-)", renderMathHTML(currentState));
+        addHistoryStep("Inverteu Sinal (+/-)", renderMathHTML(currentState));
         renderEditor();
     }
 
@@ -1066,7 +1064,7 @@
         let leftHTML = currentState.left.map((t, i) => `<div class="fraction"><span class="numerator">${formatTerm(t, i===0)}</span><span class="denominator">${div}</span></div>`).join(' ');
         let rightHTML = currentState.right.map((t, i) => `<div class="fraction"><span class="numerator">${formatTerm(t, i===0)}</span><span class="denominator">${div}</span></div>`).join(' ');
         
-        addHistoryStep(`Dividir por ${div}`, `${leftHTML} = ${rightHTML}`);
+        addHistoryStep(`Dividir ambos os lados por ${div}`, `${leftHTML} = ${rightHTML}`);
 
         ['left', 'right'].forEach(side => {
             currentState[side].forEach(t => {
@@ -1098,10 +1096,9 @@
                     activeStudent.totalTime = elapsedSeconds;
                     saveStudents();
 
-                    document.getElementById('feedback-footer').className = "correct";
                     document.getElementById('feedback-text').innerText = `Excelente! Solução Correta: x = ${target} 🎉`;
                     document.getElementById('feedback-text').style.display = 'block';
-                    document.getElementById('action-btn').innerText = "PRÓXIMO DESAFIO DO MESMO ALUNO";
+                    document.getElementById('action-btn').innerText = "PRÓXIMA EQUAÇÃO";
                     document.getElementById('switch-after-btn').style.display = 'block';
                 } else {
                     attackScore++;
@@ -1117,7 +1114,7 @@
                 
                 triggerConfetti();
             } else {
-                alert("A equação ainda não está totalmente resolvida isolando o 'x' corretamente!");
+                alert("A equação ainda não está resolvida com x isolado!");
             }
         } else {
             currentIdx++;
@@ -1132,13 +1129,11 @@
     }
 
     function finishMinuteAttack() {
-        alert(`⏰ TEMPO ESGOTADO! ${activeStudent.name} resolveu ${attackScore} equações em 1 minuto!`);
-        
+        alert(`⏰ TEMPO ESGOTADO! ${activeStudent.name} resolveu ${attackScore} equações!`);
         if(attackScore > (activeStudent.attackRecord || 0)) {
             activeStudent.attackRecord = attackScore;
             saveStudents();
         }
-
         renderSetupScreen();
     }
 
@@ -1163,8 +1158,8 @@
         document.getElementById('header-switch-btn').style.display = 'none';
 
         document.getElementById('ranking-title').innerText = currentGameMode === 'normal' 
-            ? '🏆 Ranking do Modo Normal (50 Equações)' 
-            : '⚡ Ranking Minute Attack (Equações em 1 min)';
+            ? '🏆 Ranking Modo Normal' 
+            : '⚡ Ranking Minute Attack';
 
         let sorted = [...students].sort((a, b) => {
             if(currentGameMode === 'normal') {
@@ -1179,7 +1174,7 @@
         list.innerHTML = sorted.map((s, idx) => {
             let scoreText = currentGameMode === 'normal'
                 ? `${s.completed} resolvidas (${formatTime(s.totalTime)})`
-                : `${s.attackRecord || 0} equações/min`;
+                : `${s.attackRecord || 0} eq/min`;
 
             return `
                 <div class="ranking-item">
@@ -1195,8 +1190,8 @@
     }
 
     function resetAll() {
-        if(confirm("Deseja resetar o progresso, tempos e recordes de TODOS os alunos?")) {
-            localStorage.removeItem('passa_para_la_v4');
+        if(confirm("Tem certeza que deseja resetar TODOS os dados e nomes salvos?")) {
+            localStorage.removeItem(STORAGE_KEY);
             buildDefaultStudents();
             activeStudent = null;
             renderSetupScreen();
