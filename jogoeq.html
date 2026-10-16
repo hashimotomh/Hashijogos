@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>Passa para Lá - Equações</title>
     <style>
         :root {
@@ -23,16 +23,16 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            user-select: none;
         }
 
-        body {
+        html, body {
+            width: 100%;
+            min-height: 100%;
             background-color: #f0f2f5;
             color: var(--text-main);
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100vh;
         }
 
         .game-container {
@@ -44,15 +44,19 @@
             flex-direction: column;
             box-shadow: 0 0 20px rgba(0,0,0,0.08);
             position: relative;
+            padding-bottom: 20px;
         }
 
         header {
-            padding: 15px 20px;
+            padding: 12px 15px;
             border-bottom: 2px solid var(--border);
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
             background: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
 
         .header-top {
@@ -60,29 +64,29 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
         }
 
         h1 {
-            font-size: 22px;
+            font-size: 20px;
             color: var(--secondary-dark);
             font-weight: 800;
         }
 
         .system-controls {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             flex-wrap: wrap;
         }
 
         .btn-sys {
             background: #f1f3f5;
             border: 1px solid var(--border);
-            padding: 8px 12px;
+            padding: 6px 10px;
             border-radius: 8px;
             font-weight: 700;
             cursor: pointer;
-            font-size: 13px;
+            font-size: 12px;
         }
         .btn-sys:hover { background: #e9ecef; }
         .btn-reset { background: #ffe3e3; color: var(--error); border-color: #ffa8a8; }
@@ -91,20 +95,20 @@
 
         .mode-selector {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             justify-content: center;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .btn-mode {
             flex: 1;
-            padding: 12px;
+            padding: 10px;
             font-weight: 800;
             border: 2px solid var(--border);
             border-radius: 10px;
             background: white;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .btn-mode.active {
@@ -118,26 +122,26 @@
             align-items: center;
             justify-content: space-between;
             background: var(--bg-card);
-            padding: 10px 15px;
-            border-radius: 12px;
+            padding: 8px 12px;
+            border-radius: 10px;
             border: 1px solid var(--border);
         }
 
         .player-info {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             font-weight: 700;
-            font-size: 16px;
+            font-size: 15px;
         }
 
         .timer-display {
             font-weight: 800;
-            font-size: 16px;
+            font-size: 14px;
             background: #fff3bf;
             color: #f59f00;
-            padding: 6px 14px;
-            border-radius: 20px;
+            padding: 4px 10px;
+            border-radius: 16px;
             border: 1px solid #ffe066;
         }
 
@@ -150,13 +154,13 @@
         .progress-wrapper {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 10px;
             width: 100%;
         }
 
         .progress-bar-outer {
             flex-grow: 1;
-            height: 16px;
+            height: 14px;
             background: var(--border);
             border-radius: 8px;
             overflow: hidden;
@@ -172,52 +176,45 @@
 
         .stats {
             font-weight: 700;
-            font-size: 14px;
-            min-width: 90px;
+            font-size: 13px;
+            min-width: 80px;
             text-align: right;
         }
 
         main {
             flex-grow: 1;
-            padding: 20px;
+            padding: 15px;
             display: flex;
             flex-direction: column;
         }
 
-        /* TELA DE SELEÇÃO DE ALUNOS */
         .setup-screen {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
             text-align: center;
         }
 
         .students-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-            gap: 10px;
-            margin-top: 10px;
-            max-height: 60vh;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 8px;
+            margin-top: 8px;
+            max-height: 55vh;
             overflow-y: auto;
-            padding-right: 5px;
+            padding-right: 4px;
         }
 
         .btn-student {
             background: white;
             border: 2px solid var(--border);
-            padding: 12px 8px;
+            padding: 10px 6px;
             border-radius: 12px;
             cursor: pointer;
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 4px;
-            transition: transform 0.1s;
-        }
-
-        .btn-student:hover {
-            border-color: var(--secondary);
-            transform: translateY(-2px);
         }
 
         .btn-student.is-test {
@@ -226,17 +223,16 @@
             color: #2b8a3e;
         }
 
-        .btn-student .emoji { font-size: 24px; }
-        .btn-student .name { font-weight: 700; font-size: 13px; text-transform: uppercase; }
-        .btn-student .status { font-size: 11px; color: var(--text-muted); }
+        .btn-student .emoji { font-size: 22px; }
+        .btn-student .name { font-weight: 700; font-size: 12px; text-transform: uppercase; }
+        .btn-student .status { font-size: 10px; color: var(--text-muted); }
 
-        /* LAYOUT EM 2 COLUNAS DO JOGO */
+        /* LAYOUT 2 COLUNAS RESPONSIVO */
         .two-columns-layout {
             display: grid;
-            grid-template-columns: 1.1fr 0.9fr;
-            gap: 20px;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
             width: 100%;
-            height: 100%;
         }
 
         @media (max-width: 768px) {
@@ -248,31 +244,27 @@
         .column-panel {
             background: var(--bg-card);
             border: 2px solid var(--border);
-            border-radius: 16px;
-            padding: 18px;
+            border-radius: 14px;
+            padding: 12px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
         }
 
         .panel-title {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 800;
             color: var(--secondary-dark);
             border-bottom: 2px solid var(--border);
-            padding-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            padding-bottom: 6px;
         }
 
-        /* COLUNA 1: MANIPULAÇÃO */
         .instructions-hint {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-muted);
-            line-height: 1.4;
+            line-height: 1.3;
             background: #fff;
-            padding: 8px 12px;
+            padding: 6px 10px;
             border-radius: 8px;
             border: 1px dashed var(--border);
         }
@@ -282,24 +274,24 @@
             justify-content: space-between;
             align-items: center;
             background: #ffffff;
-            padding: 15px 10px;
-            border-radius: 12px;
-            gap: 6px;
+            padding: 10px 6px;
+            border-radius: 10px;
+            gap: 4px;
             border: 2px solid var(--border);
-            min-height: 120px;
+            min-height: 100px;
         }
 
         .side-box {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             align-items: center;
             flex-wrap: wrap;
             flex: 1;
             justify-content: center;
-            min-height: 80px;
-            padding: 8px;
+            min-height: 70px;
+            padding: 6px;
             border: 2px dashed #ced4da;
-            border-radius: 10px;
+            border-radius: 8px;
             background: #f8f9fa;
         }
 
@@ -311,30 +303,25 @@
         .term-card {
             background: white;
             border: 2px solid var(--secondary);
-            border-radius: 10px;
-            padding: 8px 14px;
+            border-radius: 8px;
+            padding: 6px 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 3px 0 var(--secondary-dark);
+            box-shadow: 0 2px 0 var(--secondary-dark);
             cursor: grab;
             touch-action: none;
         }
 
-        .term-card:active {
-            cursor: grabbing;
-            transform: scale(1.05);
-        }
-
         .term-val {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 800;
             color: var(--text-main);
             pointer-events: none;
         }
 
         .equals-sign {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 800;
             color: var(--secondary);
         }
@@ -348,66 +335,96 @@
         .btn-action {
             background: white;
             border: 2px solid var(--border);
-            padding: 12px;
-            border-radius: 10px;
+            padding: 10px;
+            border-radius: 8px;
             font-weight: 700;
             cursor: pointer;
-            box-shadow: 0 3px 0 var(--border);
+            box-shadow: 0 2px 0 var(--border);
             text-align: center;
-            font-size: 14px;
+            font-size: 13px;
         }
         .btn-action:active { transform: translateY(2px); box-shadow: none; }
         .btn-action.primary { 
             background: var(--secondary); 
             color: white; 
             border-color: var(--secondary-dark); 
-            box-shadow: 0 3px 0 var(--secondary-dark); 
+            box-shadow: 0 2px 0 var(--secondary-dark); 
         }
 
-        .divide-control {
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        /* PAINEL DE DIVISÃO COM BOTÕES DIRETOS */
+        .divide-container {
             background: white;
             border: 2px solid var(--border);
-            padding: 8px 12px;
             border-radius: 10px;
-            font-weight: 700;
-            justify-content: space-between;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
 
-        select {
-            padding: 4px 8px;
+        .divide-label {
+            font-size: 12px;
             font-weight: 700;
+            color: var(--text-main);
+            text-align: center;
+        }
+
+        .divide-buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+        }
+
+        @media (max-width: 480px) {
+            .divide-buttons-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        .btn-divide {
+            background: #e7f5ff;
+            color: var(--secondary-dark);
+            border: 2px solid #a5d8ff;
+            border-radius: 8px;
+            padding: 8px 0;
             font-size: 15px;
-            border-radius: 6px;
-            border: 2px solid var(--border);
+            font-weight: 800;
+            cursor: pointer;
+            text-align: center;
+            box-shadow: 0 2px 0 #a5d8ff;
+            transition: all 0.1s;
         }
 
-        /* COLUNA 2: HISTÓRICO / RESUMO DO PASSO A PASSO */
+        .btn-divide:active {
+            transform: translateY(2px);
+            box-shadow: none;
+            background: var(--secondary);
+            color: white;
+        }
+
         .history-container {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            max-height: 400px;
+            gap: 8px;
+            max-height: 280px;
             overflow-y: auto;
-            padding-right: 5px;
+            padding-right: 4px;
         }
 
         .history-step {
             display: flex;
             flex-direction: column;
-            gap: 4px;
-            padding: 10px;
+            gap: 2px;
+            padding: 8px;
             background: white;
             border: 1px solid var(--border);
-            border-radius: 10px;
+            border-radius: 8px;
         }
 
         .step-header {
             display: flex;
             justify-content: space-between;
-            font-size: 11px;
+            font-size: 10px;
             color: var(--text-muted);
             font-weight: 700;
             text-transform: uppercase;
@@ -416,10 +433,10 @@
         .math-display {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
             flex-wrap: wrap;
             font-weight: 800;
-            font-size: 18px;
+            font-size: 16px;
             color: var(--text-main);
         }
 
@@ -428,7 +445,7 @@
             flex-direction: column;
             vertical-align: middle;
             text-align: center;
-            padding: 0 4px;
+            padding: 0 2px;
         }
         .fraction .numerator {
             border-bottom: 2px solid var(--text-main);
@@ -438,18 +455,17 @@
             padding-top: 1px;
         }
 
-        /* TELA DE RANKING */
         .ranking-screen {
             display: none;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
         }
 
         .ranking-list {
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            max-height: 60vh;
+            gap: 6px;
+            max-height: 55vh;
             overflow-y: auto;
         }
 
@@ -458,32 +474,38 @@
             align-items: center;
             justify-content: space-between;
             background: white;
-            padding: 12px 16px;
-            border-radius: 10px;
+            padding: 10px 14px;
+            border-radius: 8px;
             border: 1px solid var(--border);
             font-weight: 700;
+            font-size: 13px;
         }
 
         footer {
-            padding: 15px 20px;
+            padding: 10px 15px;
+            padding-bottom: calc(10px + env(safe-area-inset-bottom));
             border-top: 2px solid var(--border);
             background: white;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
             align-items: center;
+            position: sticky;
+            bottom: 0;
+            z-index: 20;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
         }
 
         .feedback-message {
             display: none;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 800;
             color: #58a700;
         }
 
         .footer-buttons {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             width: 100%;
         }
 
@@ -492,7 +514,7 @@
             color: white;
             border: none;
             border-radius: 12px;
-            padding: 14px 20px;
+            padding: 14px 16px;
             font-size: 16px;
             font-weight: 800;
             cursor: pointer;
@@ -575,20 +597,16 @@
                     <div class="action-column">
                         <button class="btn-action primary" onclick="reduceTerms()">⚡ Somar / Subtrair Termos</button>
                         
-                        <div class="divide-control">
-                            <span>Dividir ambos os lados por:</span>
-                            <div style="display:flex; gap:6px;">
-                                <select id="divisor-select">
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                    <option value="6">6</option>
-                                    <option value="7">7</option>
-                                    <option value="8">8</option>
-                                    <option value="9">9</option>
-                                </select>
-                                <button class="btn-sys" style="background:var(--secondary); color:white;" onclick="applyDivision()">ok</button>
+                        <div class="divide-container">
+                            <span class="divide-label">Dividir ambos os lados por:</span>
+                            <div class="divide-buttons-grid">
+                                <button class="btn-divide" onclick="applyDivisionValue(2)">÷2</button>
+                                <button class="btn-divide" onclick="applyDivisionValue(3)">÷3</button>
+                                <button class="btn-divide" onclick="applyDivisionValue(4)">÷4</button>
+                                <button class="btn-divide" onclick="applyDivisionValue(5)">÷5</button>
+                                <button class="btn-divide" onclick="applyDivisionValue(6)">÷6</button>
+                                <button class="btn-divide" onclick="applyDivisionValue(7)">÷7</button>
+                                <button class="btn-divide" onclick="applyDivisionValue(8)">÷8</button>
                             </div>
                         </div>
                     </div>
@@ -607,10 +625,11 @@
         <div class="ranking-screen" id="ranking-screen">
             <h2 id="ranking-title">🏆 Ranking do Desafio</h2>
             <div class="ranking-list" id="ranking-list"></div>
-            <button class="btn-action primary" style="margin-top:15px;" onclick="backToSelect()">Voltar para Seleção</button>
+            <button class="btn-action primary" style="margin-top:10px;" onclick="backToSelect()">Voltar para Seleção</button>
         </div>
     </main>
 
+    <!-- FOOTER FIXO NA TELA -->
     <footer id="feedback-footer" style="display:none;">
         <div class="feedback-message" id="feedback-text">Equação Resolvida! 🎉</div>
         <div class="footer-buttons">
@@ -639,7 +658,7 @@
     let currentGameMode = 'normal';
     let attackScore = 0;
     let attackTimeLeft = 60;
-    const STORAGE_KEY = 'passa_para_la_v5';
+    const STORAGE_KEY = 'passa_para_la_v7';
 
     function initStudents() {
         try {
@@ -1057,9 +1076,8 @@
         renderEditor();
     }
 
-    function applyDivision() {
+    function applyDivisionValue(div) {
         if(isFinished) return;
-        let div = parseInt(document.getElementById('divisor-select').value);
         
         let leftHTML = currentState.left.map((t, i) => `<div class="fraction"><span class="numerator">${formatTerm(t, i===0)}</span><span class="denominator">${div}</span></div>`).join(' ');
         let rightHTML = currentState.right.map((t, i) => `<div class="fraction"><span class="numerator">${formatTerm(t, i===0)}</span><span class="denominator">${div}</span></div>`).join(' ');
