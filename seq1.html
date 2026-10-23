@@ -4,13 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>Passa para Lá - Sequências Numéricas</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         :root {
             --primary: #58cc02;
             --primary-dark: #46a302;
             --secondary: #1cb0f6;
             --secondary-dark: #1899d6;
+            --accent: #ff9600;
+            --accent-dark: #e08300;
             --error: #ea2b2b;
+            --error-dark: #b81d1d;
             --text-main: #3c3c3c;
             --text-muted: #777777;
             --bg-app: #ffffff;
@@ -23,6 +27,8 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
         }
 
         html, body {
@@ -44,7 +50,6 @@
             flex-direction: column;
             box-shadow: 0 0 20px rgba(0,0,0,0.08);
             position: relative;
-            padding-bottom: 20px;
         }
 
         header {
@@ -56,7 +61,7 @@
             background: #fff;
             position: sticky;
             top: 0;
-            z-index: 10;
+            z-index: 20;
         }
 
         .header-top {
@@ -71,6 +76,9 @@
             font-size: 20px;
             color: var(--secondary-dark);
             font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .system-controls {
@@ -87,11 +95,21 @@
             font-weight: 700;
             cursor: pointer;
             font-size: 12px;
+            transition: all 0.2s;
         }
         .btn-sys:hover { background: #e9ecef; }
         .btn-reset { background: #ffe3e3; color: var(--error); border-color: #ffa8a8; }
         .btn-finish { background: #e7f5ff; color: var(--secondary-dark); border-color: #a5d8ff; }
         .btn-switch { background: #e6fcf5; color: #0ca678; border-color: #96f2d7; }
+
+        .selector-label {
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            text-align: center;
+        }
 
         .mode-selector, .difficulty-selector {
             display: flex;
@@ -105,16 +123,25 @@
             padding: 10px;
             font-weight: 800;
             border: 2px solid var(--border);
-            border-radius: 10px;
+            border-radius: 12px;
             background: white;
             cursor: pointer;
             font-size: 13px;
+            transition: all 0.2s;
         }
 
-        .btn-mode.active, .btn-diff.active {
-            border-color: var(--secondary);
-            background: #e7f5ff;
-            color: var(--secondary-dark);
+        .btn-mode.active {
+            border-color: var(--accent);
+            background: #fff9db;
+            color: var(--accent-dark);
+            box-shadow: 0 3px 0 var(--accent-dark);
+        }
+
+        .btn-diff.active {
+            border-color: var(--primary);
+            background: #ebfbee;
+            color: var(--primary-dark);
+            box-shadow: 0 3px 0 var(--primary-dark);
         }
 
         .player-bar {
@@ -125,6 +152,7 @@
             padding: 8px 12px;
             border-radius: 10px;
             border: 1px solid var(--border);
+            position: relative;
         }
 
         .player-info {
@@ -135,21 +163,56 @@
             font-size: 15px;
         }
 
+        .timer-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
         .timer-display {
             font-weight: 800;
-            font-size: 14px;
+            font-size: 16px;
             background: #fff3bf;
-            color: #f59f00;
-            padding: 4px 10px;
+            color: #d9480f;
+            padding: 4px 12px;
             border-radius: 16px;
-            border: 1px solid #ffe066;
-            transition: all 0.2s;
+            border: 2px solid #ffe066;
+            transition: background-color 0.2s, border-color 0.2s;
         }
 
         .timer-display.danger {
             background: #ffe3e3;
             color: var(--error);
             border-color: #ffa8a8;
+            animation: blink 0.5s infinite alternate;
+        }
+
+        @keyframes blink {
+            0% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+
+        .penalty-toast {
+            position: absolute;
+            top: -22px;
+            right: 10px;
+            background: var(--error);
+            color: white;
+            font-weight: 900;
+            font-size: 14px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(10px) scale(0.8);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 30;
+        }
+
+        .penalty-toast.show {
+            opacity: 1;
+            transform: translateY(-8px) scale(1.1);
         }
 
         .progress-wrapper {
@@ -176,10 +239,11 @@
         }
 
         .stats {
-            font-weight: 700;
+            font-weight: 800;
             font-size: 13px;
-            min-width: 80px;
+            min-width: 90px;
             text-align: right;
+            color: var(--secondary-dark);
         }
 
         main {
@@ -196,20 +260,12 @@
             text-align: center;
         }
 
-        .section-label {
-            font-size: 13px;
-            font-weight: 800;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            margin-top: 4px;
-        }
-
         .students-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 8px;
-            margin-top: 4px;
-            max-height: 45vh;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 10px;
+            margin-top: 8px;
+            max-height: 50vh;
             overflow-y: auto;
             padding-right: 4px;
         }
@@ -224,138 +280,209 @@
             flex-direction: column;
             align-items: center;
             gap: 4px;
+            transition: transform 0.1s, border-color 0.2s;
         }
-
+        .btn-student:active { transform: scale(0.96); }
         .btn-student.is-test {
             background: #d3f9d8;
             border-color: #40c057;
             color: #2b8a3e;
         }
 
-        .btn-student .emoji { font-size: 22px; }
+        .btn-student .emoji { font-size: 24px; }
         .btn-student .name { font-weight: 700; font-size: 12px; text-transform: uppercase; }
-        .btn-student .status { font-size: 10px; color: var(--text-muted); }
+        .btn-student .status { font-size: 11px; color: var(--text-muted); font-weight: 600; }
 
-        /* JOGO - COLUNAS */
-        .two-columns-layout {
-            display: grid;
-            grid-template-columns: 1.2fr 0.8fr;
-            gap: 15px;
+        .game-board {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
             width: 100%;
+            max-width: 950px;
+            margin: 0 auto;
         }
 
-        @media (max-width: 768px) {
-            .two-columns-layout {
+        .hint-banner {
+            background: #e7f5ff;
+            border: 2px solid #a5d8ff;
+            color: #1899d6;
+            padding: 10px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 700;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .association-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            position: relative;
+        }
+
+        @media (max-width: 680px) {
+            .association-container {
                 grid-template-columns: 1fr;
             }
         }
 
-        .column-panel {
-            background: var(--bg-card);
-            border: 2px solid var(--border);
-            border-radius: 14px;
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .panel-title {
-            font-size: 15px;
+        .column-title {
+            font-size: 14px;
             font-weight: 800;
             color: var(--secondary-dark);
-            border-bottom: 2px solid var(--border);
-            padding-bottom: 6px;
-        }
-
-        .instructions-hint {
-            font-size: 12px;
-            color: var(--text-muted);
-            line-height: 1.3;
-            background: #fff;
-            padding: 8px 10px;
-            border-radius: 8px;
-            border: 1px dashed var(--border);
+            text-transform: uppercase;
+            margin-bottom: 8px;
             text-align: center;
         }
 
-        .cards-list {
+        .items-column {
             display: flex;
             flex-direction: column;
             gap: 10px;
         }
 
-        .match-card {
+        .seq-card {
             background: white;
             border: 2px solid var(--border);
-            border-radius: 10px;
+            border-radius: 12px;
             padding: 12px;
-            cursor: pointer;
-            font-weight: 800;
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 2px 0 var(--border);
-            transition: all 0.15s ease;
-            user-select: none;
+            flex-direction: column;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            box-shadow: 0 3px 0 var(--border);
         }
 
-        .match-card:hover {
+        .seq-card:hover {
             border-color: var(--secondary);
         }
 
-        .match-card.selected {
+        .seq-card.selected {
             border-color: var(--secondary);
             background: #e7f5ff;
-            box-shadow: 0 0 0 2px var(--secondary);
+            box-shadow: 0 3px 0 var(--secondary-dark);
         }
 
-        .match-card.matched {
+        .seq-card.matched {
             border-color: var(--primary);
-            background: #d3f9d8;
-            color: var(--primary-dark);
+            background: #ebfbee;
+            box-shadow: 0 3px 0 var(--primary-dark);
             cursor: default;
-            box-shadow: none;
-            opacity: 0.8;
+            opacity: 0.85;
         }
 
-        .seq-text {
-            font-size: 15px;
+        .seq-card.wrong {
+            border-color: var(--error);
+            background: #ffe3e3;
+            animation: shake 0.35s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-7px); }
+            40%, 80% { transform: translateX(7px); }
+        }
+
+        .seq-type-tag {
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            padding: 2px 6px;
+            border-radius: 6px;
+            background: #e9ecef;
+            color: #495057;
+            align-self: flex-start;
+        }
+
+        .seq-values {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text-main);
             letter-spacing: 0.5px;
         }
 
-        .seq-badge {
-            font-size: 10px;
-            background: #e7f5ff;
-            color: var(--secondary-dark);
-            border: 1px solid #a5d8ff;
-            padding: 3px 6px;
-            border-radius: 6px;
-            font-weight: 800;
-            white-space: nowrap;
-        }
-
         .term-card {
-            justify-content: center;
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             font-size: 20px;
+            font-weight: 800;
             color: var(--secondary-dark);
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 3px 0 var(--border);
+            min-height: 58px;
         }
 
-        /* EFEITO PENALIDADE -10s */
-        .penalty-popup {
-            position: fixed;
-            color: var(--error);
-            font-weight: 900;
-            font-size: 26px;
-            pointer-events: none;
-            animation: floatUp 0.8s forwards ease-out;
-            z-index: 100;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        .term-card:hover {
+            border-color: var(--accent);
         }
 
-        @keyframes floatUp {
-            0% { opacity: 1; transform: translateY(0) scale(1); }
-            100% { opacity: 0; transform: translateY(-40px) scale(1.3); }
+        .term-card.selected {
+            border-color: var(--accent);
+            background: #fff9db;
+            box-shadow: 0 3px 0 var(--accent-dark);
+        }
+
+        .term-card.matched {
+            border-color: var(--primary);
+            background: #ebfbee;
+            color: var(--primary-dark);
+            box-shadow: 0 3px 0 var(--primary-dark);
+            cursor: default;
+            opacity: 0.85;
+        }
+
+        .term-card.wrong {
+            border-color: var(--error);
+            background: #ffe3e3;
+            animation: shake 0.35s ease-in-out;
+        }
+
+        .term-card.drag-over {
+            border-color: var(--primary);
+            background: #e6fcf5;
+            transform: scale(1.02);
+        }
+
+        .match-badge {
+            font-size: 12px;
+            font-weight: 800;
+            padding: 4px 8px;
+            border-radius: 8px;
+            background: var(--primary);
+            color: white;
+        }
+
+        .explanation-panel {
+            background: #fff;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 15px;
+            margin-top: 5px;
+            font-size: 13px;
+            color: #495057;
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .explanation-title {
+            font-weight: 800;
+            color: var(--secondary-dark);
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .ranking-screen {
@@ -385,8 +512,8 @@
         }
 
         footer {
-            padding: 10px 15px;
-            padding-bottom: calc(10px + env(safe-area-inset-bottom));
+            padding: 12px 15px;
+            padding-bottom: calc(12px + env(safe-area-inset-bottom));
             border-top: 2px solid var(--border);
             background: white;
             display: flex;
@@ -403,7 +530,8 @@
             display: none;
             font-size: 15px;
             font-weight: 800;
-            color: #58a700;
+            color: var(--primary-dark);
+            text-align: center;
         }
 
         .footer-buttons {
@@ -423,25 +551,23 @@
             cursor: pointer;
             box-shadow: 0 4px 0 var(--primary-dark);
             flex: 1;
+            transition: background 0.2s, transform 0.1s;
         }
+        .main-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--primary-dark); }
 
-        #confetti-canvas {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            pointer-events: none;
-            z-index: 999;
+        .btn-secondary-action {
+            background: var(--secondary);
+            box-shadow: 0 4px 0 var(--secondary-dark);
         }
+        .btn-secondary-action:active { box-shadow: 0 2px 0 var(--secondary-dark); }
     </style>
 </head>
 <body>
 
-<canvas id="confetti-canvas"></canvas>
-
 <div class="game-container">
     <header>
         <div class="header-top">
-            <h1>Passa para Lá - Sequências 🔢</h1>
+            <h1>🔢 Passa para Lá - Sequências Numéricas</h1>
             <div class="system-controls">
                 <button class="btn-sys btn-switch" id="header-switch-btn" onclick="backToSelect()" style="display:none;">👤 Mudar Aluno</button>
                 <button class="btn-sys btn-finish" onclick="showRanking()">🏆 Ranking</button>
@@ -454,7 +580,10 @@
                 <span id="player-avatar"></span>
                 <span id="player-name"></span>
             </div>
-            <div class="timer-display" id="timer-display">⏱️ 00:00</div>
+            <div class="timer-wrapper">
+                <div class="timer-display" id="timer-display">⏱️ 00:00</div>
+                <div class="penalty-toast" id="penalty-toast">-10s!</div>
+            </div>
         </div>
 
         <div class="progress-wrapper" id="progress-wrapper" style="display:none;">
@@ -466,45 +595,47 @@
     </header>
 
     <main>
-        <!-- TELA DE SELEÇÃO DE ALUNO E CONFIGURAÇÕES -->
+        <!-- TELA DE SELEÇÃO -->
         <div class="setup-screen" id="setup-screen">
-            <h2>Selecione o Aluno, Modo e Dificuldade</h2>
-
-            <div class="section-label">Modo de Jogo</div>
+            <div class="selector-label">1. Escolha o Modo de Jogo</div>
             <div class="mode-selector">
-                <button class="btn-mode active" id="mode-attack-btn" onclick="setGameMode('attack')">⚡ Minute Attack (1 Min)</button>
+                <button class="btn-mode active" id="mode-attack-btn" onclick="setGameMode('attack')">⚡ Minute Attack (1 Minuto)</button>
                 <button class="btn-mode" id="mode-normal-btn" onclick="setGameMode('normal')">📘 Modo Normal (10 Rodadas)</button>
             </div>
 
-            <div class="section-label">Dificuldade (Sequências por Rodada)</div>
+            <div class="selector-label">2. Escolha o Nível de Dificuldade</div>
             <div class="difficulty-selector">
                 <button class="btn-diff active" id="diff-easy-btn" onclick="setDifficulty('easy')">🟢 Fácil (3 itens)</button>
-                <button class="btn-diff" id="diff-med-btn" onclick="setDifficulty('medium')">🟡 Médio (4 itens)</button>
+                <button class="btn-diff" id="diff-medium-btn" onclick="setDifficulty('medium')">🟡 Médio (4 itens)</button>
                 <button class="btn-diff" id="diff-hard-btn" onclick="setDifficulty('hard')">🔴 Difícil (5 itens)</button>
             </div>
 
-            <div class="section-label">Alunos da Turma</div>
+            <div class="selector-label">3. Selecione o Aluno para Iniciar</div>
             <div class="students-grid" id="students-grid"></div>
         </div>
 
-        <!-- TELA DO JOGO (ASSOCIAR SEQUÊNCIAS) -->
+        <!-- TELA DO JOGO -->
         <div id="game-screen" style="display:none; width: 100%;">
-            <div class="two-columns-layout">
-                
-                <!-- COLUNA 1: SEQUÊNCIAS -->
-                <div class="column-panel">
-                    <div class="panel-title">🧩 Sequências Numéricas</div>
-                    <div class="instructions-hint">Clique numa <b>Sequência</b> e depois no <b>Próximo Termo</b> correspondente.</div>
-                    <div class="cards-list" id="sequences-column"></div>
+            <div class="game-board">
+                <div class="hint-banner">
+                    💡 <b>Atenção:</b> Erros custam <b>-10 segundos</b> de penalidade! Pense bem antes de ligar.
                 </div>
 
-                <!-- COLUNA 2: PRÓXIMOS TERMOS -->
-                <div class="column-panel">
-                    <div class="panel-title">🎯 Próximo Termo</div>
-                    <div class="instructions-hint">Atenção aos erros: Errar no Minute Attack tira <b>-10s</b>!</div>
-                    <div class="cards-list" id="terms-column"></div>
+                <div class="association-container">
+                    <div>
+                        <div class="column-title">Sequências Numéricas</div>
+                        <div class="items-column" id="left-column"></div>
+                    </div>
+                    <div>
+                        <div class="column-title">Próximo Termo</div>
+                        <div class="items-column" id="right-column"></div>
+                    </div>
                 </div>
 
+                <div class="explanation-panel" id="explanation-panel">
+                    <div class="explanation-title">💡 Regra da Sequência:</div>
+                    <div id="explanation-text">---</div>
+                </div>
             </div>
         </div>
 
@@ -512,16 +643,15 @@
         <div class="ranking-screen" id="ranking-screen">
             <h2 id="ranking-title">🏆 Ranking do Desafio</h2>
             <div class="ranking-list" id="ranking-list"></div>
-            <button class="main-btn" style="margin-top:10px;" onclick="backToSelect()">Voltar para Seleção</button>
+            <button class="main-btn btn-secondary-action" style="margin-top:10px;" onclick="backToSelect()">Voltar para Seleção</button>
         </div>
     </main>
 
-    <!-- FOOTER -->
+    <!-- FOOTER COM CONTROLES E FEEDBACK -->
     <footer id="feedback-footer" style="display:none;">
         <div class="feedback-message" id="feedback-text">Rodada Concluída! 🎉</div>
         <div class="footer-buttons">
-            <button class="main-btn" id="action-btn" onclick="checkOrNext()" style="display:none;">PRÓXIMA RODADA ➔</button>
-            <button class="main-btn" id="switch-after-btn" onclick="switchAfterSuccess()" style="display:none; background:#1cb0f6;">PRÓXIMO ALUNO 👤</button>
+            <button class="main-btn" id="action-btn" onclick="nextRoundOrFinish()">PRÓXIMA RODADA ➡️</button>
         </div>
     </footer>
 </div>
@@ -529,7 +659,6 @@
 <script>
     const EMOJIS = ['🐶', '🐱', '🦊', '🦁', '🐸', '🐵', '🦄', '🐼', '🐯', '🐨', '🐙', '🦖', '🤖', '🚀', '⭐', '🍎', '⚽', '🎨'];
     
-    // LISTA OFICIAL DE ALUNOS DO PROJETO ORIGINAL
     const OFFICIAL_STUDENTS = [
         "ALUNO TESTE",
         "1. ALYCE F.", "2. ANA CLARA", "3. ANA JÚLIA", "4. ANGEL R.",
@@ -543,51 +672,151 @@
 
     let students = [];
     let activeStudent = null;
-    let currentGameMode = 'attack'; // attack ou normal
-    let currentDifficulty = 'easy'; // easy (3), medium (4), hard (5)
+    let currentGameMode = 'attack'; // Minute Attack por padrão
+    let currentDifficulty = 'easy'; // easy = 3, medium = 4, hard = 5
+    let itemsPerRound = 3;
     let attackScore = 0;
     let attackTimeLeft = 60;
-    const STORAGE_KEY = 'passa_para_la_seq_v2';
+    let timerInterval = null;
+    let startTime = 0;
+    let elapsedSeconds = 0;
+    const STORAGE_KEY = 'passa_para_la_seq_v3';
 
-    // SISTEMA DE ÁUDIO WEB AUDIO API (Efeitos sonoros nativos sem arquivos externos)
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    
-    function playBeep(freq, duration, type='sine') {
-        try {
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = type;
-            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-            gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start();
-            osc.stop(audioCtx.currentTime + duration);
-        } catch(e){}
+    // --- BANCO DE DADOS DE SEQUÊNCIAS ---
+    function generateSequenceDatabase() {
+        let db = [];
+
+        // 1. Sequências de Soma
+        const paCres = [
+            { a1: 2, r: 3 }, { a1: 5, r: 4 }, { a1: 10, r: 5 }, { a1: 1, r: 7 },
+            { a1: 3, r: 6 }, { a1: 7, r: 8 }, { a1: 12, r: 10 }, { a1: 4, r: 9 },
+            { a1: 15, r: 15 }, { a1: 0, r: 4 }, { a1: 8, r: 12 }, { a1: 20, r: 25 },
+            { a1: 6, r: 11 }, { a1: 14, r: 7 }, { a1: 9, r: 13 }, { a1: 2, r: 8 }
+        ];
+        paCres.forEach((item, idx) => {
+            let terms = [];
+            for (let i = 0; i < 5; i++) terms.push(item.a1 + i * item.r);
+            db.push({
+                id: `soma_${idx}`,
+                category: 'Soma',
+                prompt: terms.slice(0, 4).join(', ') + ', ...',
+                nextTerm: `${terms[4]}`,
+                rule: `Sequência de Soma: adiciona +${item.r} a cada número.`
+            });
+        });
+
+        // 2. Sequências de Subtração
+        const paDec = [
+            { a1: 50, r: 5 }, { a1: 100, r: 10 }, { a1: 40, r: 4 }, { a1: 30, r: 3 },
+            { a1: 80, r: 8 }, { a1: 25, r: 2 }, { a1: 60, r: 6 }, { a1: 45, r: 7 },
+            { a1: 90, r: 15 }, { a1: 72, r: 9 }, { a1: 35, r: 5 }, { a1: 200, r: 25 }
+        ];
+        paDec.forEach((item, idx) => {
+            let terms = [];
+            for (let i = 0; i < 5; i++) terms.push(item.a1 - i * item.r);
+            db.push({
+                id: `sub_${idx}`,
+                category: 'Subtração',
+                prompt: terms.slice(0, 4).join(', ') + ', ...',
+                nextTerm: `${terms[4]}`,
+                rule: `Sequência de Subtração: subtrai -${item.r} a cada número.`
+            });
+        });
+
+        // 3. Sequências de Multiplicação
+        const lowMultiplications = [
+            { terms: [1, 2, 4, 8], next: 16, mult: 2, rule: 'Dobra o valor (×2) a cada termo.' },
+            { terms: [2, 4, 8, 16], next: 32, mult: 2, rule: 'Dobra o valor (×2) a cada termo.' },
+            { terms: [3, 6, 12, 24], next: 48, mult: 2, rule: 'Multiplica por ×2 a cada termo.' },
+            { terms: [5, 10, 20, 40], next: 80, mult: 2, rule: 'Multiplica por ×2 a cada termo.' },
+            { terms: [10, 20, 40, 80], next: 160, mult: 2, rule: 'Multiplica por ×2 a cada termo.' },
+            { terms: [1, 3, 9, 27], next: 81, mult: 3, rule: 'Triplica o valor (×3) a cada termo.' },
+            { terms: [2, 6, 18, 54], next: 162, mult: 3, rule: 'Triplica o valor (×3) a cada termo.' },
+            { terms: [4, 8, 16, 32], next: 64, mult: 2, rule: 'Multiplica por ×2 a cada termo.' },
+            { terms: [1, 4, 16, 64], next: 256, mult: 4, rule: 'Multiplica por ×4 a cada termo.' },
+            { terms: [1, 5, 25, 125], next: 625, mult: 5, rule: 'Multiplica por ×5 a cada termo.' }
+        ];
+        lowMultiplications.forEach((item, idx) => {
+            db.push({
+                id: `mult_${idx}`,
+                category: 'Multiplicação',
+                prompt: item.terms.join(', ') + ', ...',
+                nextTerm: `${item.next}`,
+                rule: `Sequência de Multiplicação: ${item.rule}`
+            });
+        });
+
+        // 4. Tipo Fibonacci
+        const fibs = [
+            { f1: 1, f2: 2 }, { f1: 2, f2: 3 }, { f1: 1, f2: 3 }, { f1: 2, f2: 4 },
+            { f1: 3, f2: 4 }, { f1: 1, f2: 4 }, { f1: 2, f2: 5 }, { f1: 3, f2: 5 }
+        ];
+        fibs.forEach((item, idx) => {
+            let terms = [item.f1, item.f2];
+            for (let i = 2; i < 5; i++) terms.push(terms[i - 1] + terms[i - 2]);
+            db.push({
+                id: `fib_${idx}`,
+                category: 'Tipo Fibonacci',
+                prompt: terms.slice(0, 4).join(', ') + ', ...',
+                nextTerm: `${terms[4]}`,
+                rule: `Tipo Fibonacci: Cada número é a soma dos dois anteriores (${terms[2]} = ${terms[0]} + ${terms[1]}).`
+            });
+        });
+
+        // 5. Padrão Cíclico
+        const cyclicPatterns = [
+            { pat: [2, 5], name: 'período 2' }, { pat: [1, 4, 9], name: 'período 3' },
+            { pat: [7, 3], name: 'período 2' }, { pat: [0, 5, 8], name: 'período 3' },
+            { pat: [10, 20], name: 'período 2' }, { pat: [3, 6, 9], name: 'período 3' },
+            { pat: [8, 2], name: 'período 2' }, { pat: [1, 2, 3], name: 'período 3' }
+        ];
+        cyclicPatterns.forEach((item, idx) => {
+            let terms = [];
+            for (let i = 0; i < 5; i++) terms.push(item.pat[i % item.pat.length]);
+            db.push({
+                id: `cyc_${idx}`,
+                category: 'Padrão Cíclico',
+                prompt: terms.slice(0, 4).join(', ') + ', ...',
+                nextTerm: `${terms[4]}`,
+                rule: `Padrão Cíclico de ${item.name}: Repete a sequência [${item.pat.join(', ')}].`
+            });
+        });
+
+        // 6. Letra Inicial
+        const curiosities = [
+            { letter: 'C', terms: [5, 100, 101, 102, 103], words: 'Cinco, Cem, Cento e um, Cento e dois...' },
+            { letter: 'C', terms: [140, 141, 142, 143, 144], words: 'Cento e quarenta, Cento e quarenta e um...' },
+            { letter: 'D', terms: [2, 10, 12, 16, 17], words: 'Dois, Dez, Doze, Dezesseis, Dezessete...' },
+            { letter: 'D', terms: [18, 19, 200, 201, 202], words: 'Dezoito, Dezenove, Duzentos...' },
+            { letter: 'Q', terms: [4, 14, 15, 40, 41], words: 'Quatro, Quatorze, Quinze, Quarenta...' },
+            { letter: 'S', terms: [6, 7, 60, 61, 62], words: 'Seis, Sete, Sessenta, Sessenta e um...' },
+            { letter: 'T', terms: [3, 13, 30, 31, 32], words: 'Três, Treze, Trinta, Trinta e um...' },
+            { letter: 'V', terms: [20, 21, 22, 23, 24], words: 'Vinte, Vinte e um, Vinte e dois...' }
+        ];
+        curiosities.forEach((item, idx) => {
+            db.push({
+                id: `cur_${idx}`,
+                category: `Letra Inicial (${item.letter})`,
+                prompt: item.terms.slice(0, 4).join(', ') + ', ...',
+                nextTerm: `${item.terms[4]}`,
+                rule: `Curiosidade: Todos os números começam com a letra '${item.letter}' (${item.words}).`
+            });
+        });
+
+        return db;
     }
 
-    function playSuccessSound() {
-        playBeep(523.25, 0.1); // C5
-        setTimeout(() => playBeep(659.25, 0.1), 100); // E5
-        setTimeout(() => playBeep(783.99, 0.2), 200); // G5
-    }
-
-    function playErrorSound() {
-        playBeep(220, 0.15, 'sawtooth'); // A3
-        setTimeout(() => playBeep(180, 0.25, 'sawtooth'), 120);
-    }
+    const ALL_SEQUENCES = generateSequenceDatabase();
 
     function initStudents() {
         try {
             let saved = localStorage.getItem(STORAGE_KEY);
-            if(saved) {
+            if (saved) {
                 students = JSON.parse(saved);
             } else {
                 buildDefaultStudents();
             }
-        } catch(e) {
+        } catch (e) {
             buildDefaultStudents();
         }
     }
@@ -609,32 +838,26 @@
         localStorage.setItem(STORAGE_KEY, JSON.stringify(students));
     }
 
-    let timerInterval = null;
-    let startTime = 0;
-    let elapsedSeconds = 0;
-
     function startTimer() {
         stopTimer();
         const timerDisplay = document.getElementById('timer-display');
-        if(timerDisplay) timerDisplay.classList.remove('danger');
+        if (timerDisplay) timerDisplay.classList.remove('danger');
 
-        if(currentGameMode === 'normal') {
+        if (currentGameMode === 'normal') {
             startTime = Date.now();
             timerInterval = setInterval(() => {
                 let currentSession = Math.floor((Date.now() - startTime) / 1000);
                 let displayTime = elapsedSeconds + currentSession;
-                if(timerDisplay) timerDisplay.innerText = `⏱️ ${formatTime(displayTime)}`;
+                if (timerDisplay) timerDisplay.innerText = `⏱️ ${formatTime(displayTime)}`;
             }, 1000);
         } else {
             attackTimeLeft = 60;
-            if(timerDisplay) timerDisplay.innerText = `⚡ 01:00`;
+            if (timerDisplay) timerDisplay.innerText = `⚡ 01:00`;
             timerInterval = setInterval(() => {
                 attackTimeLeft--;
-                if(attackTimeLeft <= 10 && timerDisplay) timerDisplay.classList.add('danger');
-                let s = Math.max(0, attackTimeLeft).toString().padStart(2, '0');
-                if(timerDisplay) timerDisplay.innerText = `⚡ 00:${s}`;
+                updateTimerDisplay();
 
-                if(attackTimeLeft <= 0) {
+                if (attackTimeLeft <= 0) {
                     stopTimer();
                     finishMinuteAttack();
                 }
@@ -642,28 +865,28 @@
         }
     }
 
-    function applyPenalty() {
-        playErrorSound();
-        if(currentGameMode === 'attack') {
-            attackTimeLeft = Math.max(0, attackTimeLeft - 10);
-            const timerDisplay = document.getElementById('timer-display');
-            if(timerDisplay) {
+    function updateTimerDisplay() {
+        const timerDisplay = document.getElementById('timer-display');
+        if (!timerDisplay) return;
+
+        if (currentGameMode === 'attack') {
+            let clamped = Math.max(0, attackTimeLeft);
+            let s = clamped.toString().padStart(2, '0');
+            timerDisplay.innerText = `⚡ 00:${s}`;
+
+            if (clamped <= 10) {
                 timerDisplay.classList.add('danger');
-                let s = attackTimeLeft.toString().padStart(2, '0');
-                timerDisplay.innerText = `⚡ 00:${s}`;
-            }
-            if(attackTimeLeft <= 0) {
-                stopTimer();
-                finishMinuteAttack();
+            } else {
+                timerDisplay.classList.remove('danger');
             }
         }
     }
 
     function stopTimer() {
-        if(timerInterval) {
+        if (timerInterval) {
             clearInterval(timerInterval);
             timerInterval = null;
-            if(currentGameMode === 'normal' && startTime > 0) {
+            if (currentGameMode === 'normal' && startTime > 0) {
                 elapsedSeconds += Math.floor((Date.now() - startTime) / 1000);
                 startTime = 0;
             }
@@ -676,139 +899,6 @@
         return `${m}:${s}`;
     }
 
-    /* GERADOR EXATO DOS 6 GRUPOS SOLICITADOS COM RIGOR */
-    function generateSequenceDatabase() {
-        let db = [];
-
-        // 1. PA Crescente (Soma: início 1 a 15, razão de soma 1 a 5)
-        for(let start = 1; start <= 15; start += 2) {
-            for(let step = 1; step <= 5; step++) {
-                let seq = [start, start + step, start + 2*step, start + 3*step];
-                let next = start + 4*step;
-                db.push({
-                    text: `${seq.join(', ')}, ...`,
-                    nextTerm: next,
-                    type: `Soma (+${step})`
-                });
-            }
-        }
-
-        // 2. PA Decrescente (Subtração: início 15 a 40, razão de subtração 1 a 5)
-        for(let start = 15; start <= 40; start += 3) {
-            for(let step = 1; step <= 5; step++) {
-                let seq = [start, start - step, start - 2*step, start - 3*step];
-                let next = start - 4*step;
-                if(next >= 0) {
-                    db.push({
-                        text: `${seq.join(', ')}, ...`,
-                        nextTerm: next,
-                        type: `Subtração (-${step})`
-                    });
-                }
-            }
-        }
-
-        // 3. Tipo Fibonacci Exatas
-        const fibList = [
-            { text: "1, 1, 2, 3, ...", nextTerm: 5, type: "Tipo Fibonacci" },
-            { text: "1, 2, 3, 5, ...", nextTerm: 8, type: "Tipo Fibonacci" },
-            { text: "2, 3, 5, 8, ...", nextTerm: 13, type: "Tipo Fibonacci" },
-            { text: "3, 5, 8, 13, ...", nextTerm: 21, type: "Tipo Fibonacci" },
-            { text: "5, 8, 13, 21, ...", nextTerm: 34, type: "Tipo Fibonacci" }
-        ];
-        db.push(...fibList);
-
-        // 4. Sequências Cíclicas Exatas
-        const cyclicList = [
-            { text: "2, 5, 2, 5, ...", nextTerm: 2, type: "Padrão Cíclico" },
-            { text: "1, 4, 1, 4, ...", nextTerm: 1, type: "Padrão Cíclico" },
-            { text: "3, 8, 3, 8, ...", nextTerm: 3, type: "Padrão Cíclico" },
-            { text: "1, 2, 3, 1, ...", nextTerm: 2, type: "Padrão Cíclico" },
-            { text: "4, 5, 6, 4, ...", nextTerm: 5, type: "Padrão Cíclico" }
-        ];
-        db.push(...cyclicList);
-
-        // 5. Curiosas por Letra Inicial Exatas
-        const letterList = [
-            { text: "5, 100, 101, 102, ...", nextTerm: 103, type: "Letra C" },
-            { text: "2, 10, 12, 16, 17, 18, 19, ...", nextTerm: 200, type: "Letra D" },
-            { text: "4, 14, 15, 40, 41, 42, ...", nextTerm: 43, type: "Letra Q" },
-            { text: "6, 7, 60, 61, 62, ...", nextTerm: 63, type: "Letra S" },
-            { text: "3, 13, 30, 31, 32, ...", nextTerm: 33, type: "Letra T" },
-            { text: "20, 21, 22, 23, ...", nextTerm: 24, type: "Letra V" }
-        ];
-        db.push(...letterList);
-
-        // 6. PG Crescente (Multiplicação simples por 2 ou 3, início entre 1 e 4)
-        [2, 3].forEach(factor => {
-            for(let start = 1; start <= 4; start++) {
-                let seq = [start, start * factor, start * Math.pow(factor, 2), start * Math.pow(factor, 3)];
-                let next = start * Math.pow(factor, 4);
-                db.push({
-                    text: `${seq.join(', ')}, ...`,
-                    nextTerm: next,
-                    type: `Multiplicação (x${factor})`
-                });
-            }
-        });
-
-        return db;
-    }
-
-    let sequenceDatabase = generateSequenceDatabase();
-    let currentRoundSeqs = [];
-    let selectedSeqIndex = null;
-    let selectedTermIndex = null;
-    let matchesFound = 0;
-    let currentRound = 0;
-
-    let canvas, ctx, confetes = [];
-
-    function initCanvas() {
-        canvas = document.getElementById('confetti-canvas');
-        if(canvas) {
-            ctx = canvas.getContext('2d');
-            window.addEventListener('resize', resizeCanvas);
-            resizeCanvas();
-        }
-    }
-
-    function resizeCanvas() { 
-        if(canvas) {
-            canvas.width = window.innerWidth; 
-            canvas.height = window.innerHeight; 
-        }
-    }
-
-    function triggerConfetti() {
-        playSuccessSound();
-        if(!canvas || !ctx) return;
-        confetes = [];
-        const colors = ['#58cc02', '#1cb0f6', '#ffc904', '#ff4b4b'];
-        for (let i = 0; i < 80; i++) {
-            confetes.push({
-                x: Math.random() * canvas.width, y: Math.random() * canvas.height - canvas.height,
-                r: Math.random() * 6 + 4, cor: colors[Math.floor(Math.random() * colors.length)],
-                tilt: Math.random() * 10 - 5, vy: Math.random() * 3 + 4
-            });
-        }
-        animateConfetti();
-    }
-
-    function animateConfetti() {
-        if (!ctx || confetes.length === 0) return;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        let anim = false;
-        confetes.forEach((c) => {
-            if (c.y < canvas.height) anim = true;
-            c.y += c.vy;
-            ctx.beginPath(); ctx.lineWidth = c.r; ctx.strokeStyle = c.cor;
-            ctx.moveTo(c.x + c.tilt, c.y); ctx.lineTo(c.x, c.y + c.r); ctx.stroke();
-        });
-        if (anim) requestAnimationFrame(animateConfetti);
-        else ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }
-
     function setGameMode(mode) {
         currentGameMode = mode;
         document.getElementById('mode-attack-btn').className = `btn-mode ${mode === 'attack' ? 'active' : ''}`;
@@ -818,20 +908,16 @@
 
     function setDifficulty(diff) {
         currentDifficulty = diff;
+        itemsPerRound = diff === 'easy' ? 3 : (diff === 'medium' ? 4 : 5);
         document.getElementById('diff-easy-btn').className = `btn-diff ${diff === 'easy' ? 'active' : ''}`;
-        document.getElementById('diff-med-btn').className = `btn-diff ${diff === 'medium' ? 'active' : ''}`;
+        document.getElementById('diff-medium-btn').className = `btn-diff ${diff === 'medium' ? 'active' : ''}`;
         document.getElementById('diff-hard-btn').className = `btn-diff ${diff === 'hard' ? 'active' : ''}`;
-    }
-
-    function getItemsCount() {
-        if(currentDifficulty === 'easy') return 3;
-        if(currentDifficulty === 'medium') return 4;
-        return 5;
+        renderSetupScreen();
     }
 
     function renderSetupScreen() {
         stopTimer();
-        if(activeStudent && currentGameMode === 'normal') {
+        if (activeStudent && currentGameMode === 'normal') {
             activeStudent.totalTime = elapsedSeconds;
             saveStudents();
         }
@@ -860,15 +946,22 @@
         }).join('');
     }
 
+    let currentRound = 0;
+    let roundChallenges = [];
+    let selectedLeftId = null;
+    let selectedRightId = null;
+    let matchesFound = 0;
+    let draggedSeqId = null;
+
     function selectStudent(id) {
         activeStudent = students.find(s => s.id === id);
 
-        if(currentGameMode === 'normal') {
+        if (currentGameMode === 'normal') {
             currentRound = activeStudent.completed;
             elapsedSeconds = activeStudent.totalTime;
 
-            if(currentRound >= 10) {
-                alert(`${activeStudent.name} já completou todas as 10 rodadas do Modo Normal!`);
+            if (currentRound >= 10) {
+                alert(`${activeStudent.name} já concluiu todas as 10 rodadas do Modo Normal!`);
                 showRanking();
                 return;
             }
@@ -882,7 +975,6 @@
         document.getElementById('ranking-screen').style.display = 'none';
         document.getElementById('player-bar').style.display = 'flex';
         document.getElementById('progress-wrapper').style.display = 'flex';
-        document.getElementById('feedback-footer').style.display = 'flex';
         document.getElementById('header-switch-btn').style.display = 'inline-block';
 
         document.getElementById('player-avatar').innerText = activeStudent.emoji;
@@ -894,31 +986,13 @@
 
     function loadRound() {
         matchesFound = 0;
-        selectedSeqIndex = null;
-        selectedTermIndex = null;
-        
-        let itemCount = getItemsCount();
+        selectedLeftId = null;
+        selectedRightId = null;
 
-        // Embaralhar e selecionar sequências únicas para a rodada
-        let shuffledDb = [...sequenceDatabase].sort(() => Math.random() - 0.5);
-        let chosen = shuffledDb.slice(0, itemCount);
+        document.getElementById('feedback-footer').style.display = 'none';
+        document.getElementById('explanation-panel').style.display = 'none';
 
-        currentRoundSeqs = chosen.map((item, idx) => ({
-            id: idx,
-            text: item.text,
-            nextTerm: item.nextTerm,
-            type: item.type,
-            matched: false
-        }));
-
-        // Embaralhar coluna dos termos da direita
-        let terms = currentRoundSeqs.map((item, idx) => ({
-            seqId: idx,
-            val: item.nextTerm,
-            matched: false
-        })).sort(() => Math.random() - 0.5);
-
-        if(currentGameMode === 'normal') {
+        if (currentGameMode === 'normal') {
             document.getElementById('progress-bar').style.width = ((currentRound + 1) / 10 * 100) + '%';
             document.getElementById('stats-display').innerText = `Rodada ${currentRound + 1}/10`;
         } else {
@@ -926,121 +1000,197 @@
             document.getElementById('stats-display').innerText = `Pontos: ${attackScore}`;
         }
 
-        document.getElementById('feedback-text').style.display = 'none';
-        document.getElementById('action-btn').style.display = 'none';
-        document.getElementById('switch-after-btn').style.display = 'none';
+        let shuffled = [...ALL_SEQUENCES].sort(() => 0.5 - Math.random());
+        roundChallenges = shuffled.slice(0, itemsPerRound);
 
-        renderRoundCards(terms);
+        renderAssociationBoard();
     }
 
-    let currentShuffledTerms = [];
+    function renderAssociationBoard() {
+        const leftCol = document.getElementById('left-column');
+        const rightCol = document.getElementById('right-column');
 
-    function renderRoundCards(shuffledTerms) {
-        if(shuffledTerms) currentShuffledTerms = shuffledTerms;
-
-        const seqCol = document.getElementById('sequences-column');
-        const termCol = document.getElementById('terms-column');
-
-        seqCol.innerHTML = currentRoundSeqs.map((s, idx) => `
-            <div class="match-card ${s.matched ? 'matched' : ''} ${selectedSeqIndex === idx ? 'selected' : ''}" 
-                 onclick="selectSeq(${idx})">
-                <span class="seq-text">${s.text}</span>
-                <span class="seq-badge">${s.type}</span>
+        leftCol.innerHTML = roundChallenges.map(item => `
+            <div class="seq-card" id="left-${item.id}" onclick="selectLeft('${item.id}')" draggable="true" ondragstart="handleDragStart(event, '${item.id}')">
+                <span class="seq-type-tag">${item.category}</span>
+                <span class="seq-values">${item.prompt}</span>
             </div>
         `).join('');
 
-        termCol.innerHTML = currentShuffledTerms.map((t, idx) => `
-            <div class="match-card term-card ${t.matched ? 'matched' : ''} ${selectedTermIndex === idx ? 'selected' : ''}" 
-                 onclick="selectTerm(${idx}, event)">
-                👉 ${t.val}
+        let rightItems = [...roundChallenges].sort(() => 0.5 - Math.random());
+
+        rightCol.innerHTML = rightItems.map(item => `
+            <div class="term-card" id="right-${item.id}" 
+                 onclick="selectRight('${item.id}')" 
+                 ondragover="handleDragOver(event)" 
+                 ondragleave="handleDragLeave(event)"
+                 ondrop="handleDrop(event, '${item.id}')">
+                <span>👉 ${item.nextTerm}</span>
+                <span class="match-badge" id="badge-right-${item.id}" style="display:none;">✓ OK</span>
             </div>
         `).join('');
     }
 
-    function selectSeq(idx) {
-        if(currentRoundSeqs[idx].matched) return;
-        selectedSeqIndex = idx;
-        checkMatch();
-        renderRoundCards();
+    function selectLeft(id) {
+        let card = document.getElementById(`left-${id}`);
+        if (card.classList.contains('matched')) return;
+
+        if (selectedLeftId) {
+            document.getElementById(`left-${selectedLeftId}`)?.classList.remove('selected');
+        }
+
+        selectedLeftId = id;
+        card.classList.add('selected');
+        checkMatchPair();
     }
 
-    function selectTerm(idx, event) {
-        if(currentShuffledTerms[idx].matched) return;
-        selectedTermIndex = idx;
-        checkMatch(event);
-        renderRoundCards();
+    function selectRight(id) {
+        let card = document.getElementById(`right-${id}`);
+        if (card.classList.contains('matched')) return;
+
+        if (selectedRightId) {
+            document.getElementById(`right-${selectedRightId}`)?.classList.remove('selected');
+        }
+
+        selectedRightId = id;
+        card.classList.add('selected');
+        checkMatchPair();
     }
 
-    function checkMatch(event) {
-        if(selectedSeqIndex !== null && selectedTermIndex !== null) {
-            let seq = currentRoundSeqs[selectedSeqIndex];
-            let term = currentShuffledTerms[selectedTermIndex];
+    function handleDragStart(e, id) {
+        let card = document.getElementById(`left-${id}`);
+        if (card.classList.contains('matched')) {
+            e.preventDefault();
+            return;
+        }
+        draggedSeqId = id;
+        e.dataTransfer.setData('text/plain', id);
+        selectLeft(id);
+    }
 
-            if(seq.id === term.seqId) {
-                // ACERTOU
-                playBeep(440, 0.08); // Som discreto de clique correto
-                seq.matched = true;
-                term.matched = true;
-                matchesFound++;
-                selectedSeqIndex = null;
-                selectedTermIndex = null;
+    function handleDragOver(e) {
+        e.preventDefault();
+        e.currentTarget.classList.add('drag-over');
+    }
 
-                if(currentGameMode === 'attack') {
-                    attackScore += 10;
-                    document.getElementById('stats-display').innerText = `Pontos: ${attackScore}`;
-                }
+    function handleDragLeave(e) {
+        e.currentTarget.classList.remove('drag-over');
+    }
 
-                if(matchesFound === currentRoundSeqs.length) {
-                    onRoundComplete();
-                }
-            } else {
-                // ERROU -> Efeito -10s
-                if(event) showPenaltyEffect(event.clientX, event.clientY);
-                applyPenalty();
-                selectedSeqIndex = null;
-                selectedTermIndex = null;
-            }
+    function handleDrop(e, rightId) {
+        e.preventDefault();
+        e.currentTarget.classList.remove('drag-over');
+        if (draggedSeqId) {
+            selectRight(rightId);
+            draggedSeqId = null;
         }
     }
 
-    function showPenaltyEffect(x, y) {
-        const el = document.createElement('div');
-        el.className = 'penalty-popup';
-        el.innerText = '-10s';
-        el.style.left = (x - 20) + 'px';
-        el.style.top = (y - 30) + 'px';
-        document.body.appendChild(el);
-        setTimeout(() => el.remove(), 800);
+    function checkMatchPair() {
+        if (selectedLeftId && selectedRightId) {
+            let leftCard = document.getElementById(`left-${selectedLeftId}`);
+            let rightCard = document.getElementById(`right-${selectedRightId}`);
+
+            if (selectedLeftId === selectedRightId) {
+                leftCard.className = 'seq-card matched';
+                rightCard.className = 'term-card matched';
+                document.getElementById(`badge-right-${selectedRightId}`).style.display = 'inline-block';
+
+                let matchedItem = roundChallenges.find(x => x.id === selectedLeftId);
+                showRuleExplanation(matchedItem.rule);
+
+                matchesFound++;
+                if (currentGameMode === 'attack') {
+                    attackScore += 10;
+                    document.getElementById('stats-display').innerText = `Pontos: ${attackScore}`;
+                    if (attackScore > (activeStudent.attackRecord || 0)) {
+                        activeStudent.attackRecord = attackScore;
+                        saveStudents();
+                    }
+                }
+
+                if (matchesFound === itemsPerRound) {
+                    handleRoundComplete();
+                }
+            } else {
+                leftCard.classList.add('wrong');
+                rightCard.classList.add('wrong');
+
+                applyPenalty();
+
+                setTimeout(() => {
+                    leftCard.classList.remove('wrong', 'selected');
+                    rightCard.classList.remove('wrong', 'selected');
+                }, 400);
+            }
+
+            selectedLeftId = null;
+            selectedRightId = null;
+        }
     }
 
-    function onRoundComplete() {
-        triggerConfetti();
+    function applyPenalty() {
+        triggerPenaltyToast();
 
-        if(currentGameMode === 'attack') {
-            attackScore += 25; // Bónus por completar a rodada
-            if(attackScore > (activeStudent.attackRecord || 0)) {
+        if (currentGameMode === 'attack') {
+            attackTimeLeft -= 10;
+            updateTimerDisplay();
+
+            if (attackTimeLeft <= 0) {
+                stopTimer();
+                finishMinuteAttack();
+            }
+        } else {
+            elapsedSeconds += 10;
+            const timerDisplay = document.getElementById('timer-display');
+            if (timerDisplay) timerDisplay.innerText = `⏱️ ${formatTime(elapsedSeconds)}`;
+        }
+    }
+
+    function triggerPenaltyToast() {
+        const toast = document.getElementById('penalty-toast');
+        if (!toast) return;
+        toast.classList.add('show');
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 800);
+    }
+
+    function showRuleExplanation(ruleText) {
+        const panel = document.getElementById('explanation-panel');
+        document.getElementById('explanation-text').innerText = ruleText;
+        panel.style.display = 'flex';
+    }
+
+    function handleRoundComplete() {
+        if (typeof confetti === 'function') {
+            confetti({ particleCount: 60, spread: 60, origin: { y: 0.7 } });
+        }
+
+        if (currentGameMode === 'attack') {
+            attackScore += (itemsPerRound * 5);
+            document.getElementById('stats-display').innerText = `Pontos: ${attackScore}`;
+            if (attackScore > (activeStudent.attackRecord || 0)) {
                 activeStudent.attackRecord = attackScore;
                 saveStudents();
             }
             setTimeout(() => {
-                loadRound();
-            }, 600);
+                if (attackTimeLeft > 0) loadRound();
+            }, 500);
         } else {
             stopTimer();
             activeStudent.completed += 1;
             activeStudent.totalTime = elapsedSeconds;
             saveStudents();
 
-            document.getElementById('feedback-text').innerText = `Excelente! Rodada ${currentRound + 1} Concluída! 🎉`;
-            document.getElementById('feedback-text').style.display = 'block';
-            document.getElementById('action-btn').style.display = 'block';
-            document.getElementById('switch-after-btn').style.display = 'block';
+            document.getElementById('feedback-footer').style.display = 'flex';
+            document.getElementById('feedback-text').innerText = "Excelente! Você associou todas as sequências! 🎉";
         }
     }
 
-    function checkOrNext() {
+    function nextRoundOrFinish() {
         currentRound++;
-        if(currentRound >= 10 && currentGameMode === 'normal') {
+        if (currentRound >= 10 && currentGameMode === 'normal') {
             alert(`Parabéns ${activeStudent.name}! Você completou todas as 10 rodadas!`);
             showRanking();
         } else {
@@ -1050,22 +1200,17 @@
     }
 
     function finishMinuteAttack() {
-        alert(`⏰ TEMPO ESGOTADO! ${activeStudent.name} fez ${attackScore} pontos!`);
-        if(attackScore > (activeStudent.attackRecord || 0)) {
+        alert(`⏰ TEMPO ESGOTADO!\n\n${activeStudent.name} fez ${attackScore} PONTOS no Minute Attack!`);
+        if (attackScore > (activeStudent.attackRecord || 0)) {
             activeStudent.attackRecord = attackScore;
             saveStudents();
         }
-        renderSetupScreen();
-    }
-
-    function switchAfterSuccess() {
-        currentRound++;
-        renderSetupScreen();
+        showRanking();
     }
 
     function showRanking() {
         stopTimer();
-        if(activeStudent && currentGameMode === 'normal') {
+        if (activeStudent && currentGameMode === 'normal') {
             activeStudent.totalTime = elapsedSeconds;
             saveStudents();
         }
@@ -1083,7 +1228,7 @@
             : '⚡ Ranking Minute Attack';
 
         let sorted = [...students].sort((a, b) => {
-            if(currentGameMode === 'normal') {
+            if (currentGameMode === 'normal') {
                 if (b.completed !== a.completed) return b.completed - a.completed;
                 return a.totalTime - b.totalTime;
             } else {
@@ -1094,7 +1239,7 @@
         const list = document.getElementById('ranking-list');
         list.innerHTML = sorted.map((s, idx) => {
             let scoreText = currentGameMode === 'normal'
-                ? `${s.completed} rodadas (${formatTime(s.totalTime)})`
+                ? `${s.completed}/10 Rds (${formatTime(s.totalTime)})`
                 : `${s.attackRecord || 0} pts`;
 
             return `
@@ -1111,7 +1256,7 @@
     }
 
     function resetAll() {
-        if(confirm("Tem certeza que deseja resetar TODOS os dados e pontuações da turma?")) {
+        if (confirm("Tem certeza que deseja resetar TODOS os dados e pontuações dos alunos?")) {
             localStorage.removeItem(STORAGE_KEY);
             buildDefaultStudents();
             activeStudent = null;
@@ -1120,7 +1265,6 @@
     }
 
     window.onload = () => {
-        initCanvas();
         initStudents();
         renderSetupScreen();
     };
