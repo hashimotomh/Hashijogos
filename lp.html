@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>Passa para Lá - Classes Gramaticais</title>
+    <!-- Confetti JS -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Polyfill para Drag and Drop funcionar via Touch Screen / Lousa Digital BenQ -->
+    <script src="https://cdn.jsdelivr.net/npm/drag-drop-touch-polyfill@1.0.2/DragDropTouch.js"></script>
     <style>
         :root {
             --primary: #58cc02;
@@ -107,7 +110,7 @@
             font-weight: 800;
             color: var(--text-muted);
             text-transform: uppercase;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             text-align: center;
         }
 
@@ -115,8 +118,38 @@
             display: flex;
             gap: 8px;
             justify-content: center;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             flex-wrap: wrap;
+        }
+
+        .class-selector-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 8px;
+            margin-bottom: 12px;
+            padding: 10px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .class-checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 6px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .class-checkbox-item input {
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
         }
 
         .btn-mode, .btn-diff {
@@ -144,38 +177,6 @@
             background: #ebfbee;
             color: var(--primary-dark);
             box-shadow: 0 3px 0 var(--primary-dark);
-        }
-
-        .class-checkbox-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
-            gap: 8px;
-            margin-bottom: 14px;
-            background: #f8f9fa;
-            padding: 12px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-        }
-
-        .checkbox-card {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: white;
-            padding: 8px 10px;
-            border-radius: 10px;
-            border: 2px solid var(--border);
-            font-weight: 700;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .checkbox-card input[type="checkbox"] {
-            width: 16px;
-            height: 16px;
-            accent-color: var(--primary);
-            cursor: pointer;
         }
 
         .player-bar {
@@ -290,7 +291,7 @@
         .setup-screen {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 12px;
             text-align: center;
         }
 
@@ -299,7 +300,7 @@
             grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
             gap: 10px;
             margin-top: 8px;
-            max-height: 38vh;
+            max-height: 40vh;
             overflow-y: auto;
             padding-right: 4px;
         }
@@ -317,10 +318,15 @@
             transition: transform 0.1s, border-color 0.2s;
         }
         .btn-student:active { transform: scale(0.96); }
+        .btn-student.is-test {
+            background: #d3f9d8;
+            border-color: #40c057;
+            color: #2b8a3e;
+        }
 
         .btn-student .emoji { font-size: 24px; }
-        .btn-student .name { font-weight: 700; font-size: 11px; text-transform: uppercase; text-align: center; }
-        .btn-student .status { font-size: 10px; color: var(--text-muted); font-weight: 600; }
+        .btn-student .name { font-weight: 700; font-size: 11px; text-transform: uppercase; text-align: center; word-break: break-word; }
+        .btn-student .status { font-size: 11px; color: var(--text-muted); font-weight: 600; }
 
         .game-board {
             display: flex;
@@ -374,11 +380,15 @@
             gap: 10px;
         }
 
+        .word-card, .class-card {
+            touch-action: manipulation;
+        }
+
         .word-card {
             background: white;
             border: 2px solid var(--border);
             border-radius: 12px;
-            padding: 12px;
+            padding: 14px;
             display: flex;
             flex-direction: column;
             gap: 6px;
@@ -418,41 +428,28 @@
             40%, 80% { transform: translateX(7px); }
         }
 
-        .word-type-tag {
-            font-size: 10px;
-            font-weight: 800;
-            text-transform: uppercase;
-            padding: 2px 6px;
-            border-radius: 6px;
-            background: #e9ecef;
-            color: #495057;
-            align-self: flex-start;
-        }
-
-        .word-values {
-            font-size: 16px;
+        .word-text {
+            font-size: 18px;
             font-weight: 700;
             color: var(--text-main);
-            letter-spacing: 0.2px;
-            line-height: 1.35;
+            line-height: 1.3;
         }
 
         .highlight-word {
-            color: #ea2b2b;
+            color: var(--error);
             font-weight: 800;
             text-decoration: underline;
-            text-underline-offset: 3px;
         }
 
         .class-card {
             background: white;
             border: 2px solid var(--border);
             border-radius: 12px;
-            padding: 12px 18px;
+            padding: 14px 18px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 800;
             color: var(--secondary-dark);
             cursor: pointer;
@@ -634,68 +631,38 @@
     <main>
         <!-- TELA DE SELEÇÃO -->
         <div class="setup-screen" id="setup-screen">
-            <div class="selector-label">1. Escolha as Classes Gramaticais para o Jogo</div>
-            <div class="class-checkbox-grid">
-                <label class="checkbox-card">
-                    <input type="checkbox" class="cls-chk" value="Substantivo" checked onchange="validateCheckboxes()">
-                    <span>Substantivo</span>
-                </label>
-                <label class="checkbox-card">
-                    <input type="checkbox" class="cls-chk" value="Adjetivo" checked onchange="validateCheckboxes()">
-                    <span>Adjetivo</span>
-                </label>
-                <label class="checkbox-card">
-                    <input type="checkbox" class="cls-chk" value="Verbo" checked onchange="validateCheckboxes()">
-                    <span>Verbo</span>
-                </label>
-                <label class="checkbox-card">
-                    <input type="checkbox" class="cls-chk" value="Pronome" checked onchange="validateCheckboxes()">
-                    <span>Pronome</span>
-                </label>
-                <label class="checkbox-card">
-                    <input type="checkbox" class="cls-chk" value="Artigo" checked onchange="validateCheckboxes()">
-                    <span>Artigo</span>
-                </label>
-                <label class="checkbox-card">
-                    <input type="checkbox" class="cls-chk" value="Numeral" onchange="validateCheckboxes()">
-                    <span>Numeral</span>
-                </label>
-                <label class="checkbox-card">
-                    <input type="checkbox" class="cls-chk" value="Advérbio" onchange="validateCheckboxes()">
-                    <span>Advérbio</span>
-                </label>
-                <label class="checkbox-card">
-                    <input type="checkbox" class="cls-chk" value="Preposição" onchange="validateCheckboxes()">
-                    <span>Preposição</span>
-                </label>
-                <label class="checkbox-card">
-                    <input type="checkbox" class="cls-chk" value="Conjunção" onchange="validateCheckboxes()">
-                    <span>Conjunção</span>
-                </label>
-                <label class="checkbox-card">
-                    <input type="checkbox" class="cls-chk" value="Interjeição" onchange="validateCheckboxes()">
-                    <span>Interjeição</span>
-                </label>
-            </div>
-
-            <div class="selector-label">2. Modo de Jogo</div>
+            <div class="selector-label">1. Escolha o Modo de Jogo</div>
             <div class="mode-selector">
                 <button class="btn-mode active" id="mode-attack-btn" onclick="setGameMode('attack')">⚡ Minute Attack (1 Minuto)</button>
                 <button class="btn-mode" id="mode-normal-btn" onclick="setGameMode('normal')">📘 Modo Normal (10 Rodadas)</button>
             </div>
 
-            <div class="selector-label">3. Quantidade de Itens por Rodada</div>
+            <div class="selector-label">2. Quantidade de Itens por Rodada</div>
             <div class="difficulty-selector">
                 <button class="btn-diff active" id="diff-easy-btn" onclick="setDifficulty('easy')">🟢 Fácil (3 itens)</button>
                 <button class="btn-diff" id="diff-medium-btn" onclick="setDifficulty('medium')">🟡 Médio (4 itens)</button>
                 <button class="btn-diff" id="diff-hard-btn" onclick="setDifficulty('hard')">🔴 Difícil (5 itens)</button>
             </div>
 
-            <div class="selector-label">4. Nível do Conteúdo</div>
+            <div class="selector-label">3. Complexidade dos Desafios</div>
             <div class="difficulty-selector">
-                <button class="btn-diff active" id="seq-easy-btn" onclick="setSeqDifficulty('easy')">🌱 Fácil (Palavras isoladas)</button>
-                <button class="btn-diff" id="seq-medium-btn" onclick="setSeqDifficulty('medium')">🌿 Média (Frases simples)</button>
-                <button class="btn-diff" id="seq-hard-btn" onclick="setSeqDifficulty('hard')">🔥 Difícil (Frases do 6º Ano)</button>
+                <button class="btn-diff active" id="seq-easy-btn" onclick="setSeqDifficulty('easy')">🌱 Palavras Isoladas</button>
+                <button class="btn-diff" id="seq-medium-btn" onclick="setSeqDifficulty('medium')">🌿 Frases Curtas</button>
+                <button class="btn-diff" id="seq-hard-btn" onclick="setSeqDifficulty('hard')">🔥 Frases Contextualizadas</button>
+            </div>
+
+            <div class="selector-label">4. Classes Gramaticais Permitidas na Rodada</div>
+            <div class="class-selector-grid">
+                <label class="class-checkbox-item"><input type="checkbox" value="Substantivo" checked onchange="validateClasses()"> Substantivo</label>
+                <label class="class-checkbox-item"><input type="checkbox" value="Adjetivo" checked onchange="validateClasses()"> Adjetivo</label>
+                <label class="class-checkbox-item"><input type="checkbox" value="Verbo" checked onchange="validateClasses()"> Verbo</label>
+                <label class="class-checkbox-item"><input type="checkbox" value="Pronome" checked onchange="validateClasses()"> Pronome</label>
+                <label class="class-checkbox-item"><input type="checkbox" value="Artigo" checked onchange="validateClasses()"> Artigo</label>
+                <label class="class-checkbox-item"><input type="checkbox" value="Numeral" onchange="validateClasses()"> Numeral</label>
+                <label class="class-checkbox-item"><input type="checkbox" value="Advérbio" onchange="validateClasses()"> Advérbio</label>
+                <label class="class-checkbox-item"><input type="checkbox" value="Preposição" onchange="validateClasses()"> Preposição</label>
+                <label class="class-checkbox-item"><input type="checkbox" value="Conjunção" onchange="validateClasses()"> Conjunção</label>
+                <label class="class-checkbox-item"><input type="checkbox" value="Interjeição" onchange="validateClasses()"> Interjeição</label>
             </div>
 
             <div class="selector-label">5. Selecione o Aluno para Iniciar</div>
@@ -706,7 +673,7 @@
         <div id="game-screen" style="display:none; width: 100%;">
             <div class="game-board">
                 <div class="hint-banner">
-                    💡 <b>Atenção:</b> Erros custam <b>-10 segundos</b> de penalidade! Pense bem antes de ligar.
+                    💡 <b>Atenção:</b> Arraste ou dê 1 toque no item e depois 1 toque na classe! Erros custam <b>-10s</b>!
                 </div>
 
                 <div class="association-container">
@@ -745,7 +712,7 @@
 </div>
 
 <script>
-    const EMOJIS = ['⚙️', '🐶', '🐱', '🦊', '🦁', '🐸', '🐵', '🦄', '🐼', '🐯', '🐨', '🐙', '🦖', '🤖', '🚀', '⭐', '🍎', '⚽', '🎨', '📚', '✏️', '🏆', '🎯', '🧩', '🚀', '🔮', '🌟', '🎧', '🎸', '🕹️', '🎨', '🎒', '💡'];
+    const EMOJIS = ['🐶', '🐱', '🦊', '🦁', '🐸', '🐵', '🦄', '🐼', '🐯', '🐨', '🐙', '🦖', '🤖', '🚀', '⭐', '🍎', '⚽', '🎨'];
     
     const OFFICIAL_STUDENTS = [
         "ALUNO TESTE",
@@ -786,192 +753,190 @@
     let students = [];
     let activeStudent = null;
     let currentGameMode = 'attack';
-    let currentDifficulty = 'easy';
-    let currentSeqDifficulty = 'easy';
+    let currentDifficulty = 'easy'; // easy = 3, medium = 4, hard = 5
+    let currentSeqDifficulty = 'easy'; // easy, medium, hard
     let itemsPerRound = 3;
     let attackScore = 0;
     let attackTimeLeft = 60;
     let timerInterval = null;
     let startTime = 0;
     let elapsedSeconds = 0;
-    const STORAGE_KEY = 'passa_para_la_gramatica_v4';
+    const STORAGE_KEY = 'passa_para_la_gramatica_v2';
 
-    function hl(txt) {
-        return `<span class="highlight-word">${txt}</span>`;
-    }
-
-    // BANCO COMPLETO DE 10 CLASSES GRAMATICIAIS
+    // --- BANCO DE DADOS COMPLETO DE LÍNGUA PORTUGUESA ---
     function generateGrammarDatabase(diffLevel) {
         let db = [];
 
         if (diffLevel === 'easy') {
-            // FÁCIL: PALAVRAS ISOLADAS
+            // NÍVEL FÁCIL: PALAVRAS ISOLADAS
             const items = [
-                // SUBSTANTIVOS
-                { id: 'se1', prompt: 'Cachorro', targetClass: 'Substantivo', rule: 'Substantivo: Nomeia um animal.' },
-                { id: 'se2', prompt: 'Escola', targetClass: 'Substantivo', rule: 'Substantivo: Nomeia um lugar.' },
-                { id: 'se3', prompt: 'Brasil', targetClass: 'Substantivo', rule: 'Substantivo Próprio: Nome de país.' },
-                { id: 'se4', prompt: 'Felicidade', targetClass: 'Substantivo', rule: 'Substantivo Abstrato: Nomeia um sentimento.' },
-                // ADJETIVOS
-                { id: 'ae1', prompt: 'Bonito', targetClass: 'Adjetivo', rule: 'Adjetivo: Atribui uma qualidade.' },
-                { id: 'ae2', prompt: 'Rápido', targetClass: 'Adjetivo', rule: 'Adjetivo: Caracteriza velocidade.' },
-                { id: 'ae3', prompt: 'Colorido', targetClass: 'Adjetivo', rule: 'Adjetivo: Modifica o aspecto visual.' },
-                // VERBOS
-                { id: 've1', prompt: 'Correr', targetClass: 'Verbo', rule: 'Verbo: Indica uma ação.' },
-                { id: 've2', prompt: 'Estudar', targetClass: 'Verbo', rule: 'Verbo: Indica ação de aprender.' },
-                { id: 've3', prompt: 'Dormir', targetClass: 'Verbo', rule: 'Verbo: Indica um estado/ação de descanso.' },
-                // PRONOMES
-                { id: 'pe1', prompt: 'Ele', targetClass: 'Pronome', rule: 'Pronome Pessoal: Substitui um nome.' },
-                { id: 'pe2', prompt: 'Meu', targetClass: 'Pronome', rule: 'Pronome Possessivo: Indica posse.' },
-                { id: 'pe3', prompt: 'Aquele', targetClass: 'Pronome', rule: 'Pronome Demonstrativo: Indica algo distante.' },
-                // ARTIGOS
-                { id: 'rte1', prompt: 'O', targetClass: 'Artigo', rule: 'Artigo Definido Masculino.' },
-                { id: 'rte2', prompt: 'Uma', targetClass: 'Artigo', rule: 'Artigo Indefinido Feminino.' },
-                { id: 'rte3', prompt: 'Uns', targetClass: 'Artigo', rule: 'Artigo Indefinido Plural Masculino.' },
-                // NUMERAIS
-                { id: 'ne1', prompt: 'Três', targetClass: 'Numeral', rule: 'Numeral Cardinal: Indica quantidade.' },
-                { id: 'ne2', prompt: 'Primeiro', targetClass: 'Numeral', rule: 'Numeral Ordinal: Indica ordem ou posição.' },
-                { id: 'ne3', prompt: 'Dobro', targetClass: 'Numeral', rule: 'Numeral Multiplicativo.' },
-                // ADVÉRBIOS
-                { id: 'de1', prompt: 'Hoje', targetClass: 'Advérbio', rule: 'Advérbio de Tempo: Indica quando.' },
-                { id: 'de2', prompt: 'Aqui', targetClass: 'Advérbio', rule: 'Advérbio de Lugar: Indica onde.' },
-                { id: 'de3', prompt: 'Muito', targetClass: 'Advérbio', rule: 'Advérbio de Intensidade.' },
-                // PREPOSIÇÕES
-                { id: 'pre1', prompt: 'De', targetClass: 'Preposição', rule: 'Preposição: Liga palavras criando sentido.' },
-                { id: 'pre2', prompt: 'Com', targetClass: 'Preposição', rule: 'Preposição: Expressa companhia ou instrumento.' },
-                { id: 'pre3', prompt: 'Para', targetClass: 'Preposição', rule: 'Preposição: Expressa finalidade ou destino.' },
-                // CONJUNÇÕES
-                { id: 'cje1', prompt: 'E', targetClass: 'Conjunção', rule: 'Conjunção Aditiva: Soma ideias.' },
-                { id: 'cje2', prompt: 'Mas', targetClass: 'Conjunção', rule: 'Conjunção Adversativa: Indica oposição.' },
-                { id: 'cje3', prompt: 'Porque', targetClass: 'Conjunção', rule: 'Conjunção Explicativa/Causal.' },
-                // INTERJEIÇÕES
-                { id: 'ije1', prompt: 'Oh!', targetClass: 'Interjeição', rule: 'Interjeição: Expressa surpresa ou emoção.' },
-                { id: 'ije2', prompt: 'Psiu!', targetClass: 'Interjeição', rule: 'Interjeição: Chamamento ou pedido de silêncio.' },
-                { id: 'ije3', prompt: 'Ufa!', targetClass: 'Interjeição', rule: 'Interjeição: Expressa alívio.' }
+                // Substantivos
+                { text: "Cachorro", target: "Substantivo", rule: "'Cachorro' é um substantivo pois dá nome a um ser." },
+                { text: "Escola", target: "Substantivo", rule: "'Escola' é um substantivo pois dá nome a um lugar." },
+                { text: "Caneta", target: "Substantivo", rule: "'Caneta' é um substantivo pois dá nome a um objeto." },
+                { text: "Brasil", target: "Substantivo", rule: "'Brasil' é um substantivo próprio." },
+                { text: "Alegria", target: "Substantivo", rule: "'Alegria' é um substantivo abstrato." },
+                
+                // Adjetivos
+                { text: "Bonito", target: "Adjetivo", rule: "'Bonito' é um adjetivo pois indica uma qualidade." },
+                { text: "Grande", target: "Adjetivo", rule: "'Grande' é um adjetivo pois indica uma característica." },
+                { text: "Inteligente", target: "Adjetivo", rule: "'Inteligente' é um adjetivo pois caracteriza algo ou alguém." },
+                { text: "Veloz", target: "Adjetivo", rule: "'Veloz' é um adjetivo pois atribui um atributo." },
+                { text: "Azul", target: "Adjetivo", rule: "'Azul' é um adjetivo pois indica a cor/qualidade de algo." },
+
+                // Verbos
+                { text: "Correr", target: "Verbo", rule: "'Correr' é um verbo pois indica uma ação." },
+                { text: "Estudou", target: "Verbo", rule: "'Estudou' é um verbo pois indica uma ação no passado." },
+                { text: "Dormir", target: "Verbo", rule: "'Dormir' é um verbo no infinitivo que indica ação/estado." },
+                { text: "Brincar", target: "Verbo", rule: "'Brincar' é um verbo que exprime ação." },
+                { text: "Falará", target: "Verbo", rule: "'Falará' é um verbo que indica uma ação no futuro." },
+
+                // Pronomes
+                { text: "Ele", target: "Pronome", rule: "'Ele' é um pronome pessoal do caso reto." },
+                { text: "Nós", target: "Pronome", rule: "'Nós' é um pronome pessoal que substitui as pessoas do discurso." },
+                { text: "Meu", target: "Pronome", rule: "'Meu' é um pronome possessivo." },
+                { text: "Este", target: "Pronome", rule: "'Este' é um pronome demonstrativo." },
+                { text: "Ela", target: "Pronome", rule: "'Ela' é um pronome pessoal do caso reto." },
+
+                // Artigos
+                { text: "O", target: "Artigo", rule: "'O' é um artigo definido masculino." },
+                { text: "Uma", target: "Artigo", rule: "'Uma' é um artigo indefinido feminino." },
+                { text: "Os", target: "Artigo", rule: "'Os' é um artigo definido no plural." },
+                { text: "Uns", target: "Artigo", rule: "'Uns' é um artigo indefinido masculino no plural." },
+
+                // Numerais
+                { text: "Dois", target: "Numeral", rule: "'Dois' é um numeral cardinal." },
+                { text: "Primeiro", target: "Numeral", rule: "'Primeiro' é um numeral ordinal." },
+                { text: "Dobro", target: "Numeral", rule: "'Dobro' é um numeral multiplicativo." },
+
+                // Advérbios
+                { text: "Ontem", target: "Advérbio", rule: "'Ontem' é um advérbio de tempo." },
+                { text: "Muito", target: "Advérbio", rule: "'Muito' é um advérbio de intensidade." },
+                { text: "Aqui", target: "Advérbio", rule: "'Aqui' é um advérbio de lugar." },
+
+                // Preposições
+                { text: "De", target: "Preposição", rule: "'De' é uma preposição essencial." },
+                { text: "Com", target: "Preposição", rule: "'Com' é uma preposição que liga palavras." },
+                { text: "Para", target: "Preposição", rule: "'Para' é uma preposição que indica direção/finalidade." },
+
+                // Conjunções
+                { text: "E", target: "Conjunção", rule: "'E' é uma conjunção aditiva que liga ideias." },
+                { text: "Mas", target: "Conjunção", rule: "'Mas' é uma conjunção adversativa que indica oposição." },
+
+                // Interjeições
+                { text: "Uau!", target: "Interjeição", rule: "'Uau!' é uma interjeição que exprime admiração." },
+                { text: "Ah!", target: "Interjeição", rule: "'Ah!' é uma interjeição de emoção ou surpresa." }
             ];
-            db = items.map(i => ({ ...i, category: 'Palavra Isolada' }));
+
+            items.forEach((item, idx) => {
+                db.push({
+                    id: `e_${idx}`,
+                    prompt: item.text,
+                    targetClass: item.target,
+                    rule: item.rule
+                });
+            });
 
         } else if (diffLevel === 'medium') {
-            // MÉDIA: FRASES CURTAS
+            // NÍVEL MÉDIO: FRASES CURTAS COM DESTAQUE
             const items = [
-                // SUBSTANTIVOS
-                { id: 'sm1', prompt: `O ${hl('cachorro')} correu no quintal.`, targetClass: 'Substantivo', rule: 'Substantivo: Nomeia o animal.' },
-                { id: 'sm2', prompt: `A ${hl('cidade')} estava iluminada.`, targetClass: 'Substantivo', rule: 'Substantivo: Nomeia o lugar.' },
-                { id: 'sm3', prompt: `Sentimos muita ${hl('alegria')} na festa.`, targetClass: 'Substantivo', rule: 'Substantivo Abstrato: Nomeia um sentimento.' },
+                // Substantivos
+                { text: "A <span class='highlight-word'>menina</span> ganhou um presente.", target: "Substantivo", rule: "'Menina' nomeia a pessoa que realiza a ação." },
+                { text: "O <span class='highlight-word'>gato</span> subiu no telhado.", target: "Substantivo", rule: "'Gato' é o nome do animal (substantivo)." },
+                { text: "Aquela <span class='highlight-word'>cidade</span> é muito bonita.", target: "Substantivo", rule: "'Cidade' é um substantivo comum que indica um lugar." },
+                { text: "Sinto muita <span class='highlight-word'>saudade</span> de você.", target: "Substantivo", rule: "'Saudade' é um substantivo abstrato que nomeia um sentimento." },
 
-                // ADJETIVOS
-                { id: 'am1', prompt: `O aluno fez um trabalho ${hl('excelente')}.`, targetClass: 'Adjetivo', rule: 'Adjetivo: Qualifica o trabalho.' },
-                { id: 'am2', prompt: `Aquele cãozinho é muito ${hl('carinhoso')}.`, targetClass: 'Adjetivo', rule: 'Adjetivo: Caracteriza o cão.' },
-                { id: 'am3', prompt: `Comprei uma bicicleta ${hl('vermelha')}.`, targetClass: 'Adjetivo', rule: 'Adjetivo: Indica a cor do objeto.' },
+                // Adjetivos
+                { text: "O aluno é muito <span class='highlight-word'>dedicado</span>.", target: "Adjetivo", rule: "'Dedicado' caracteriza como o aluno é." },
+                { text: "Comprei um livro <span class='highlight-word'>interessante</span>.", target: "Adjetivo", rule: "'Interessante' atribui uma qualidade ao livro." },
+                { text: "O dia está <span class='highlight-word'>ensolarado</span>.", target: "Adjetivo", rule: "'Ensolarado' caracteriza o estado do dia." },
+                { text: "Eles usavam roupas <span class='highlight-word'>limpas</span>.", target: "Adjetivo", rule: "'Limpas' é um adjetivo que caracteriza as roupas." },
 
-                // VERBOS
-                { id: 'vm1', prompt: `A menina ${hl('estudou')} bastante para a prova.`, targetClass: 'Verbo', rule: 'Verbo: Expressa uma ação no passado.' },
-                { id: 'vm2', prompt: `Nós ${hl('jogaremos')} futebol amanhã.`, targetClass: 'Verbo', rule: 'Verbo: Ação no futuro.' },
-                { id: 'vm3', prompt: `Os alunos ${hl('escreveram')} uma carta.`, targetClass: 'Verbo', rule: 'Verbo: Ação de redigir.' },
+                // Verbos
+                { text: "Nós <span class='highlight-word'>jogamos</span> futebol ontem.", target: "Verbo", rule: "'Jogamos' é uma ação praticada pelo sujeito." },
+                { text: "Os pássaros <span class='highlight-word'>voam</span> alto.", target: "Verbo", rule: "'Voam' expressa a ação realizada pelos pássaros." },
+                { text: "Ela <span class='highlight-word'>escreveu</span> uma linda carta.", target: "Verbo", rule: "'Escreveu' indica a ação que ocorreu no passado." },
+                { text: "Amanhã nós <span class='highlight-word'>viajaremos</span> cedo.", target: "Verbo", rule: "'Viajaremos' exprime uma ação no tempo futuro." },
 
-                // PRONOMES
-                { id: 'pm1', prompt: `${hl('Ela')} ganhou a medalha da gincana.`, targetClass: 'Pronome', rule: 'Pronome Pessoal: Substitui o nome da pessoa.' },
-                { id: 'pm2', prompt: `Guarde o ${hl('meu')} lápis na caixa.`, targetClass: 'Pronome', rule: 'Pronome Possessivo: Indica posse.' },
-                { id: 'pm3', prompt: `${hl('Aquele')} menino est estuda na minha sala.`, targetClass: 'Pronome', rule: 'Pronome Demonstrativo: Aponta alguém.' },
+                // Pronomes
+                { text: "<span class='highlight-word'>Ela</span> gosta de ler livros.", target: "Pronome", rule: "'Ela' substitui o nome da pessoa na frase." },
+                { text: "<span class='highlight-word'>Nossa</span> casa é muito aconchegante.", target: "Pronome", rule: "'Nossa' indica posse do objeto (casa)." },
+                { text: "Quem deixou <span class='highlight-word'>este</span> casaco aqui?", target: "Pronome", rule: "'Este' demonstra algo próximo da pessoa." },
+                { text: "<span class='highlight-word'>Eles</span> resolveram todo o problema.", target: "Pronome", rule: "'Eles' é o pronome que representa o grupo." },
 
-                // ARTIGOS
-                { id: 'rtm1', prompt: `${hl('O')} menino correu para o gol.`, targetClass: 'Artigo', rule: 'Artigo Definido Masculino.' },
-                { id: 'rtm2', prompt: `Encontrei ${hl('uma')} moeda antiga no chão.`, targetClass: 'Artigo', rule: 'Artigo Indefinido Feminino.' },
-                { id: 'rtm3', prompt: `Gostaria de ${hl('uns')} minutos de atenção.`, targetClass: 'Artigo', rule: 'Artigo Indefinido Plural.' },
+                // Artigos
+                { text: "<span class='highlight-word'>O</span> menino correu rápido.", target: "Artigo", rule: "'O' define o substantivo menino." },
+                { text: "Encontrei <span class='highlight-word'>uma</span> chave perdida.", target: "Artigo", rule: "'Uma' indefine o substantivo chave." },
 
-                // NUMERAIS
-                { id: 'nm1', prompt: `Eu comi ${hl('duas')} fatias de pizza.`, targetClass: 'Numeral', rule: 'Numeral Cardinal: Quantidade exata.' },
-                { id: 'nm2', prompt: `Ele ficou em ${hl('terceiro')} lugar na corrida.`, targetClass: 'Numeral', rule: 'Numeral Ordinal: Posição ou ordem.' },
-                { id: 'nm3', prompt: `Gastei o ${hl('triplo')} do valor planejado.`, targetClass: 'Numeral', rule: 'Numeral Multiplicativo.' },
+                // Numerais
+                { text: "Comi <span class='highlight-word'>dois</span> pedaços de bolo.", target: "Numeral", rule: "'Dois' indica a quantidade exata." },
+                { text: "Ele ficou em <span class='highlight-word'>segundo</span> lugar.", target: "Numeral", rule: "'Segundo' indica a posição/ordem." },
 
-                // ADVÉRBIOS
-                { id: 'dm1', prompt: `O trem chegou ${hl('cedo')} na estação.`, targetClass: 'Advérbio', rule: 'Advérbio de Tempo: Modifica o verbo chegar.' },
-                { id: 'dm2', prompt: `Eles jogaram ${hl('muito')} bem ontem.`, targetClass: 'Advérbio', rule: 'Advérbio de Modo/Intensidade.' },
-                { id: 'dm3', prompt: `A mochila está ${hl('ali')} perto da bancada.`, targetClass: 'Advérbio', rule: 'Advérbio de Lugar.' },
+                // Advérbios
+                { text: "Eles saíram <span class='highlight-word'>cedo</span> para a aula.", target: "Advérbio", rule: "'Cedo' modifica o verbo indicando tempo." },
+                { text: "O robô andava <span class='highlight-word'>lentamente</span>.", target: "Advérbio", rule: "'Lentamente' indica o modo como andava." },
 
-                // PREPOSIÇÕES
-                { id: 'prm1', prompt: `Fui para a escola ${hl('de')} ônibus.`, targetClass: 'Preposição', rule: 'Preposição: Indica o meio de transporte.' },
-                { id: 'prm2', prompt: `O bolo foi feito ${hl('com')} muito carinho.`, targetClass: 'Preposição', rule: 'Preposição: Expressa modo/companhia.' },
-                { id: 'prm3', prompt: `Viajamos ${hl('para')} a praia no verão.`, targetClass: 'Preposição', rule: 'Preposição: Indica destino.' },
+                // Preposições
+                { text: "O presente é <span class='highlight-word'>para</span> a professora.", target: "Preposição", rule: "'Para' conecta a ação ao destinatário." },
+                { text: "Fui ao parque <span class='highlight-word'>com</span> meus amigos.", target: "Preposição", rule: "'Com' é uma preposição de companhia." },
 
-                // CONJUNÇÕES
-                { id: 'cjm1', prompt: `Estudei muito, ${hl('mas')} não consegui nota máxima.`, targetClass: 'Conjunção', rule: 'Conjunção Adversativa: Oposição de ideias.' },
-                { id: 'cjm2', prompt: `Comprei pão ${hl('e')} leite na padaria.`, targetClass: 'Conjunção', rule: 'Conjunção Aditiva: Une dois termos.' },
-                { id: 'cjm3', prompt: `Não fui à aula ${hl('porque')} fiquei doente.`, targetClass: 'Conjunção', rule: 'Conjunção Explicativa/Causal.' },
+                // Conjunções
+                { text: "Estudei bastante, <span class='highlight-word'>mas</span> não fiz a prova.", target: "Conjunção", rule: "'Mas' liga frases trazendo sentido de oposição." },
+                { text: "Ela canta <span class='highlight-word'>e</span> dança muito bem.", target: "Conjunção", rule: "'E' soma duas ações." },
 
-                // INTERJEIÇÕES
-                { id: 'ijm1', prompt: `${hl('Nossa!')} Que surpresa incrível!`, targetClass: 'Interjeição', rule: 'Interjeição: Expressa admiração ou espanto.' },
-                { id: 'ijm2', prompt: `${hl('Cuidado!')} O chão está escorregadio.`, targetClass: 'Interjeição', rule: 'Interjeição: Expressa alerta.' },
-                { id: 'ijm3', prompt: `${hl('Parabéns!')} Você fez um ótimo trabalho.`, targetClass: 'Interjeição', rule: 'Interjeição: Expressa felicitação.' }
+                // Interjeições
+                { text: "<span class='highlight-word'>Socorro!</span> Preciso de ajuda!", target: "Interjeição", rule: "'Socorro!' exprime pedido urgente/emoção." },
+                { text: "<span class='highlight-word'>Nossa!</span> Que susto você me deu!", target: "Interjeição", rule: "'Nossa!' indica espanto." }
             ];
-            db = items.map(i => ({ ...i, category: 'Frase Simples' }));
+
+            items.forEach((item, idx) => {
+                db.push({
+                    id: `m_${idx}`,
+                    prompt: item.text,
+                    targetClass: item.target,
+                    rule: item.rule
+                });
+            });
 
         } else {
-            // DIFÍCIL: FRASES CONTEXTUALIZADAS (6º ANO)
+            // NÍVEL DIFÍCIL: CONTEXTUALIZADAS DO 6º ANO
             const items = [
-                // SUBSTANTIVOS
-                { id: 'sh1', prompt: `O ${hl('enxame')} voava em direção às flores.`, targetClass: 'Substantivo', rule: 'Substantivo Coletivo: Grupo de abelhas.' },
-                { id: 'sh2', prompt: `A ${hl('coragem')} do jovem surpreendeu a todos.`, targetClass: 'Substantivo', rule: 'Substantivo Abstrato: Virtude humana.' },
-                { id: 'sh3', prompt: `A ${hl('alcateia')} protegia seus filhotes na neve.`, targetClass: 'Substantivo', rule: 'Substantivo Coletivo: Grupo de lobos.' },
+                // Substantivos
+                { text: "O <span class='highlight-word'>enxame</span> de abelhas assustou os turistas.", target: "Substantivo", rule: "'Enxame' é um substantivo coletivo de abelhas." },
+                { text: "A <span class='highlight-word'>honestidade</span> é uma virtude admirável.", target: "Substantivo", rule: "'Honestidade' é um substantivo abstrato derivado de honesto." },
+                { text: "O <span class='highlight-word'>passa-tempo</span> preferido dele era ler quadros.", target: "Substantivo", rule: "'Passa-tempo' é um substantivo composto." },
 
-                // ADJETIVOS
-                { id: 'ah1', prompt: `A culinária ${hl('mineira')} agrada os visitantes.`, targetClass: 'Adjetivo', rule: 'Adjetivo Pátrio: Indica origem (Minas Gerais).' },
-                { id: 'ah2', prompt: `O estudante ${hl('colombiano')} entrou na turma.`, targetClass: 'Adjetivo', rule: 'Adjetivo Pátrio: Nacionalidade.' },
+                // Adjetivos
+                { text: "A culinária <span class='highlight-word'>brasileira</span> é reconhecida mundialmente.", target: "Adjetivo", rule: "'Brasileira' é um adjetivo pátrio referente ao Brasil." },
+                { text: "Aquele garoto parece bastante <span class='highlight-word'>medroso</span>.", target: "Adjetivo", rule: "'Medroso' é um adjetivo derivado do substantivo medo." },
 
-                // VERBOS
-                { id: 'vh1', prompt: `Amanhã nós ${hl('concluiremos')} o projeto.`, targetClass: 'Verbo', rule: 'Verbo no Futuro do Presente.' },
-                { id: 'vh2', prompt: `Se nós ${hl('estudássemos')} juntos, aprenderíamos rápido.`, targetClass: 'Verbo', rule: 'Verbo no Modo Subjuntivo: Hipótese/Condição.' },
+                // Verbos
+                { text: "Nós <span class='highlight-word'>tínhamos terminado</span> a lição antes do sinal.", target: "Verbo", rule: "'Tínhamos terminado' é uma locução verbal." },
+                { text: "Se você <span class='highlight-word'>estudasse</span> mais, tiraria notas melhores.", target: "Verbo", rule: "'Estudasse' é um verbo no modo subjuntivo (hipótese)." },
 
-                // PRONOMES
-                { id: 'ph1', prompt: `Guardem ${hl('estes')} documentos na pasta.`, targetClass: 'Pronome', rule: 'Pronome Demonstrativo: Indica proximidade.' },
-                { id: 'ph2', prompt: `Entregamos ${hl('nossos')} trabalhos no prazo.`, targetClass: 'Pronome', rule: 'Pronome Possessivo de 1ª pessoa plural.' },
+                // Pronomes
+                { text: "Aqueles materiais pertencem a <span class='highlight-word'>nós</span>.", target: "Pronome", rule: "'Nós' atua como pronome pessoal oblíquo tônico." },
+                { text: "Não se preocupe, <span class='highlight-word'>ninguém</span> viu a confusão.", target: "Pronome", rule: "'Ninguém' é um pronome indefinido de pessoa." },
 
-                // ARTIGOS
-                { id: 'rth1', prompt: `${hl('Uns')} alunos preferiram a quadra cobertas.`, targetClass: 'Artigo', rule: 'Artigo Indefinido Masculino Plural.' },
-                { id: 'rth2', prompt: `Acompanhamos ${hl('as')} transformações da cidade.`, targetClass: 'Artigo', rule: 'Artigo Definido Feminino Plural.' },
-
-                // NUMERAIS
-                { id: 'nh1', prompt: `Ele obteve o ${hl('quintúplo')} dos pontos esperados.`, targetClass: 'Numeral', rule: 'Numeral Multiplicativo.' },
-                { id: 'nh2', prompt: `Trata-se do ${hl('décimo')} aniversário da instituição.`, targetClass: 'Numeral', rule: 'Numeral Ordinal: Posição na ordem.' },
-
-                // ADVÉRBIOS
-                { id: 'dh1', prompt: `O projeto foi desenvolvido ${hl('cuidadosamente')}.`, targetClass: 'Advérbio', rule: 'Advérbio de Modo formado por sufixo -mente.' },
-                { id: 'dh2', prompt: `Eles ${hl('jamais')} desistiram dos seus objetivos.`, targetClass: 'Advérbio', rule: 'Advérbio de Negação/Tempo.' },
-
-                // PREPOSIÇÕES
-                { id: 'prh1', prompt: `Discutimos ${hl('sobre')} a preservação da água.`, targetClass: 'Preposição', rule: 'Preposição: Expressa assunto.' },
-                { id: 'prh2', prompt: `Lutamos ${hl('contra')} a poluição do rio.`, targetClass: 'Preposição', rule: 'Preposição: Expressa oposição.' },
-
-                // CONJUNÇÕES
-                { id: 'cjh1', prompt: `Não apenas estudou ${hl('como também')} ensinou os colegas.`, targetClass: 'Conjunção', rule: 'Locução Conjuntiva Aditiva.' },
-                { id: 'cjh2', prompt: `${hl('Embora')} estivesse chovendo, fomos ao treino.`, targetClass: 'Conjunção', rule: 'Conjunção Subordinativa Concessiva.' },
-
-                // INTERJEIÇÕES
-                { id: 'ijh1', prompt: `${hl('Oxalá')} consigamos alcançar a meta final!`, targetClass: 'Interjeição', rule: 'Interjeição: Expressa desejo intenso.' },
-                { id: 'ijh2', prompt: `${hl('Caramba!')} Que resultado espetacular!`, targetClass: 'Interjeição', rule: 'Interjeição: Expressa espanto ou empolgação.' }
+                // Advérbios
+                { text: "O garoto <span class='highlight-word'>com certeza</span> virá para o aniversário.", target: "Advérbio", rule: "'Com certeza' é uma locução adverbial de afirmação." },
+                { text: "Ela morava <span class='highlight-word'>muito</span> longe da escola.", target: "Advérbio", rule: "'Muito' é um advérbio de intensidade que modifica longe." }
             ];
-            db = items.map(i => ({ ...i, category: 'Desafio Gramatical' }));
+
+            items.forEach((item, idx) => {
+                db.push({
+                    id: `h_${idx}`,
+                    prompt: item.text,
+                    targetClass: item.target,
+                    rule: item.rule
+                });
+            });
         }
 
         return db;
     }
 
-    // OBTÉM APENAS AS CLASSES MARCADAS NO CHECKBOX
-    function getSelectedClasses() {
-        let checkboxes = document.querySelectorAll('.cls-chk:checked');
-        return Array.from(checkboxes).map(cb => cb.value);
-    }
-
-    function validateCheckboxes() {
-        let selected = getSelectedClasses();
-        if (selected.length < 2) {
-            alert("⚠️ Selecione pelo menos 2 classes gramaticais para o jogo ter variedade!");
-            let firstChk = document.querySelector('.cls-chk');
-            if (firstChk) firstChk.checked = true;
-        }
-    }
-
-    // WEBAUDIO SOUNDS
+    // --- AUDIO & EFFECTS HELPERS ---
     function playBeep(freq = 440, type = 'sine', duration = 0.1) {
         try {
             const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1001,11 +966,7 @@
     function triggerConfetti() {
         playSuccessSound();
         if (typeof confetti === 'function') {
-            confetti({
-                particleCount: 80,
-                spread: 70,
-                origin: { y: 0.6 }
-            });
+            confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
         }
     }
 
@@ -1014,9 +975,7 @@
         const toast = document.getElementById('penalty-toast');
         if (toast) {
             toast.classList.add('show');
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 800);
+            setTimeout(() => { toast.classList.remove('show'); }, 800);
         }
     }
 
@@ -1032,6 +991,20 @@
                 timerDisplay.innerText = `⏱️ ${formatTime(elapsedSeconds)}`;
             }
         }
+    }
+
+    function validateClasses() {
+        const checked = document.querySelectorAll('.class-checkbox-item input:checked');
+        if (checked.length < itemsPerRound) {
+            alert(`Você precisa selecionar pelo menos ${itemsPerRound} classes gramaticais para a dificuldade escolhida!`);
+            return false;
+        }
+        return true;
+    }
+
+    function getSelectedClasses() {
+        const checked = document.querySelectorAll('.class-checkbox-item input:checked');
+        return Array.from(checked).map(c => c.value);
     }
 
     function initStudents() {
@@ -1051,7 +1024,8 @@
         students = OFFICIAL_STUDENTS.map((name, idx) => ({
             id: idx,
             name: name,
-            emoji: EMOJIS[idx % EMOJIS.length],
+            isTest: idx === 0,
+            emoji: idx === 0 ? '⚙️' : EMOJIS[idx % EMOJIS.length],
             completed: 0,
             totalTime: 0,
             attackRecord: 0
@@ -1137,6 +1111,7 @@
         document.getElementById('diff-easy-btn').className = `btn-diff ${diff === 'easy' ? 'active' : ''}`;
         document.getElementById('diff-medium-btn').className = `btn-diff ${diff === 'medium' ? 'active' : ''}`;
         document.getElementById('diff-hard-btn').className = `btn-diff ${diff === 'hard' ? 'active' : ''}`;
+        validateClasses();
         renderSetupScreen();
     }
 
@@ -1170,7 +1145,7 @@
                 : `Recorde: ${s.attackRecord || 0} pts`;
 
             return `
-                <button class="btn-student" onclick="selectStudent(${s.id})">
+                <button class="btn-student ${s.isTest ? 'is-test' : ''}" onclick="selectStudent(${s.id})">
                     <span class="emoji">${s.emoji}</span>
                     <span class="name">${s.name}</span>
                     <span class="status">${statusText}</span>
@@ -1184,15 +1159,11 @@
     let selectedLeftId = null;
     let selectedRightId = null;
     let matchesFound = 0;
-    let draggedWordId = null;
+    let draggedSeqId = null;
     let rightColumnOrder = [];
 
     function selectStudent(id) {
-        let selectedClasses = getSelectedClasses();
-        if (selectedClasses.length < itemsPerRound) {
-            alert(`⚠️ Para jogar com ${itemsPerRound} itens por rodada, selecione pelo menos ${itemsPerRound} classes gramaticais!`);
-            return;
-        }
+        if (!validateClasses()) return;
 
         activeStudent = students.find(s => s.id === id);
 
@@ -1240,21 +1211,19 @@
             document.getElementById('stats-display').innerText = `Pontos: ${attackScore}`;
         }
 
-        // CARREGA E FILTRA O BANCO DE DADOS
+        const allowedClasses = getSelectedClasses();
         let fullDb = generateGrammarDatabase(currentSeqDifficulty);
-        let allowedClasses = getSelectedClasses();
-
-        let filteredPool = fullDb.filter(item => allowedClasses.includes(item.targetClass));
-
-        let shuffled = [...filteredPool].sort(() => 0.5 - Math.random());
+        
+        // Filtra apenas os itens cujas classes gramaticais foram selecionadas
+        let filteredDb = fullDb.filter(item => allowedClasses.includes(item.targetClass));
+        let shuffled = [...filteredDb].sort(() => 0.5 - Math.random());
         
         roundChallenges = [];
-        let usedClassesInRound = new Set();
+        let usedClasses = new Set();
 
-        // Tenta selecionar itens de classes distintas para a mesma rodada
         for (let item of shuffled) {
-            if (!usedClassesInRound.has(item.targetClass)) {
-                usedClassesInRound.add(item.targetClass);
+            if (!usedClasses.has(item.targetClass)) {
+                usedClasses.add(item.targetClass);
                 roundChallenges.push(item);
             }
             if (roundChallenges.length === itemsPerRound) {
@@ -1262,10 +1231,14 @@
             }
         }
 
+        // Caso o banco filtrado tenha menos variação de classes do que o número necessário por rodada
         if (roundChallenges.length < itemsPerRound) {
-            let remainingNeeded = itemsPerRound - roundChallenges.length;
-            let remainingItems = shuffled.filter(i => !roundChallenges.includes(i));
-            roundChallenges = roundChallenges.concat(remainingItems.slice(0, remainingNeeded));
+            for (let item of shuffled) {
+                if (!roundChallenges.includes(item)) {
+                    roundChallenges.push(item);
+                }
+                if (roundChallenges.length === itemsPerRound) break;
+            }
         }
 
         rightColumnOrder = roundChallenges.map(item => ({
@@ -1283,7 +1256,6 @@
         let leftItems = roundChallenges.map(item => ({
             id: item.id,
             prompt: item.prompt,
-            category: item.category,
             matched: item.matched || false
         }));
 
@@ -1302,8 +1274,7 @@
                  draggable="${!item.matched}"
                  ondragstart="handleDragStart(event, '${item.id}')"
                  onclick="handleLeftClick('${item.id}')">
-                <span class="word-type-tag">${item.category}</span>
-                <span class="word-values">${item.prompt}</span>
+                <span class="word-text">${item.prompt}</span>
             </div>
         `).join('');
 
@@ -1314,15 +1285,17 @@
                  ondragleave="handleDragLeave(event)"
                  ondrop="handleDrop(event, '${item.id}')"
                  onclick="handleRightClick('${item.id}')">
-                <span>👉 ${item.targetClass}</span>
+                <span>🏷️ ${item.targetClass}</span>
                 ${item.matched ? `<span class="match-badge">✓ Ligado</span>` : ''}
             </div>
         `).join('');
     }
 
     function handleDragStart(event, id) {
-        draggedWordId = id;
-        event.dataTransfer.setData('text/plain', id);
+        draggedSeqId = id;
+        if (event.dataTransfer) {
+            event.dataTransfer.setData('text/plain', id);
+        }
     }
 
     function handleDragOver(event) {
@@ -1337,7 +1310,7 @@
     function handleDrop(event, rightId) {
         event.preventDefault();
         event.currentTarget.classList.remove('drag-over');
-        const leftId = event.dataTransfer.getData('text/plain') || draggedWordId;
+        const leftId = (event.dataTransfer && event.dataTransfer.getData('text/plain')) || draggedSeqId;
         if (leftId) {
             checkAssociation(leftId, rightId);
         }
@@ -1411,7 +1384,7 @@
         const panel = document.getElementById('explanation-panel');
         const text = document.getElementById('explanation-text');
         if (panel && text) {
-            text.innerText = ruleText;
+            text.innerHTML = ruleText;
             panel.style.display = 'flex';
         }
     }
