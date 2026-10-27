@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>Passa para Lá - Classes Gramaticais</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --primary: #58cc02;
+            --primary-dark: #46a302;
+            --secondary: #1cb0f6;
+            --secondary-dark: #1899d6;
+            --accent: #ff9600;
+            --accent-dark: #e08300;
+            --error: #ea2b2b;
+            --error-dark: #b81d1d;
+            --text-main: #3c3c3c;
+            --text-muted: #777777;
+            --bg-app: #ffffff;
+            --bg-card: #f8f9fa;
+            --border: #e5e5e5;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        html, body {
+            width: 100%;
+            min-height: 100%;
+            background-color: #f0f2f5;
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 1100px;
+            background: var(--bg-app);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 20px rgba(0,0,0,0.08);
+            position: relative;
+        }
+
+        header {
+            padding: 12px 15px;
+            border-bottom: 2px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 20;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        h1 {
+            font-size: 20px;
+            color: var(--secondary-dark);
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .system-controls {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .btn-sys {
+            background: #f1f3f5;
+            border: 1px solid var(--border);
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+        .btn-sys:hover { background: #e9ecef; }
+        .btn-reset { background: #ffe3e3; color: var(--error); border-color: #ffa8a8; }
+        .btn-finish { background: #e7f5ff; color: var(--secondary-dark); border-color: #a5d8ff; }
+        .btn-switch { background: #e6fcf5; color: #0ca678; border-color: #96f2d7; }
+
+        .selector-label {
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            text-align: center;
+        }
+
+        .mode-selector, .difficulty-selector {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 8px;
+        }
+
+        .btn-mode, .btn-diff {
+            flex: 1;
+            padding: 10px;
+            font-weight: 800;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .btn-mode.active {
+            border-color: var(--accent);
+            background: #fff9db;
+            color: var(--accent-dark);
+            box-shadow: 0 3px 0 var(--accent-dark);
+        }
+
+        .btn-diff.active {
+            border-color: var(--primary);
+            background: #ebfbee;
+            color: var(--primary-dark);
+            box-shadow: 0 3px 0 var(--primary-dark);
+        }
+
+        .player-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-card);
+            padding: 8px 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            position: relative;
+        }
+
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        .timer-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .timer-display {
+            font-weight: 800;
+            font-size: 16px;
+            background: #fff3bf;
+            color: #d9480f;
+            padding: 4px 12px;
+            border-radius: 16px;
+            border: 2px solid #ffe066;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+
+        .timer-display.danger {
+            background: #ffe3e3;
+            color: var(--error);
+            border-color: #ffa8a8;
+            animation: blink 0.5s infinite alternate;
+        }
+
+        @keyframes blink {
+            0% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+
+        .penalty-toast {
+            position: absolute;
+            top: -22px;
+            right: 10px;
+            background: var(--error);
+            color: white;
+            font-weight: 900;
+            font-size: 14px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(10px) scale(0.8);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 30;
+        }
+
+        .penalty-toast.show {
+            opacity: 1;
+            transform: translateY(-8px) scale(1.1);
+        }
+
+        .progress-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .progress-bar-outer {
+            flex-grow: 1;
+            height: 14px;
+            background: var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .progress-bar-inner {
+            height: 100%;
+            width: 0%;
+            background: var(--primary);
+            border-radius: 8px;
+            transition: width 0.3s ease;
+        }
+
+        .stats {
+            font-weight: 800;
+            font-size: 13px;
+            min-width: 90px;
+            text-align: right;
+            color: var(--secondary-dark);
+        }
+
+        main {
+            flex-grow: 1;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .setup-screen {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            text-align: center;
+        }
+
+        .students-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 10px;
+            margin-top: 8px;
+            max-height: 50vh;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .btn-student {
+            background: white;
+            border: 2px solid var(--border);
+            padding: 10px 6px;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            transition: transform 0.1s, border-color 0.2s;
+        }
+        .btn-student:active { transform: scale(0.96); }
+
+        .btn-student .emoji { font-size: 24px; }
+        .btn-student .name { font-weight: 700; font-size: 11px; text-transform: uppercase; text-align: center; }
+        .btn-student .status { font-size: 10px; color: var(--text-muted); font-weight: 600; }
+
+        .game-board {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            max-width: 950px;
+            margin: 0 auto;
+        }
+
+        .hint-banner {
+            background: #e7f5ff;
+            border: 2px solid #a5d8ff;
+            color: #1899d6;
+            padding: 10px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 700;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .association-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            position: relative;
+        }
+
+        @media (max-width: 680px) {
+            .association-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .column-title {
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--secondary-dark);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .items-column {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .word-card {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            box-shadow: 0 3px 0 var(--border);
+        }
+
+        .word-card:hover {
+            border-color: var(--secondary);
+        }
+
+        .word-card.selected {
+            border-color: var(--secondary);
+            background: #e7f5ff;
+            box-shadow: 0 3px 0 var(--secondary-dark);
+        }
+
+        .word-card.matched {
+            border-color: var(--primary);
+            background: #ebfbee;
+            box-shadow: 0 3px 0 var(--primary-dark);
+            cursor: default;
+            opacity: 0.85;
+        }
+
+        .word-card.wrong {
+            border-color: var(--error);
+            background: #ffe3e3;
+            animation: shake 0.35s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-7px); }
+            40%, 80% { transform: translateX(7px); }
+        }
+
+        .word-type-tag {
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            padding: 2px 6px;
+            border-radius: 6px;
+            background: #e9ecef;
+            color: #495057;
+            align-self: flex-start;
+        }
+
+        .word-values {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: 0.2px;
+            line-height: 1.3;
+        }
+
+        .highlight-word {
+            color: #ea2b2b;
+            font-weight: 900;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+
+        .class-card {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--secondary-dark);
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 3px 0 var(--border);
+            min-height: 58px;
+        }
+
+        .class-card:hover {
+            border-color: var(--accent);
+        }
+
+        .class-card.selected {
+            border-color: var(--accent);
+            background: #fff9db;
+            box-shadow: 0 3px 0 var(--accent-dark);
+        }
+
+        .class-card.matched {
+            border-color: var(--primary);
+            background: #ebfbee;
+            color: var(--primary-dark);
+            box-shadow: 0 3px 0 var(--primary-dark);
+            cursor: default;
+            opacity: 0.85;
+        }
+
+        .class-card.wrong {
+            border-color: var(--error);
+            background: #ffe3e3;
+            animation: shake 0.35s ease-in-out;
+        }
+
+        .class-card.drag-over {
+            border-color: var(--primary);
+            background: #e6fcf5;
+            transform: scale(1.02);
+        }
+
+        .match-badge {
+            font-size: 12px;
+            font-weight: 800;
+            padding: 4px 8px;
+            border-radius: 8px;
+            background: var(--primary);
+            color: white;
+        }
+
+        .explanation-panel {
+            background: #fff;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 15px;
+            margin-top: 5px;
+            font-size: 13px;
+            color: #495057;
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .explanation-title {
+            font-weight: 800;
+            color: var(--secondary-dark);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .ranking-screen {
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .ranking-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-height: 55vh;
+            overflow-y: auto;
+        }
+
+        .ranking-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: white;
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        footer {
+            padding: 12px 15px;
+            padding-bottom: calc(12px + env(safe-area-inset-bottom));
+            border-top: 2px solid var(--border);
+            background: white;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: center;
+            position: sticky;
+            bottom: 0;
+            z-index: 20;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+        }
+
+        .feedback-message {
+            display: none;
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--primary-dark);
+            text-align: center;
+        }
+
+        .footer-buttons {
+            display: flex;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .main-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 14px 16px;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 0 var(--primary-dark);
+            flex: 1;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .main-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--primary-dark); }
+
+        .btn-secondary-action {
+            background: var(--secondary);
+            box-shadow: 0 4px 0 var(--secondary-dark);
+        }
+        .btn-secondary-action:active { box-shadow: 0 2px 0 var(--secondary-dark); }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <header>
+        <div class="header-top">
+            <h1>📝 Passa para Lá - Classes Gramaticais</h1>
+            <div class="system-controls">
+                <button class="btn-sys btn-switch" id="header-switch-btn" onclick="backToSelect()" style="display:none;">👤 Mudar Aluno</button>
+                <button class="btn-sys btn-finish" onclick="showRanking()">🏆 Ranking</button>
+                <button class="btn-sys btn-reset" onclick="resetAll()">🔄 Reiniciar Tudo</button>
+            </div>
+        </div>
+        
+        <div class="player-bar" id="player-bar" style="display:none;">
+            <div class="player-info">
+                <span id="player-avatar"></span>
+                <span id="player-name"></span>
+            </div>
+            <div class="timer-wrapper">
+                <div class="timer-display" id="timer-display">⏱️ 00:00</div>
+                <div class="penalty-toast" id="penalty-toast">-10s!</div>
+            </div>
+        </div>
+
+        <div class="progress-wrapper" id="progress-wrapper" style="display:none;">
+            <div class="progress-bar-outer">
+                <div class="progress-bar-inner" id="progress-bar"></div>
+            </div>
+            <div class="stats" id="stats-display">Rodada 1/10</div>
+        </div>
+    </header>
+
+    <main>
+        <!-- TELA DE SELEÇÃO -->
+        <div class="setup-screen" id="setup-screen">
+            <div class="selector-label">1. Escolha o Modo de Jogo</div>
+            <div class="mode-selector">
+                <button class="btn-mode active" id="mode-attack-btn" onclick="setGameMode('attack')">⚡ Minute Attack (1 Minuto)</button>
+                <button class="btn-mode" id="mode-normal-btn" onclick="setGameMode('normal')">📘 Modo Normal (10 Rodadas)</button>
+            </div>
+
+            <div class="selector-label">2. Quantidade de Itens por Rodada</div>
+            <div class="difficulty-selector">
+                <button class="btn-diff active" id="diff-easy-btn" onclick="setDifficulty('easy')">🟢 Fácil (3 itens)</button>
+                <button class="btn-diff" id="diff-medium-btn" onclick="setDifficulty('medium')">🟡 Médio (4 itens)</button>
+                <button class="btn-diff" id="diff-hard-btn" onclick="setDifficulty('hard')">🔴 Difícil (5 itens)</button>
+            </div>
+
+            <div class="selector-label">3. Complexidade da Gramática</div>
+            <div class="difficulty-selector">
+                <button class="btn-diff active" id="seq-easy-btn" onclick="setSeqDifficulty('easy')">🌱 Fácil (Palavras isoladas)</button>
+                <button class="btn-diff" id="seq-medium-btn" onclick="setSeqDifficulty('medium')">🌿 Média (Frases simples)</button>
+                <button class="btn-diff" id="seq-hard-btn" onclick="setSeqDifficulty('hard')">🔥 Difícil (Frases desafiadoras)</button>
+            </div>
+
+            <div class="selector-label">4. Selecione o Aluno para Iniciar</div>
+            <div class="students-grid" id="students-grid"></div>
+        </div>
+
+        <!-- TELA DO JOGO -->
+        <div id="game-screen" style="display:none; width: 100%;">
+            <div class="game-board">
+                <div class="hint-banner">
+                    💡 <b>Atenção:</b> Erros custam <b>-10 segundos</b> de penalidade! Pense bem antes de ligar.
+                </div>
+
+                <div class="association-container">
+                    <div>
+                        <div class="column-title">Palavra / Frase</div>
+                        <div class="items-column" id="left-column"></div>
+                    </div>
+                    <div>
+                        <div class="column-title">Classe Gramatical</div>
+                        <div class="items-column" id="right-column"></div>
+                    </div>
+                </div>
+
+                <div class="explanation-panel" id="explanation-panel">
+                    <div class="explanation-title">💡 Explicação Gramatical:</div>
+                    <div id="explanation-text">---</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TELA DE RANKING -->
+        <div class="ranking-screen" id="ranking-screen">
+            <h2 id="ranking-title">🏆 Ranking do Desafio</h2>
+            <div class="ranking-list" id="ranking-list"></div>
+            <button class="main-btn btn-secondary-action" style="margin-top:10px;" onclick="backToSelect()">Voltar para Seleção</button>
+        </div>
+    </main>
+
+    <!-- FOOTER COM CONTROLES E FEEDBACK -->
+    <footer id="feedback-footer" style="display:none;">
+        <div class="feedback-message" id="feedback-text">Rodada Concluída! 🎉</div>
+        <div class="footer-buttons">
+            <button class="main-btn" id="action-btn" onclick="nextRoundOrFinish()">PRÓXIMA RODADA ➡️</button>
+        </div>
+    </footer>
+</div>
+
+<script>
+    const EMOJIS = ['🐶', '🐱', '🦊', '🦁', '🐸', '🐵', '🦄', '🐼', '🐯', '🐨', '🐙', '🦖', '🤖', '🚀', '⭐', '🍎', '⚽', '🎨', '📚', '✏️', '🏆', '🎯', '🧩', '🚀', '🔮', '🌟', '🎧', '🎸', '🕹️', '🎨', '🎒', '💡'];
+    
+    const OFFICIAL_STUDENTS = [
+        "ADIEL DE JESUS CORTES TAVARES",
+        "AIMEE MARQUES QUIRINO",
+        "ANA JULIA ALVES GOUVEIA",
+        "ANDREA VALERIA TOVAR ACOSTA",
+        "ARTHUR LOVIZARO RIBEIRO",
+        "BEATRIZ MARINO DE GODOI",
+        "DAVI RODRIGUES LIMA",
+        "ENZO PAULINO SILVA",
+        "ESTHER ALVES BISSOTO",
+        "EZEQUIEL PAULO OLIVEIRA COSTA",
+        "GABRIELLY DA SILVA VECHE",
+        "HELLOYZ A HELLENA SANTANA",
+        "ISAAC HANNAN ATÁVILA DA COSTA",
+        "JOÃO GUILHERME DA SILVA IBARRA",
+        "JOÃO PEDRO BARTOLI",
+        "JOAQUIM SILVA GONÇALVES",
+        "KEVIN BRYAN GOULARTE",
+        "LARA GABRIELLY SANTIAGO VIEIRA - NC",
+        "LEANDRO LAITER AGUIAR",
+        "LUANA CRISTINA TAMBORINI DE BRITO",
+        "LUCAS CAPOVILLA SANTOS",
+        "MARIANA HELOÍSA SALGUEIROSA",
+        "MIGUEL ARCANJO GONÇALVES SOARES DA SILVA",
+        "MURILLO LAERA DE GODOI",
+        "PABLO JOSÉ TEIXEIRA DE FRANÇA",
+        "PEDRO HENRIQUE OLIVEIRA SANTOS",
+        "RAFAEL DE OLIVEIRA PAULA AMARAL JUNIOR",
+        "SHEYLA ARAUJO AGUIAR",
+        "THEODORA FELICIO MACHADO",
+        "VITOR MIGUEL PALMEIRA GHIRARDELLI",
+        "LUIZA RODRIGUES GONÇALVES",
+        "Kenzo"
+    ];
+
+    let students = [];
+    let activeStudent = null;
+    let currentGameMode = 'attack'; // Minute Attack por padrão
+    let currentDifficulty = 'easy'; // easy = 3, medium = 4, hard = 5
+    let currentSeqDifficulty = 'easy'; // easy, medium, hard
+    let itemsPerRound = 3;
+    let attackScore = 0;
+    let attackTimeLeft = 60;
+    let timerInterval = null;
+    let startTime = 0;
+    let elapsedSeconds = 0;
+    const STORAGE_KEY = 'passa_para_la_gramatica_v1';
+
+    // --- BANCO DE DADOS GRAMATICAL ---
+    function generateGrammarDatabase(diffLevel) {
+        let db = [];
+
+        if (diffLevel === 'easy') {
+            // PALAVRAS ISOLADAS ÓBVIAS
+            const items = [
+                { id: 'e1', prompt: 'Gato', targetClass: 'Substantivo', rule: 'Substantivo: Nomeia seres, objetos e lugares.' },
+                { id: 'e2', prompt: 'Cachorro', targetClass: 'Substantivo', rule: 'Substantivo: Nomeia seres reais ou imaginários.' },
+                { id: 'e3', prompt: 'Escola', targetClass: 'Substantivo', rule: 'Substantivo: Nomeia um lugar.' },
+                { id: 'e4', prompt: 'Brasil', targetClass: 'Substantivo', rule: 'Substantivo Próprio: Nome de país.' },
+                { id: 'e5', prompt: 'Bonito', targetClass: 'Adjetivo', rule: 'Adjetivo: Caracteriza ou dá qualidade ao substantivo.' },
+                { id: 'e6', prompt: 'Inteligente', targetClass: 'Adjetivo', rule: 'Adjetivo: Atribui uma qualidade.' },
+                { id: 'e7', prompt: 'Veloz', targetClass: 'Adjetivo', rule: 'Adjetivo: Qualifica uma ação ou ser.' },
+                { id: 'e8', prompt: 'Grande', targetClass: 'Adjetivo', rule: 'Adjetivo: Indica tamanho ou característica.' },
+                { id: 'e9', prompt: 'Correr', targetClass: 'Verbo', rule: 'Verbo: Indica uma ação no infinitivo.' },
+                { id: 'e10', prompt: 'Estudar', targetClass: 'Verbo', rule: 'Verbo: Expressa a ação de aprender.' },
+                { id: 'e11', prompt: 'Brincar', targetClass: 'Verbo', rule: 'Verbo: Ação de se divertir.' },
+                { id: 'e12', prompt: 'Dormir', targetClass: 'Verbo', rule: 'Verbo: Expressa um estado ou ação.' },
+                { id: 'e13', prompt: 'Ele', targetClass: 'Pronome', rule: 'Pronome Pessoal: Substitui um nome masculino.' },
+                { id: 'e14', prompt: 'Ela', targetClass: 'Pronome', rule: 'Pronome Pessoal: Substitui um nome feminino.' },
+                { id: 'e15', prompt: 'Nós', targetClass: 'Pronome', rule: 'Pronome Pessoal: Substitui a primeira pessoa do plural.' },
+                { id: 'e16', prompt: 'Eles', targetClass: 'Pronome', rule: 'Pronome Pessoal: Substitui pessoas no plural.' }
+            ];
+            db = items.map(i => ({ ...i, category: 'Palavra Isolada' }));
+
+        } else if (diffLevel === 'medium') {
+            // FRASES SIMPLES COM DESTAQUE EM VERMELHO
+            const items = [
+                { id: 'm1', prompt: 'O <span class="highlight-word">gato</span> dormiu no sofá.', targetClass: 'Substantivo', rule: 'Substantivo: Núcleo do sujeito que nomeia o animal.' },
+                { id: 'm2', prompt: 'A menina <span class="highlight-word">estudou</span> bastante.', targetClass: 'Verbo', rule: 'Verbo: Ação praticada no passado (pretérito).' },
+                { id: 'm3', prompt: 'Comprei um livro <span class="highlight-word">interessante</span>.', targetClass: 'Adjetivo', rule: 'Adjetivo: Caracteriza o substantivo "livro".' },
+                { id: 'm4', prompt: '<span class="highlight-word">Ela</span> venceu o torneio.', targetClass: 'Pronome', rule: 'Pronome Pessoal: Substitui o nome da pessoa que venceu.' },
+                { id: 'm5', prompt: 'O cachorro <span class="highlight-word">correu</span> no parque.', targetClass: 'Verbo', rule: 'Verbo: Ação realizada pelo cachorro.' },
+                { id: 'm6', prompt: 'Aquela fruta é muito <span class="highlight-word">doce</span>.', targetClass: 'Adjetivo', rule: 'Adjetivo: Caracteriza o sabor da fruta.' },
+                { id: 'm7', prompt: '<span class="highlight-word">Nós</span> vamos ao cinema juntos.', targetClass: 'Pronome', rule: 'Pronome Pessoal: Indica quem vai ao cinema.' },
+                { id: 'm8', prompt: 'A <span class="highlight-word">cidade</span> estava movimentada.', targetClass: 'Substantivo', rule: 'Substantivo Comum: Nomeia um lugar.' },
+                { id: 'm9', prompt: 'O dia <span class="highlight-word">amanheceu</span> chuvoso.', targetClass: 'Verbo', rule: 'Verbo: Indica fenômeno da natureza.' },
+                { id: 'm10', prompt: 'Ganhei um brinquedo <span class="highlight-word">novo</span>.', targetClass: 'Adjetivo', rule: 'Adjetivo: Indica a condição do brinquedo.' },
+                { id: 'm11', prompt: '<span class="highlight-word">Meu</span> amigo chegou da viagem.', targetClass: 'Pronome', rule: 'Pronome Possessivo: Indica posse (de quem é o amigo).' },
+                { id: 'm12', prompt: 'Ele fala muito <span class="highlight-word">rápido</span>.', targetClass: 'Advérbio', rule: 'Advérbio: Modifica a maneira como ele fala (modo).' }
+            ];
+            db = items.map(i => ({ ...i, category: 'Frase Simples' }));
+
+        } else {
+            // FRASES DESAFIADORAS COM CONTEXTUALIZAÇÃO DO 6º ANO
+            const items = [
+                { id: 'h1', prompt: 'A <span class="highlight-word">tristeza</span> tomou conta do ambiente.', targetClass: 'Substantivo Abstrato', rule: 'Substantivo Abstrato: Nomeia sentimento que depende de outro ser.' },
+                { id: 'h2', prompt: 'O <span class="highlight-word">enxame</span> invadiu a floresta.', targetClass: 'Substantivo Coletivo', rule: 'Substantivo Coletivo: Nomeia um conjunto de abelhas.' },
+                { id: 'h3', prompt: 'A culinária <span class="highlight-word">brasileira</span> é reconhecida.', targetClass: 'Adjetivo Pátrio', rule: 'Adjetivo Pátrio: Indica a origem ou nacionalidade.' },
+                { id: 'h4', prompt: 'Eles <span class="highlight-word">estudarão</span> para a prova amanhã.', targetClass: 'Verbo (Futuro)', rule: 'Verbo no Futuro do Presente: Ação que ainda vai acontecer.' },
+                { id: 'h5', prompt: 'Nós <span class="highlight-word">fizemos</span> a tarefa rapidamente.', targetClass: 'Verbo (Passado)', rule: 'Verbo no Pretérito Perfeito: Ação concluída no passado.' },
+                { id: 'h6', prompt: '<span class="highlight-word">Este</span> caderno pertence ao aluno.', targetClass: 'Pronome Demonstrativo', rule: 'Pronome Demonstrativo: Indica a posição de algo perto do falante.' },
+                { id: 'h7', prompt: 'Guardamos <span class="highlight-word">nossos</span> materiais escolares.', targetClass: 'Pronome Possessivo', rule: 'Pronome Possessivo: Indica relação de posse.' },
+                { id: 'h8', prompt: 'O garoto morava <span class="highlight-word">longe</span> da escola.', targetClass: 'Advérbio de Lugar', rule: 'Advérbio de Lugar: Indica onde o garoto morava.' },
+                { id: 'h9', prompt: 'Chegamos <span class="highlight-word">ontem</span> de viagem.', targetClass: 'Advérbio de Tempo', rule: 'Advérbio de Tempo: Indica o momento da ação verbal.' },
+                { id: 'h10', prompt: 'Ela colocou o livro <span class="highlight-word">sobre</span> a mesa.', targetClass: 'Preposição', rule: 'Preposição: Liga palavras estabelecendo relação de lugar.' },
+                { id: 'h11', prompt: 'Fui ao mercado, <span class="highlight-word">mas</span> não comprei nada.', targetClass: 'Conjunção', rule: 'Conjunção Adversativa: Liga orações dando ideia de oposição.' },
+                { id: 'h12', prompt: '<span class="highlight-word">Coragem</span> é enfrentar os desafios!', targetClass: 'Substantivo Abstrato', rule: 'Substantivo Abstrato: Nomeia uma virtude/qualidade moral.' }
+            ];
+            db = items.map(i => ({ ...i, category: 'Desafio Gramatical' }));
+        }
+
+        return db;
+    }
+
+    // --- AUDIO & EFFECTS HELPERS ---
+    function playBeep(freq = 440, type = 'sine', duration = 0.1) {
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, ctx.currentTime);
+            gain.gain.setValueAtTime(0.15, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + duration);
+        } catch (e) {}
+    }
+
+    function playSuccessSound() {
+        playBeep(523.25, 'triangle', 0.12);
+        setTimeout(() => playBeep(659.25, 'triangle', 0.12), 100);
+        setTimeout(() => playBeep(783.99, 'triangle', 0.25), 200);
+    }
+
+    function playErrorSound() {
+        playBeep(180, 'sawtooth', 0.25);
+    }
+
+    function triggerConfetti() {
+        playSuccessSound();
+        if (typeof confetti === 'function') {
+            confetti({
+                particleCount: 80,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+        }
+    }
+
+    function triggerPenaltyToast() {
+        playErrorSound();
+        const toast = document.getElementById('penalty-toast');
+        if (toast) {
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 800);
+        }
+    }
+
+    function applyPenalty() {
+        triggerPenaltyToast();
+        if (currentGameMode === 'attack') {
+            attackTimeLeft = Math.max(0, attackTimeLeft - 10);
+            updateTimerDisplay();
+        } else {
+            elapsedSeconds += 10;
+            const timerDisplay = document.getElementById('timer-display');
+            if (timerDisplay) {
+                timerDisplay.innerText = `⏱️ ${formatTime(elapsedSeconds)}`;
+            }
+        }
+    }
+
+    function initStudents() {
+        try {
+            let saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                students = JSON.parse(saved);
+            } else {
+                buildDefaultStudents();
+            }
+        } catch (e) {
+            buildDefaultStudents();
+        }
+    }
+
+    function buildDefaultStudents() {
+        students = OFFICIAL_STUDENTS.map((name, idx) => ({
+            id: idx,
+            name: name,
+            emoji: EMOJIS[idx % EMOJIS.length],
+            completed: 0,
+            totalTime: 0,
+            attackRecord: 0
+        }));
+        saveStudents();
+    }
+
+    function saveStudents() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(students));
+    }
+
+    function startTimer() {
+        stopTimer();
+        const timerDisplay = document.getElementById('timer-display');
+        if (timerDisplay) timerDisplay.classList.remove('danger');
+
+        if (currentGameMode === 'normal') {
+            startTime = Date.now();
+            timerInterval = setInterval(() => {
+                let currentSession = Math.floor((Date.now() - startTime) / 1000);
+                let displayTime = elapsedSeconds + currentSession;
+                if (timerDisplay) timerDisplay.innerText = `⏱️ ${formatTime(displayTime)}`;
+            }, 1000);
+        } else {
+            attackTimeLeft = 60;
+            if (timerDisplay) timerDisplay.innerText = `⚡ 01:00`;
+            timerInterval = setInterval(() => {
+                attackTimeLeft--;
+                updateTimerDisplay();
+
+                if (attackTimeLeft <= 0) {
+                    stopTimer();
+                    finishMinuteAttack();
+                }
+            }, 1000);
+        }
+    }
+
+    function updateTimerDisplay() {
+        const timerDisplay = document.getElementById('timer-display');
+        if (!timerDisplay) return;
+
+        if (currentGameMode === 'attack') {
+            let clamped = Math.max(0, attackTimeLeft);
+            let s = clamped.toString().padStart(2, '0');
+            timerDisplay.innerText = `⚡ 00:${s}`;
+
+            if (clamped <= 10) {
+                timerDisplay.classList.add('danger');
+            } else {
+                timerDisplay.classList.remove('danger');
+            }
+        }
+    }
+
+    function stopTimer() {
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            if (currentGameMode === 'normal' && startTime > 0) {
+                elapsedSeconds += Math.floor((Date.now() - startTime) / 1000);
+                startTime = 0;
+            }
+        }
+    }
+
+    function formatTime(sec) {
+        let m = Math.floor(sec / 60).toString().padStart(2, '0');
+        let s = (sec % 60).toString().padStart(2, '0');
+        return `${m}:${s}`;
+    }
+
+    function setGameMode(mode) {
+        currentGameMode = mode;
+        document.getElementById('mode-attack-btn').className = `btn-mode ${mode === 'attack' ? 'active' : ''}`;
+        document.getElementById('mode-normal-btn').className = `btn-mode ${mode === 'normal' ? 'active' : ''}`;
+        renderSetupScreen();
+    }
+
+    function setDifficulty(diff) {
+        currentDifficulty = diff;
+        itemsPerRound = diff === 'easy' ? 3 : (diff === 'medium' ? 4 : 5);
+        document.getElementById('diff-easy-btn').className = `btn-diff ${diff === 'easy' ? 'active' : ''}`;
+        document.getElementById('diff-medium-btn').className = `btn-diff ${diff === 'medium' ? 'active' : ''}`;
+        document.getElementById('diff-hard-btn').className = `btn-diff ${diff === 'hard' ? 'active' : ''}`;
+        renderSetupScreen();
+    }
+
+    function setSeqDifficulty(diff) {
+        currentSeqDifficulty = diff;
+        document.getElementById('seq-easy-btn').className = `btn-diff ${diff === 'easy' ? 'active' : ''}`;
+        document.getElementById('seq-medium-btn').className = `btn-diff ${diff === 'medium' ? 'active' : ''}`;
+        document.getElementById('seq-hard-btn').className = `btn-diff ${diff === 'hard' ? 'active' : ''}`;
+        renderSetupScreen();
+    }
+
+    function renderSetupScreen() {
+        stopTimer();
+        if (activeStudent && currentGameMode === 'normal') {
+            activeStudent.totalTime = elapsedSeconds;
+            saveStudents();
+        }
+
+        document.getElementById('setup-screen').style.display = 'flex';
+        document.getElementById('game-screen').style.display = 'none';
+        document.getElementById('ranking-screen').style.display = 'none';
+        document.getElementById('player-bar').style.display = 'none';
+        document.getElementById('progress-wrapper').style.display = 'none';
+        document.getElementById('feedback-footer').style.display = 'none';
+        document.getElementById('header-switch-btn').style.display = 'none';
+
+        const grid = document.getElementById('students-grid');
+        grid.innerHTML = students.map(s => {
+            let statusText = currentGameMode === 'normal' 
+                ? `${s.completed}/10 Rds (${formatTime(s.totalTime)})`
+                : `Recorde: ${s.attackRecord || 0} pts`;
+
+            return `
+                <button class="btn-student" onclick="selectStudent(${s.id})">
+                    <span class="emoji">${s.emoji}</span>
+                    <span class="name">${s.name}</span>
+                    <span class="status">${statusText}</span>
+                </button>
+            `;
+        }).join('');
+    }
+
+    let currentRound = 0;
+    let roundChallenges = [];
+    let selectedLeftId = null;
+    let selectedRightId = null;
+    let matchesFound = 0;
+    let draggedWordId = null;
+    let rightColumnOrder = [];
+
+    function selectStudent(id) {
+        activeStudent = students.find(s => s.id === id);
+
+        if (currentGameMode === 'normal') {
+            currentRound = activeStudent.completed;
+            elapsedSeconds = activeStudent.totalTime;
+
+            if (currentRound >= 10) {
+                alert(`${activeStudent.name} já concluiu todas as 10 rodadas do Modo Normal!`);
+                showRanking();
+                return;
+            }
+        } else {
+            attackScore = 0;
+            currentRound = 0;
+        }
+
+        document.getElementById('setup-screen').style.display = 'none';
+        document.getElementById('game-screen').style.display = 'block';
+        document.getElementById('ranking-screen').style.display = 'none';
+        document.getElementById('player-bar').style.display = 'flex';
+        document.getElementById('progress-wrapper').style.display = 'flex';
+        document.getElementById('header-switch-btn').style.display = 'inline-block';
+
+        document.getElementById('player-avatar').innerText = activeStudent.emoji;
+        document.getElementById('player-name').innerText = activeStudent.name;
+
+        loadRound();
+        startTimer();
+    }
+
+    function loadRound() {
+        matchesFound = 0;
+        selectedLeftId = null;
+        selectedRightId = null;
+
+        document.getElementById('feedback-footer').style.display = 'none';
+        document.getElementById('explanation-panel').style.display = 'none';
+
+        if (currentGameMode === 'normal') {
+            document.getElementById('progress-bar').style.width = ((currentRound + 1) / 10 * 100) + '%';
+            document.getElementById('stats-display').innerText = `Rodada ${currentRound + 1}/10`;
+        } else {
+            document.getElementById('progress-bar').style.width = '100%';
+            document.getElementById('stats-display').innerText = `Pontos: ${attackScore}`;
+        }
+
+        let pool = generateGrammarDatabase(currentSeqDifficulty);
+        let shuffled = [...pool].sort(() => 0.5 - Math.random());
+        
+        roundChallenges = [];
+        let usedClasses = new Set();
+
+        for (let item of shuffled) {
+            if (!usedClasses.has(item.targetClass)) {
+                usedClasses.add(item.targetClass);
+                roundChallenges.push(item);
+            }
+            if (roundChallenges.length === itemsPerRound) {
+                break;
+            }
+        }
+
+        // Se por ventura a lista não preencher devido ao Set, ignora o filtro estrito
+        if (roundChallenges.length < itemsPerRound) {
+            roundChallenges = shuffled.slice(0, itemsPerRound);
+        }
+
+        rightColumnOrder = roundChallenges.map(item => ({
+            id: item.id,
+            targetClass: item.targetClass
+        })).sort(() => 0.5 - Math.random());
+
+        renderAssociationBoard();
+    }
+
+    function renderAssociationBoard() {
+        const leftCol = document.getElementById('left-column');
+        const rightCol = document.getElementById('right-column');
+
+        let leftItems = roundChallenges.map(item => ({
+            id: item.id,
+            prompt: item.prompt,
+            category: item.category,
+            matched: item.matched || false
+        }));
+
+        let rightItems = rightColumnOrder.map(ro => {
+            let item = roundChallenges.find(c => c.id === ro.id);
+            return {
+                id: item.id,
+                targetClass: item.targetClass,
+                matched: item.matched || false
+            };
+        });
+
+        leftCol.innerHTML = leftItems.map(item => `
+            <div class="word-card ${item.matched ? 'matched' : ''} ${selectedLeftId === item.id ? 'selected' : ''}"
+                 id="left-${item.id}"
+                 draggable="${!item.matched}"
+                 ondragstart="handleDragStart(event, '${item.id}')"
+                 onclick="handleLeftClick('${item.id}')">
+                <span class="word-type-tag">${item.category}</span>
+                <span class="word-values">${item.prompt}</span>
+            </div>
+        `).join('');
+
+        rightCol.innerHTML = rightItems.map(item => `
+            <div class="class-card ${item.matched ? 'matched' : ''} ${selectedRightId === item.id ? 'selected' : ''}"
+                 id="right-${item.id}"
+                 ondragover="handleDragOver(event)"
+                 ondragleave="handleDragLeave(event)"
+                 ondrop="handleDrop(event, '${item.id}')"
+                 onclick="handleRightClick('${item.id}')">
+                <span>👉 ${item.targetClass}</span>
+                ${item.matched ? `<span class="match-badge">✓ Ligado</span>` : ''}
+            </div>
+        `).join('');
+    }
+
+    function handleDragStart(event, id) {
+        draggedWordId = id;
+        event.dataTransfer.setData('text/plain', id);
+    }
+
+    function handleDragOver(event) {
+        event.preventDefault();
+        event.currentTarget.classList.add('drag-over');
+    }
+
+    function handleDragLeave(event) {
+        event.currentTarget.classList.remove('drag-over');
+    }
+
+    function handleDrop(event, rightId) {
+        event.preventDefault();
+        event.currentTarget.classList.remove('drag-over');
+        const leftId = event.dataTransfer.getData('text/plain') || draggedWordId;
+        if (leftId) {
+            checkAssociation(leftId, rightId);
+        }
+    }
+
+    function handleLeftClick(id) {
+        const item = roundChallenges.find(c => c.id === id);
+        if (item && item.matched) return;
+
+        selectedLeftId = (selectedLeftId === id) ? null : id;
+        renderAssociationBoard();
+
+        if (selectedLeftId && selectedRightId) {
+            checkAssociation(selectedLeftId, selectedRightId);
+        }
+    }
+
+    function handleRightClick(id) {
+        const item = roundChallenges.find(c => c.id === id);
+        if (item && item.matched) return;
+
+        selectedRightId = (selectedRightId === id) ? null : id;
+        renderAssociationBoard();
+
+        if (selectedLeftId && selectedRightId) {
+            checkAssociation(selectedLeftId, selectedRightId);
+        }
+    }
+
+    function checkAssociation(leftId, rightId) {
+        const leftElem = document.getElementById(`left-${leftId}`);
+        const rightElem = document.getElementById(`right-${rightId}`);
+
+        if (leftId === rightId) {
+            // ACERTO
+            const target = roundChallenges.find(c => c.id === leftId);
+            target.matched = true;
+            matchesFound++;
+
+            selectedLeftId = null;
+            selectedRightId = null;
+            playBeep(587.33, 'sine', 0.1);
+
+            showExplanation(target.rule);
+            renderAssociationBoard();
+
+            if (currentGameMode === 'attack') {
+                attackScore += 10;
+                document.getElementById('stats-display').innerText = `Pontos: ${attackScore}`;
+            }
+
+            if (matchesFound === roundChallenges.length) {
+                onRoundComplete();
+            }
+        } else {
+            // ERRO
+            if (leftElem) leftElem.classList.add('wrong');
+            if (rightElem) rightElem.classList.add('wrong');
+
+            applyPenalty();
+
+            setTimeout(() => {
+                selectedLeftId = null;
+                selectedRightId = null;
+                renderAssociationBoard();
+            }, 400);
+        }
+    }
+
+    function showExplanation(ruleText) {
+        const panel = document.getElementById('explanation-panel');
+        const text = document.getElementById('explanation-text');
+        if (panel && text) {
+            text.innerText = ruleText;
+            panel.style.display = 'flex';
+        }
+    }
+
+    function onRoundComplete() {
+        triggerConfetti();
+
+        if (currentGameMode === 'attack') {
+            attackScore += 25;
+            if (attackScore > (activeStudent.attackRecord || 0)) {
+                activeStudent.attackRecord = attackScore;
+                saveStudents();
+            }
+            setTimeout(() => {
+                loadRound();
+            }, 800);
+        } else {
+            stopTimer();
+            activeStudent.completed += 1;
+            activeStudent.totalTime = elapsedSeconds;
+            saveStudents();
+
+            const footer = document.getElementById('feedback-footer');
+            const text = document.getElementById('feedback-text');
+            if (footer && text) {
+                text.innerText = `Excelente! Rodada ${currentRound + 1} Concluída! 🎉`;
+                text.style.display = 'block';
+                footer.style.display = 'flex';
+            }
+        }
+    }
+
+    function nextRoundOrFinish() {
+        currentRound++;
+        if (currentRound >= 10 && currentGameMode === 'normal') {
+            alert(`Parabéns ${activeStudent.name}! Você concluiu todas as 10 rodadas!`);
+            showRanking();
+        } else {
+            loadRound();
+            startTimer();
+        }
+    }
+
+    function finishMinuteAttack() {
+        alert(`⏰ TEMPO ESGOTADO! ${activeStudent.name} alcançou ${attackScore} pontos!`);
+        if (attackScore > (activeStudent.attackRecord || 0)) {
+            activeStudent.attackRecord = attackScore;
+            saveStudents();
+        }
+        renderSetupScreen();
+    }
+
+    function showRanking() {
+        stopTimer();
+        if (activeStudent && currentGameMode === 'normal') {
+            activeStudent.totalTime = elapsedSeconds;
+            saveStudents();
+        }
+
+        document.getElementById('setup-screen').style.display = 'none';
+        document.getElementById('game-screen').style.display = 'none';
+        document.getElementById('ranking-screen').style.display = 'flex';
+        document.getElementById('player-bar').style.display = 'none';
+        document.getElementById('progress-wrapper').style.display = 'none';
+        document.getElementById('feedback-footer').style.display = 'none';
+        document.getElementById('header-switch-btn').style.display = 'none';
+
+        document.getElementById('ranking-title').innerText = currentGameMode === 'normal' 
+            ? '🏆 Ranking Modo Normal' 
+            : '⚡ Ranking Minute Attack';
+
+        let sorted = [...students].sort((a, b) => {
+            if (currentGameMode === 'normal') {
+                if (b.completed !== a.completed) return b.completed - a.completed;
+                return a.totalTime - b.totalTime;
+            } else {
+                return (b.attackRecord || 0) - (a.attackRecord || 0);
+            }
+        });
+
+        const list = document.getElementById('ranking-list');
+        list.innerHTML = sorted.map((s, idx) => {
+            let scoreText = currentGameMode === 'normal'
+                ? `${s.completed} rodadas (${formatTime(s.totalTime)})`
+                : `${s.attackRecord || 0} pts`;
+
+            return `
+                <div class="ranking-item">
+                    <span>#${idx + 1} ${s.emoji} ${s.name}</span>
+                    <span>${scoreText}</span>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function backToSelect() {
+        renderSetupScreen();
+    }
+
+    function resetAll() {
+        const userChoice = window.confirm("Tem certeza que deseja resetar TODOS os dados e pontuações da turma?");
+        if (userChoice) {
+            localStorage.removeItem(STORAGE_KEY);
+            buildDefaultStudents();
+            activeStudent = null;
+            renderSetupScreen();
+        }
+    }
+
+    window.onload = () => {
+        initStudents();
+        renderSetupScreen();
+    };
+</script>
+</body>
+</html>
