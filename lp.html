@@ -761,9 +761,9 @@
     let timerInterval = null;
     let startTime = 0;
     let elapsedSeconds = 0;
-    const STORAGE_KEY = 'passa_para_la_gramatica_v2';
+    const STORAGE_KEY = 'passa_para_la_gramatica_v3';
 
-    // --- BANCO DE DADOS COMPLETO DE LÍNGUA PORTUGUESA ---
+    // --- BANCO DE DADOS COMPLETO E EXPANDIDO ---
     function generateGrammarDatabase(diffLevel) {
         let db = [];
 
@@ -776,160 +776,182 @@
                 { text: "Caneta", target: "Substantivo", rule: "'Caneta' é um substantivo pois dá nome a um objeto." },
                 { text: "Brasil", target: "Substantivo", rule: "'Brasil' é um substantivo próprio." },
                 { text: "Alegria", target: "Substantivo", rule: "'Alegria' é um substantivo abstrato." },
+                { text: "Janela", target: "Substantivo", rule: "'Janela' nomeia um objeto/elemento." },
+                { text: "Professor", target: "Substantivo", rule: "'Professor' nomeia uma profissão/pessoa." },
                 
                 // Adjetivos
                 { text: "Bonito", target: "Adjetivo", rule: "'Bonito' é um adjetivo pois indica uma qualidade." },
                 { text: "Grande", target: "Adjetivo", rule: "'Grande' é um adjetivo pois indica uma característica." },
-                { text: "Inteligente", target: "Adjetivo", rule: "'Inteligente' é um adjetivo pois caracteriza algo ou alguém." },
-                { text: "Veloz", target: "Adjetivo", rule: "'Veloz' é um adjetivo pois atribui um atributo." },
-                { text: "Azul", target: "Adjetivo", rule: "'Azul' é um adjetivo pois indica a cor/qualidade de algo." },
+                { text: "Inteligente", target: "Adjetivo", rule: "'Inteligente' caracteriza algo ou alguém." },
+                { text: "Veloz", target: "Adjetivo", rule: "'Veloz' atribui um atributo a um ser." },
+                { text: "Azul", target: "Adjetivo", rule: "'Azul' é um adjetivo que indica a cor." },
+                { text: "Amável", target: "Adjetivo", rule: "'Amável' é uma qualidade ou característica." },
 
                 // Verbos
                 { text: "Correr", target: "Verbo", rule: "'Correr' é um verbo pois indica uma ação." },
-                { text: "Estudou", target: "Verbo", rule: "'Estudou' é um verbo pois indica uma ação no passado." },
-                { text: "Dormir", target: "Verbo", rule: "'Dormir' é um verbo no infinitivo que indica ação/estado." },
-                { text: "Brincar", target: "Verbo", rule: "'Brincar' é um verbo que exprime ação." },
-                { text: "Falará", target: "Verbo", rule: "'Falará' é um verbo que indica uma ação no futuro." },
+                { text: "Estudou", target: "Verbo", rule: "'Estudou' indica uma ação no passado." },
+                { text: "Dormir", target: "Verbo", rule: "'Dormir' é um verbo que indica estado/ação." },
+                { text: "Brincar", target: "Verbo", rule: "'Brincar' exprime uma ação divertida." },
+                { text: "Falará", target: "Verbo", rule: "'Falará' indica uma ação que ocorrerá no futuro." },
+                { text: "Escrever", target: "Verbo", rule: "'Escrever' indica a ação de grafar palavras." },
 
                 // Pronomes
                 { text: "Ele", target: "Pronome", rule: "'Ele' é um pronome pessoal do caso reto." },
-                { text: "Nós", target: "Pronome", rule: "'Nós' é um pronome pessoal que substitui as pessoas do discurso." },
+                { text: "Nós", target: "Pronome", rule: "'Nós' substitui as pessoas do discurso." },
                 { text: "Meu", target: "Pronome", rule: "'Meu' é um pronome possessivo." },
                 { text: "Este", target: "Pronome", rule: "'Este' é um pronome demonstrativo." },
-                { text: "Ela", target: "Pronome", rule: "'Ela' é um pronome pessoal do caso reto." },
+                { text: "Ela", target: "Pronome", rule: "'Ela' é um pronome pessoal." },
+                { text: "Seu", target: "Pronome", rule: "'Seu' é um pronome possessivo." },
 
                 // Artigos
                 { text: "O", target: "Artigo", rule: "'O' é um artigo definido masculino." },
                 { text: "Uma", target: "Artigo", rule: "'Uma' é um artigo indefinido feminino." },
-                { text: "Os", target: "Artigo", rule: "'Os' é um artigo definido no plural." },
-                { text: "Uns", target: "Artigo", rule: "'Uns' é um artigo indefinido masculino no plural." },
+                { text: "Os", target: "Artigo", rule: "'Os' é um artigo definido plural." },
+                { text: "Uns", target: "Artigo", rule: "'Uns' é um artigo indefinido plural." },
 
                 // Numerais
                 { text: "Dois", target: "Numeral", rule: "'Dois' é um numeral cardinal." },
                 { text: "Primeiro", target: "Numeral", rule: "'Primeiro' é um numeral ordinal." },
                 { text: "Dobro", target: "Numeral", rule: "'Dobro' é um numeral multiplicativo." },
+                { text: "Cinquenta", target: "Numeral", rule: "'Cinquenta' indica quantidade numérica exata." },
 
                 // Advérbios
                 { text: "Ontem", target: "Advérbio", rule: "'Ontem' é um advérbio de tempo." },
                 { text: "Muito", target: "Advérbio", rule: "'Muito' é um advérbio de intensidade." },
                 { text: "Aqui", target: "Advérbio", rule: "'Aqui' é um advérbio de lugar." },
+                { text: "Calmamente", target: "Advérbio", rule: "'Calmamente' é um advérbio de modo." },
 
                 // Preposições
                 { text: "De", target: "Preposição", rule: "'De' é uma preposição essencial." },
-                { text: "Com", target: "Preposição", rule: "'Com' é uma preposição que liga palavras." },
-                { text: "Para", target: "Preposição", rule: "'Para' é uma preposição que indica direção/finalidade." },
+                { text: "Com", target: "Preposição", rule: "'Com' é uma preposição que liga termos." },
+                { text: "Para", target: "Preposição", rule: "'Para' é uma preposição indicando destino/objetivo." },
 
                 // Conjunções
-                { text: "E", target: "Conjunção", rule: "'E' é uma conjunção aditiva que liga ideias." },
-                { text: "Mas", target: "Conjunção", rule: "'Mas' é uma conjunção adversativa que indica oposição." },
+                { text: "E", target: "Conjunção", rule: "'E' é uma conjunção que soma elementos." },
+                { text: "Mas", target: "Conjunção", rule: "'Mas' liga ideias opostas." },
+                { text: "Porque", target: "Conjunção", rule: "'Porque' explica uma causa." },
 
                 // Interjeições
-                { text: "Uau!", target: "Interjeição", rule: "'Uau!' é uma interjeição que exprime admiração." },
-                { text: "Ah!", target: "Interjeição", rule: "'Ah!' é uma interjeição de emoção ou surpresa." }
+                { text: "Uau!", target: "Interjeição", rule: "'Uau!' expressa admiração." },
+                { text: "Ah!", target: "Interjeição", rule: "'Ah!' expressa emoção/surpresa." },
+                { text: "Oba!", target: "Interjeição", rule: "'Oba!' expressa alegria." }
             ];
 
             items.forEach((item, idx) => {
-                db.push({
-                    id: `e_${idx}`,
-                    prompt: item.text,
-                    targetClass: item.target,
-                    rule: item.rule
-                });
+                db.push({ id: `e_${idx}`, prompt: item.text, targetClass: item.target, rule: item.rule });
             });
 
         } else if (diffLevel === 'medium') {
-            // NÍVEL MÉDIO: FRASES CURTAS COM DESTAQUE
+            // NÍVEL MÉDIO: AMPLA VARIEDADE DE FRASES CURTAS
             const items = [
-                // Substantivos
-                { text: "A <span class='highlight-word'>menina</span> ganhou um presente.", target: "Substantivo", rule: "'Menina' nomeia a pessoa que realiza a ação." },
-                { text: "O <span class='highlight-word'>gato</span> subiu no telhado.", target: "Substantivo", rule: "'Gato' é o nome do animal (substantivo)." },
-                { text: "Aquela <span class='highlight-word'>cidade</span> é muito bonita.", target: "Substantivo", rule: "'Cidade' é um substantivo comum que indica um lugar." },
-                { text: "Sinto muita <span class='highlight-word'>saudade</span> de você.", target: "Substantivo", rule: "'Saudade' é um substantivo abstrato que nomeia um sentimento." },
+                // SUBSTANTIVOS
+                { text: "A <span class='highlight-word'>menina</span> ganhou um presente.", target: "Substantivo", rule: "'Menina' nomeia quem ganhou o presente." },
+                { text: "O <span class='highlight-word'>gato</span> subiu no telhado.", target: "Substantivo", rule: "'Gato' nomeia um animal." },
+                { text: "Aquela <span class='highlight-word'>cidade</span> é acolhedora.", target: "Substantivo", rule: "'Cidade' nomeia um lugar." },
+                { text: "Sinto muita <span class='highlight-word'>saudade</span> de você.", target: "Substantivo", rule: "'Saudade' nomeia um sentimento (substantivo abstrato)." },
+                { text: "O <span class='highlight-word'>sol</span> ilumina todas as manhãs.", target: "Substantivo", rule: "'Sol' nomeia o astro." },
+                { text: "Comprei um <span class='highlight-word'>caderno</span> novo para as aulas.", target: "Substantivo", rule: "'Caderno' nomeia um objeto escolar." },
+                { text: "A <span class='highlight-word'>música</span> alegrou toda a festa.", target: "Substantivo", rule: "'Música' nomeia uma arte/som." },
+                { text: "O <span class='highlight-word'>pássaro</span> fez um ninho na árvore.", target: "Substantivo", rule: "'Pássaro' nomeia o ser." },
 
-                // Adjetivos
-                { text: "O aluno é muito <span class='highlight-word'>dedicado</span>.", target: "Adjetivo", rule: "'Dedicado' caracteriza como o aluno é." },
-                { text: "Comprei um livro <span class='highlight-word'>interessante</span>.", target: "Adjetivo", rule: "'Interessante' atribui uma qualidade ao livro." },
-                { text: "O dia está <span class='highlight-word'>ensolarado</span>.", target: "Adjetivo", rule: "'Ensolarado' caracteriza o estado do dia." },
-                { text: "Eles usavam roupas <span class='highlight-word'>limpas</span>.", target: "Adjetivo", rule: "'Limpas' é um adjetivo que caracteriza as roupas." },
+                // ADJETIVOS
+                { text: "O aluno é muito <span class='highlight-word'>dedicado</span>.", target: "Adjetivo", rule: "'Dedicado' traz a qualidade do aluno." },
+                { text: "Comprei um livro <span class='highlight-word'>interessante</span>.", target: "Adjetivo", rule: "'Interessante' atribui uma característica ao livro." },
+                { text: "O dia amanheceu <span class='highlight-word'>ensolarado</span>.", target: "Adjetivo", rule: "'Ensolarado' indica o estado do dia." },
+                { text: "Eles usavam roupas <span class='highlight-word'>limpas</span>.", target: "Adjetivo", rule: "'Limpas' caracteriza as roupas." },
+                { text: "Ela preparou um suco <span class='highlight-word'>gelado</span>.", target: "Adjetivo", rule: "'Gelado' é a qualidade do suco." },
+                { text: "O cachorro é bastante <span class='highlight-word'>carinhoso</span>.", target: "Adjetivo", rule: "'Carinhoso' é a qualidade do animal." },
+                { text: "Minha mãe comprou flores <span class='highlight-word'>cheirosas</span>.", target: "Adjetivo", rule: "'Cheirosas' dá característica às flores." },
 
-                // Verbos
-                { text: "Nós <span class='highlight-word'>jogamos</span> futebol ontem.", target: "Verbo", rule: "'Jogamos' é uma ação praticada pelo sujeito." },
-                { text: "Os pássaros <span class='highlight-word'>voam</span> alto.", target: "Verbo", rule: "'Voam' expressa a ação realizada pelos pássaros." },
-                { text: "Ela <span class='highlight-word'>escreveu</span> uma linda carta.", target: "Verbo", rule: "'Escreveu' indica a ação que ocorreu no passado." },
-                { text: "Amanhã nós <span class='highlight-word'>viajaremos</span> cedo.", target: "Verbo", rule: "'Viajaremos' exprime uma ação no tempo futuro." },
+                // VERBOS
+                { text: "Nós <span class='highlight-word'>jogamos</span> futebol ontem.", target: "Verbo", rule: "'Jogamos' exprime a ação praticada." },
+                { text: "Os alunos <span class='highlight-word'>estudam</span> na biblioteca.", target: "Verbo", rule: "'Estudam' é a ação realizada no presente." },
+                { text: "Ela <span class='highlight-word'>escreveu</span> uma carta amorosa.", target: "Verbo", rule: "'Escreveu' indica a ação no passado." },
+                { text: "Amanhã nós <span class='highlight-word'>viajaremos</span> bem cedo.", target: "Verbo", rule: "'Viajaremos' exprime uma ação futura." },
+                { text: "O cão <span class='highlight-word'>latia</span> sem parar.", target: "Verbo", rule: "'Latia' exprime uma ação contínua do cão." },
+                { text: "Todos <span class='highlight-word'>sorriram</span> para a fotografia.", target: "Verbo", rule: "'Sorriram' indica ação concluída no passado." },
+                { text: "Ela <span class='highlight-word'>desenhou</span> uma árvore colorida.", target: "Verbo", rule: "'Desenhou' é a ação realizada." },
 
-                // Pronomes
-                { text: "<span class='highlight-word'>Ela</span> gosta de ler livros.", target: "Pronome", rule: "'Ela' substitui o nome da pessoa na frase." },
-                { text: "<span class='highlight-word'>Nossa</span> casa é muito aconchegante.", target: "Pronome", rule: "'Nossa' indica posse do objeto (casa)." },
-                { text: "Quem deixou <span class='highlight-word'>este</span> casaco aqui?", target: "Pronome", rule: "'Este' demonstra algo próximo da pessoa." },
-                { text: "<span class='highlight-word'>Eles</span> resolveram todo o problema.", target: "Pronome", rule: "'Eles' é o pronome que representa o grupo." },
+                // PRONOMES
+                { text: "<span class='highlight-word'>Ela</span> gosta de ler livros de suspense.", target: "Pronome", rule: "'Ela' substitui a pessoa na frase." },
+                { text: "<span class='highlight-word'>Nossa</span> escola passou por reformas.", target: "Pronome", rule: "'Nossa' indica posse da escola." },
+                { text: "Quem deixou <span class='highlight-word'>este</span> casaco no chão?", target: "Pronome", rule: "'Este' demonstra qual é o casaco." },
+                { text: "<span class='highlight-word'>Eles</span> chegaram a tempo para a prova.", target: "Pronome", rule: "'Eles' representa os alunos/grupo." },
+                { text: "Guarde <span class='highlight-word'>seu</span> material na mochila.", target: "Pronome", rule: "'Seu' indica posse." },
+                { text: "<span class='highlight-word'>Eu</span> terminei o dever de casa.", target: "Pronome", rule: "'Eu' é o pronome que faz a ação." },
+                { text: "Aquele livro é <span class='highlight-word'>meu</span>.", target: "Pronome", rule: "'Meu' é um pronome possessivo." },
 
-                // Artigos
-                { text: "<span class='highlight-word'>O</span> menino correu rápido.", target: "Artigo", rule: "'O' define o substantivo menino." },
-                { text: "Encontrei <span class='highlight-word'>uma</span> chave perdida.", target: "Artigo", rule: "'Uma' indefine o substantivo chave." },
+                // ARTIGOS
+                { text: "<span class='highlight-word'>O</span> menino correu até a praça.", target: "Artigo", rule: "'O' define o substantivo menino." },
+                { text: "Encontrei <span class='highlight-word'>uma</span> chave perdida na rua.", target: "Artigo", rule: "'Uma' indefine a chave." },
+                { text: "<span class='highlight-word'>As</span> borboletas voavam pelo jardim.", target: "Artigo", rule: "'As' é um artigo definido no plural." },
+                { text: "Comprei <span class='highlight-word'>uns</span> lápis coloridos novos.", target: "Artigo", rule: "'Uns' é um artigo indefinido plural." },
 
-                // Numerais
-                { text: "Comi <span class='highlight-word'>dois</span> pedaços de bolo.", target: "Numeral", rule: "'Dois' indica a quantidade exata." },
-                { text: "Ele ficou em <span class='highlight-word'>segundo</span> lugar.", target: "Numeral", rule: "'Segundo' indica a posição/ordem." },
+                // NUMERAIS
+                { text: "Comi <span class='highlight-word'>dois</span> pedaços de torta.", target: "Numeral", rule: "'Dois' expressa a quantidade exata." },
+                { text: "Ele ficou em <span class='highlight-word'>primeiro</span> lugar no torneio.", target: "Numeral", rule: "'Primeiro' expressa a ordem." },
+                { text: "Ele pediu o <span class='highlight-word'>triplo</span> de comida.", target: "Numeral", rule: "'Triplo' é um numeral multiplicativo." },
+                { text: "Havia <span class='highlight-word'>dez</span> alunos na sala de informática.", target: "Numeral", rule: "'Dez' indica a quantidade de alunos." },
 
-                // Advérbios
-                { text: "Eles saíram <span class='highlight-word'>cedo</span> para a aula.", target: "Advérbio", rule: "'Cedo' modifica o verbo indicando tempo." },
-                { text: "O robô andava <span class='highlight-word'>lentamente</span>.", target: "Advérbio", rule: "'Lentamente' indica o modo como andava." },
+                // ADVÉRBIOS
+                { text: "Eles saíram <span class='highlight-word'>cedo</span> para trabalhar.", target: "Advérbio", rule: "'Cedo' é um advérbio de tempo." },
+                { text: "O robô caminhava <span class='highlight-word'>lentamente</span>.", target: "Advérbio", rule: "'Lentamente' é um advérbio de modo." },
+                { text: "Nós moramos <span class='highlight-word'>longe</span> do centro da cidade.", target: "Advérbio", rule: "'Longe' é um advérbio de lugar." },
+                { text: "Ela gosta <span class='highlight-word'>bastante</span> de sorvete de morango.", target: "Advérbio", rule: "'Bastante' é um advérbio de intensidade." },
+                { text: "Ele <span class='highlight-word'>nunca</span> se atrasa para o compromisso.", target: "Advérbio", rule: "'Nunca' é um advérbio de negação/tempo." },
+                { text: "<span class='highlight-word'>Hoje</span> vamos ao cinema juntos.", target: "Advérbio", rule: "'Hoje' indica o tempo da ação." },
+                { text: "O pássaro cantou <span class='highlight-word'>suavemente</span>.", target: "Advérbio", rule: "'Suavemente' é o modo como cantou." },
 
-                // Preposições
-                { text: "O presente é <span class='highlight-word'>para</span> a professora.", target: "Preposição", rule: "'Para' conecta a ação ao destinatário." },
-                { text: "Fui ao parque <span class='highlight-word'>com</span> meus amigos.", target: "Preposição", rule: "'Com' é uma preposição de companhia." },
+                // PREPOSIÇÕES
+                { text: "O presente foi feito <span class='highlight-word'>para</span> você.", target: "Preposição", rule: "'Para' liga o presente ao destinatário." },
+                { text: "Caminhei <span class='highlight-word'>com</span> meus melhores amigos.", target: "Preposição", rule: "'Com' traz a ideia de companhia." },
+                { text: "O copo de vidro caiu <span class='highlight-word'>da</span> mesa.", target: "Preposição", rule: "'Da' (de+a) indica origem/ponto de partida." },
+                { text: "Eles conversavam <span class='highlight-word'>sobre</span> o filme do cinema.", target: "Preposição", rule: "'Sobre' indica o assunto." },
 
-                // Conjunções
-                { text: "Estudei bastante, <span class='highlight-word'>mas</span> não fiz a prova.", target: "Conjunção", rule: "'Mas' liga frases trazendo sentido de oposição." },
-                { text: "Ela canta <span class='highlight-word'>e</span> dança muito bem.", target: "Conjunção", rule: "'E' soma duas ações." },
+                // CONJUNÇÕES
+                { text: "Estudei muito, <span class='highlight-word'>mas</span> a prova estava difícil.", target: "Conjunção", rule: "'Mas' dá a ideia de oposição." },
+                { text: "Ela canta <span class='highlight-word'>e</span> dança nas apresentações.", target: "Conjunção", rule: "'E' adiciona/soma duas ações." },
+                { text: "Não fui à aula <span class='highlight-word'>porque</span> fiquei doente.", target: "Conjunção", rule: "'Porque' explica a causa." },
+                { text: "Você prefere suco <span class='highlight-word'>ou</span> refrigerante?", target: "Conjunção", rule: "'Ou' indica uma opção/alternativa." },
 
-                // Interjeições
-                { text: "<span class='highlight-word'>Socorro!</span> Preciso de ajuda!", target: "Interjeição", rule: "'Socorro!' exprime pedido urgente/emoção." },
-                { text: "<span class='highlight-word'>Nossa!</span> Que susto você me deu!", target: "Interjeição", rule: "'Nossa!' indica espanto." }
+                // INTERJEIÇÕES
+                { text: "<span class='highlight-word'>Socorro!</span> Preciso de ajuda urgente!", target: "Interjeição", rule: "'Socorro!' exprime pedido de socorro." },
+                { text: "<span class='highlight-word'>Nossa!</span> Que surpresa maravilhosa!", target: "Interjeição", rule: "'Nossa!' indica surpresa/espanto." },
+                { text: "<span class='highlight-word'>Eita!</span> Esqueci meu caderno em casa.", target: "Interjeição", rule: "'Eita!' expressa espanto." },
+                { text: "<span class='highlight-word'>Parabéns!</span> Você conseguiu passar de fase!", target: "Interjeição", rule: "'Parabéns!' expressa comemoração." }
             ];
 
             items.forEach((item, idx) => {
-                db.push({
-                    id: `m_${idx}`,
-                    prompt: item.text,
-                    targetClass: item.target,
-                    rule: item.rule
-                });
+                db.push({ id: `m_${idx}`, prompt: item.text, targetClass: item.target, rule: item.rule });
             });
 
         } else {
             // NÍVEL DIFÍCIL: CONTEXTUALIZADAS DO 6º ANO
             const items = [
                 // Substantivos
-                { text: "O <span class='highlight-word'>enxame</span> de abelhas assustou os turistas.", target: "Substantivo", rule: "'Enxame' é um substantivo coletivo de abelhas." },
-                { text: "A <span class='highlight-word'>honestidade</span> é uma virtude admirável.", target: "Substantivo", rule: "'Honestidade' é um substantivo abstrato derivado de honesto." },
-                { text: "O <span class='highlight-word'>passa-tempo</span> preferido dele era ler quadros.", target: "Substantivo", rule: "'Passa-tempo' é um substantivo composto." },
+                { text: "O <span class='highlight-word'>enxame</span> assustou os visitantes no parque.", target: "Substantivo", rule: "'Enxame' é um substantivo coletivo." },
+                { text: "A <span class='highlight-word'>honestidade</span> é um valor fundamental.", target: "Substantivo", rule: "'Honestidade' é um substantivo abstrato." },
+                { text: "Seu <span class='highlight-word'>passa-tempo</span> era desenhar em quadrinhos.", target: "Substantivo", rule: "'Passa-tempo' é um substantivo composto." },
 
                 // Adjetivos
-                { text: "A culinária <span class='highlight-word'>brasileira</span> é reconhecida mundialmente.", target: "Adjetivo", rule: "'Brasileira' é um adjetivo pátrio referente ao Brasil." },
-                { text: "Aquele garoto parece bastante <span class='highlight-word'>medroso</span>.", target: "Adjetivo", rule: "'Medroso' é um adjetivo derivado do substantivo medo." },
+                { text: "A culinária <span class='highlight-word'>brasileira</span> é muito apreciada.", target: "Adjetivo", rule: "'Brasileira' é um adjetivo pátrio." },
+                { text: "Aquele garoto parece ser bastante <span class='highlight-word'>medroso</span>.", target: "Adjetivo", rule: "'Medroso' é um adjetivo derivado de medo." },
 
                 // Verbos
-                { text: "Nós <span class='highlight-word'>tínhamos terminado</span> a lição antes do sinal.", target: "Verbo", rule: "'Tínhamos terminado' é uma locução verbal." },
-                { text: "Se você <span class='highlight-word'>estudasse</span> mais, tiraria notas melhores.", target: "Verbo", rule: "'Estudasse' é um verbo no modo subjuntivo (hipótese)." },
+                { text: "Nós <span class='highlight-word'>tínhamos terminado</span> o dever antes da aula.", target: "Verbo", rule: "'Tínhamos terminado' forma uma locução verbal." },
+                { text: "Se você <span class='highlight-word'>estudasse</span> mais, tiraria notas ótimas.", target: "Verbo", rule: "'Estudasse' é um verbo no modo subjuntivo." },
 
                 // Pronomes
-                { text: "Aqueles materiais pertencem a <span class='highlight-word'>nós</span>.", target: "Pronome", rule: "'Nós' atua como pronome pessoal oblíquo tônico." },
-                { text: "Não se preocupe, <span class='highlight-word'>ninguém</span> viu a confusão.", target: "Pronome", rule: "'Ninguém' é um pronome indefinido de pessoa." },
+                { text: "Estes livros foram doados para <span class='highlight-word'>nós</span>.", target: "Pronome", rule: "'Nós' atua como pronome pessoal oblíquo tônico." },
+                { text: "Não se preocupe, <span class='highlight-word'>ninguém</span> viu o incidente.", target: "Pronome", rule: "'Ninguém' é um pronome indefinido." },
 
                 // Advérbios
-                { text: "O garoto <span class='highlight-word'>com certeza</span> virá para o aniversário.", target: "Advérbio", rule: "'Com certeza' é uma locução adverbial de afirmação." },
-                { text: "Ela morava <span class='highlight-word'>muito</span> longe da escola.", target: "Advérbio", rule: "'Muito' é um advérbio de intensidade que modifica longe." }
+                { text: "O aluno <span class='highlight-word'>com certeza</span> virá fazer a avaliação.", target: "Advérbio", rule: "'Com certeza' é uma locução adverbial." },
+                { text: "A garota morava <span class='highlight-word'>muito</span> longe de seus avós.", target: "Advérbio", rule: "'Muito' é um advérbio de intensidade." }
             ];
 
             items.forEach((item, idx) => {
-                db.push({
-                    id: `h_${idx}`,
-                    prompt: item.text,
-                    targetClass: item.target,
-                    rule: item.rule
-                });
+                db.push({ id: `h_${idx}`, prompt: item.text, targetClass: item.target, rule: item.rule });
             });
         }
 
@@ -1214,7 +1236,6 @@
         const allowedClasses = getSelectedClasses();
         let fullDb = generateGrammarDatabase(currentSeqDifficulty);
         
-        // Filtra apenas os itens cujas classes gramaticais foram selecionadas
         let filteredDb = fullDb.filter(item => allowedClasses.includes(item.targetClass));
         let shuffled = [...filteredDb].sort(() => 0.5 - Math.random());
         
@@ -1231,7 +1252,6 @@
             }
         }
 
-        // Caso o banco filtrado tenha menos variação de classes do que o número necessário por rodada
         if (roundChallenges.length < itemsPerRound) {
             for (let item of shuffled) {
                 if (!roundChallenges.includes(item)) {
