@@ -107,7 +107,7 @@
             font-weight: 800;
             color: var(--text-muted);
             text-transform: uppercase;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
             text-align: center;
         }
 
@@ -115,11 +115,13 @@
             display: flex;
             gap: 8px;
             justify-content: center;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
         }
 
         .btn-mode, .btn-diff {
             flex: 1;
+            min-width: 120px;
             padding: 10px;
             font-weight: 800;
             border: 2px solid var(--border);
@@ -142,6 +144,38 @@
             background: #ebfbee;
             color: var(--primary-dark);
             box-shadow: 0 3px 0 var(--primary-dark);
+        }
+
+        .class-checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+            gap: 8px;
+            margin-bottom: 14px;
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .checkbox-card {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: white;
+            padding: 8px 10px;
+            border-radius: 10px;
+            border: 2px solid var(--border);
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .checkbox-card input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary);
+            cursor: pointer;
         }
 
         .player-bar {
@@ -256,7 +290,7 @@
         .setup-screen {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 8px;
             text-align: center;
         }
 
@@ -265,7 +299,7 @@
             grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
             gap: 10px;
             margin-top: 8px;
-            max-height: 50vh;
+            max-height: 38vh;
             overflow-y: auto;
             padding-right: 4px;
         }
@@ -396,16 +430,16 @@
         }
 
         .word-values {
-            font-size: 17px;
+            font-size: 16px;
             font-weight: 700;
             color: var(--text-main);
             letter-spacing: 0.2px;
-            line-height: 1.3;
+            line-height: 1.35;
         }
 
         .highlight-word {
             color: #ea2b2b;
-            font-weight: 900;
+            font-weight: 800;
             text-decoration: underline;
             text-underline-offset: 3px;
         }
@@ -418,7 +452,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 800;
             color: var(--secondary-dark);
             cursor: pointer;
@@ -600,27 +634,71 @@
     <main>
         <!-- TELA DE SELEÇÃO -->
         <div class="setup-screen" id="setup-screen">
-            <div class="selector-label">1. Escolha o Modo de Jogo</div>
+            <div class="selector-label">1. Escolha as Classes Gramaticais para o Jogo</div>
+            <div class="class-checkbox-grid">
+                <label class="checkbox-card">
+                    <input type="checkbox" class="cls-chk" value="Substantivo" checked onchange="validateCheckboxes()">
+                    <span>Substantivo</span>
+                </label>
+                <label class="checkbox-card">
+                    <input type="checkbox" class="cls-chk" value="Adjetivo" checked onchange="validateCheckboxes()">
+                    <span>Adjetivo</span>
+                </label>
+                <label class="checkbox-card">
+                    <input type="checkbox" class="cls-chk" value="Verbo" checked onchange="validateCheckboxes()">
+                    <span>Verbo</span>
+                </label>
+                <label class="checkbox-card">
+                    <input type="checkbox" class="cls-chk" value="Pronome" checked onchange="validateCheckboxes()">
+                    <span>Pronome</span>
+                </label>
+                <label class="checkbox-card">
+                    <input type="checkbox" class="cls-chk" value="Artigo" checked onchange="validateCheckboxes()">
+                    <span>Artigo</span>
+                </label>
+                <label class="checkbox-card">
+                    <input type="checkbox" class="cls-chk" value="Numeral" onchange="validateCheckboxes()">
+                    <span>Numeral</span>
+                </label>
+                <label class="checkbox-card">
+                    <input type="checkbox" class="cls-chk" value="Advérbio" onchange="validateCheckboxes()">
+                    <span>Advérbio</span>
+                </label>
+                <label class="checkbox-card">
+                    <input type="checkbox" class="cls-chk" value="Preposição" onchange="validateCheckboxes()">
+                    <span>Preposição</span>
+                </label>
+                <label class="checkbox-card">
+                    <input type="checkbox" class="cls-chk" value="Conjunção" onchange="validateCheckboxes()">
+                    <span>Conjunção</span>
+                </label>
+                <label class="checkbox-card">
+                    <input type="checkbox" class="cls-chk" value="Interjeição" onchange="validateCheckboxes()">
+                    <span>Interjeição</span>
+                </label>
+            </div>
+
+            <div class="selector-label">2. Modo de Jogo</div>
             <div class="mode-selector">
                 <button class="btn-mode active" id="mode-attack-btn" onclick="setGameMode('attack')">⚡ Minute Attack (1 Minuto)</button>
                 <button class="btn-mode" id="mode-normal-btn" onclick="setGameMode('normal')">📘 Modo Normal (10 Rodadas)</button>
             </div>
 
-            <div class="selector-label">2. Quantidade de Itens por Rodada</div>
+            <div class="selector-label">3. Quantidade de Itens por Rodada</div>
             <div class="difficulty-selector">
                 <button class="btn-diff active" id="diff-easy-btn" onclick="setDifficulty('easy')">🟢 Fácil (3 itens)</button>
                 <button class="btn-diff" id="diff-medium-btn" onclick="setDifficulty('medium')">🟡 Médio (4 itens)</button>
                 <button class="btn-diff" id="diff-hard-btn" onclick="setDifficulty('hard')">🔴 Difícil (5 itens)</button>
             </div>
 
-            <div class="selector-label">3. Complexidade da Gramática</div>
+            <div class="selector-label">4. Nível do Conteúdo</div>
             <div class="difficulty-selector">
                 <button class="btn-diff active" id="seq-easy-btn" onclick="setSeqDifficulty('easy')">🌱 Fácil (Palavras isoladas)</button>
                 <button class="btn-diff" id="seq-medium-btn" onclick="setSeqDifficulty('medium')">🌿 Média (Frases simples)</button>
-                <button class="btn-diff" id="seq-hard-btn" onclick="setSeqDifficulty('hard')">🔥 Difícil (Frases desafiadoras)</button>
+                <button class="btn-diff" id="seq-hard-btn" onclick="setSeqDifficulty('hard')">🔥 Difícil (Frases do 6º Ano)</button>
             </div>
 
-            <div class="selector-label">4. Selecione o Aluno para Iniciar</div>
+            <div class="selector-label">5. Selecione o Aluno para Iniciar</div>
             <div class="students-grid" id="students-grid"></div>
         </div>
 
@@ -667,9 +745,10 @@
 </div>
 
 <script>
-    const EMOJIS = ['🐶', '🐱', '🦊', '🦁', '🐸', '🐵', '🦄', '🐼', '🐯', '🐨', '🐙', '🦖', '🤖', '🚀', '⭐', '🍎', '⚽', '🎨', '📚', '✏️', '🏆', '🎯', '🧩', '🚀', '🔮', '🌟', '🎧', '🎸', '🕹️', '🎨', '🎒', '💡'];
+    const EMOJIS = ['⚙️', '🐶', '🐱', '🦊', '🦁', '🐸', '🐵', '🦄', '🐼', '🐯', '🐨', '🐙', '🦖', '🤖', '🚀', '⭐', '🍎', '⚽', '🎨', '📚', '✏️', '🏆', '🎯', '🧩', '🚀', '🔮', '🌟', '🎧', '🎸', '🕹️', '🎨', '🎒', '💡'];
     
     const OFFICIAL_STUDENTS = [
+        "ALUNO TESTE",
         "ADIEL DE JESUS CORTES TAVARES",
         "AIMEE MARQUES QUIRINO",
         "ANA JULIA ALVES GOUVEIA",
@@ -706,76 +785,170 @@
 
     let students = [];
     let activeStudent = null;
-    let currentGameMode = 'attack'; // Minute Attack por padrão
-    let currentDifficulty = 'easy'; // easy = 3, medium = 4, hard = 5
-    let currentSeqDifficulty = 'easy'; // easy, medium, hard
+    let currentGameMode = 'attack';
+    let currentDifficulty = 'easy';
+    let currentSeqDifficulty = 'easy';
     let itemsPerRound = 3;
     let attackScore = 0;
     let attackTimeLeft = 60;
     let timerInterval = null;
     let startTime = 0;
     let elapsedSeconds = 0;
-    const STORAGE_KEY = 'passa_para_la_gramatica_v1';
+    const STORAGE_KEY = 'passa_para_la_gramatica_v4';
 
-    // --- BANCO DE DADOS GRAMATICAL ---
+    function hl(txt) {
+        return `<span class="highlight-word">${txt}</span>`;
+    }
+
+    // BANCO COMPLETO DE 10 CLASSES GRAMATICIAIS
     function generateGrammarDatabase(diffLevel) {
         let db = [];
 
         if (diffLevel === 'easy') {
-            // PALAVRAS ISOLADAS ÓBVIAS
+            // FÁCIL: PALAVRAS ISOLADAS
             const items = [
-                { id: 'e1', prompt: 'Gato', targetClass: 'Substantivo', rule: 'Substantivo: Nomeia seres, objetos e lugares.' },
-                { id: 'e2', prompt: 'Cachorro', targetClass: 'Substantivo', rule: 'Substantivo: Nomeia seres reais ou imaginários.' },
-                { id: 'e3', prompt: 'Escola', targetClass: 'Substantivo', rule: 'Substantivo: Nomeia um lugar.' },
-                { id: 'e4', prompt: 'Brasil', targetClass: 'Substantivo', rule: 'Substantivo Próprio: Nome de país.' },
-                { id: 'e5', prompt: 'Bonito', targetClass: 'Adjetivo', rule: 'Adjetivo: Caracteriza ou dá qualidade ao substantivo.' },
-                { id: 'e6', prompt: 'Inteligente', targetClass: 'Adjetivo', rule: 'Adjetivo: Atribui uma qualidade.' },
-                { id: 'e7', prompt: 'Veloz', targetClass: 'Adjetivo', rule: 'Adjetivo: Qualifica uma ação ou ser.' },
-                { id: 'e8', prompt: 'Grande', targetClass: 'Adjetivo', rule: 'Adjetivo: Indica tamanho ou característica.' },
-                { id: 'e9', prompt: 'Correr', targetClass: 'Verbo', rule: 'Verbo: Indica uma ação no infinitivo.' },
-                { id: 'e10', prompt: 'Estudar', targetClass: 'Verbo', rule: 'Verbo: Expressa a ação de aprender.' },
-                { id: 'e11', prompt: 'Brincar', targetClass: 'Verbo', rule: 'Verbo: Ação de se divertir.' },
-                { id: 'e12', prompt: 'Dormir', targetClass: 'Verbo', rule: 'Verbo: Expressa um estado ou ação.' },
-                { id: 'e13', prompt: 'Ele', targetClass: 'Pronome', rule: 'Pronome Pessoal: Substitui um nome masculino.' },
-                { id: 'e14', prompt: 'Ela', targetClass: 'Pronome', rule: 'Pronome Pessoal: Substitui um nome feminino.' },
-                { id: 'e15', prompt: 'Nós', targetClass: 'Pronome', rule: 'Pronome Pessoal: Substitui a primeira pessoa do plural.' },
-                { id: 'e16', prompt: 'Eles', targetClass: 'Pronome', rule: 'Pronome Pessoal: Substitui pessoas no plural.' }
+                // SUBSTANTIVOS
+                { id: 'se1', prompt: 'Cachorro', targetClass: 'Substantivo', rule: 'Substantivo: Nomeia um animal.' },
+                { id: 'se2', prompt: 'Escola', targetClass: 'Substantivo', rule: 'Substantivo: Nomeia um lugar.' },
+                { id: 'se3', prompt: 'Brasil', targetClass: 'Substantivo', rule: 'Substantivo Próprio: Nome de país.' },
+                { id: 'se4', prompt: 'Felicidade', targetClass: 'Substantivo', rule: 'Substantivo Abstrato: Nomeia um sentimento.' },
+                // ADJETIVOS
+                { id: 'ae1', prompt: 'Bonito', targetClass: 'Adjetivo', rule: 'Adjetivo: Atribui uma qualidade.' },
+                { id: 'ae2', prompt: 'Rápido', targetClass: 'Adjetivo', rule: 'Adjetivo: Caracteriza velocidade.' },
+                { id: 'ae3', prompt: 'Colorido', targetClass: 'Adjetivo', rule: 'Adjetivo: Modifica o aspecto visual.' },
+                // VERBOS
+                { id: 've1', prompt: 'Correr', targetClass: 'Verbo', rule: 'Verbo: Indica uma ação.' },
+                { id: 've2', prompt: 'Estudar', targetClass: 'Verbo', rule: 'Verbo: Indica ação de aprender.' },
+                { id: 've3', prompt: 'Dormir', targetClass: 'Verbo', rule: 'Verbo: Indica um estado/ação de descanso.' },
+                // PRONOMES
+                { id: 'pe1', prompt: 'Ele', targetClass: 'Pronome', rule: 'Pronome Pessoal: Substitui um nome.' },
+                { id: 'pe2', prompt: 'Meu', targetClass: 'Pronome', rule: 'Pronome Possessivo: Indica posse.' },
+                { id: 'pe3', prompt: 'Aquele', targetClass: 'Pronome', rule: 'Pronome Demonstrativo: Indica algo distante.' },
+                // ARTIGOS
+                { id: 'rte1', prompt: 'O', targetClass: 'Artigo', rule: 'Artigo Definido Masculino.' },
+                { id: 'rte2', prompt: 'Uma', targetClass: 'Artigo', rule: 'Artigo Indefinido Feminino.' },
+                { id: 'rte3', prompt: 'Uns', targetClass: 'Artigo', rule: 'Artigo Indefinido Plural Masculino.' },
+                // NUMERAIS
+                { id: 'ne1', prompt: 'Três', targetClass: 'Numeral', rule: 'Numeral Cardinal: Indica quantidade.' },
+                { id: 'ne2', prompt: 'Primeiro', targetClass: 'Numeral', rule: 'Numeral Ordinal: Indica ordem ou posição.' },
+                { id: 'ne3', prompt: 'Dobro', targetClass: 'Numeral', rule: 'Numeral Multiplicativo.' },
+                // ADVÉRBIOS
+                { id: 'de1', prompt: 'Hoje', targetClass: 'Advérbio', rule: 'Advérbio de Tempo: Indica quando.' },
+                { id: 'de2', prompt: 'Aqui', targetClass: 'Advérbio', rule: 'Advérbio de Lugar: Indica onde.' },
+                { id: 'de3', prompt: 'Muito', targetClass: 'Advérbio', rule: 'Advérbio de Intensidade.' },
+                // PREPOSIÇÕES
+                { id: 'pre1', prompt: 'De', targetClass: 'Preposição', rule: 'Preposição: Liga palavras criando sentido.' },
+                { id: 'pre2', prompt: 'Com', targetClass: 'Preposição', rule: 'Preposição: Expressa companhia ou instrumento.' },
+                { id: 'pre3', prompt: 'Para', targetClass: 'Preposição', rule: 'Preposição: Expressa finalidade ou destino.' },
+                // CONJUNÇÕES
+                { id: 'cje1', prompt: 'E', targetClass: 'Conjunção', rule: 'Conjunção Aditiva: Soma ideias.' },
+                { id: 'cje2', prompt: 'Mas', targetClass: 'Conjunção', rule: 'Conjunção Adversativa: Indica oposição.' },
+                { id: 'cje3', prompt: 'Porque', targetClass: 'Conjunção', rule: 'Conjunção Explicativa/Causal.' },
+                // INTERJEIÇÕES
+                { id: 'ije1', prompt: 'Oh!', targetClass: 'Interjeição', rule: 'Interjeição: Expressa surpresa ou emoção.' },
+                { id: 'ije2', prompt: 'Psiu!', targetClass: 'Interjeição', rule: 'Interjeição: Chamamento ou pedido de silêncio.' },
+                { id: 'ije3', prompt: 'Ufa!', targetClass: 'Interjeição', rule: 'Interjeição: Expressa alívio.' }
             ];
             db = items.map(i => ({ ...i, category: 'Palavra Isolada' }));
 
         } else if (diffLevel === 'medium') {
-            // FRASES SIMPLES COM DESTAQUE EM VERMELHO
+            // MÉDIA: FRASES CURTAS
             const items = [
-                { id: 'm1', prompt: 'O <span class="highlight-word">gato</span> dormiu no sofá.', targetClass: 'Substantivo', rule: 'Substantivo: Núcleo do sujeito que nomeia o animal.' },
-                { id: 'm2', prompt: 'A menina <span class="highlight-word">estudou</span> bastante.', targetClass: 'Verbo', rule: 'Verbo: Ação praticada no passado (pretérito).' },
-                { id: 'm3', prompt: 'Comprei um livro <span class="highlight-word">interessante</span>.', targetClass: 'Adjetivo', rule: 'Adjetivo: Caracteriza o substantivo "livro".' },
-                { id: 'm4', prompt: '<span class="highlight-word">Ela</span> venceu o torneio.', targetClass: 'Pronome', rule: 'Pronome Pessoal: Substitui o nome da pessoa que venceu.' },
-                { id: 'm5', prompt: 'O cachorro <span class="highlight-word">correu</span> no parque.', targetClass: 'Verbo', rule: 'Verbo: Ação realizada pelo cachorro.' },
-                { id: 'm6', prompt: 'Aquela fruta é muito <span class="highlight-word">doce</span>.', targetClass: 'Adjetivo', rule: 'Adjetivo: Caracteriza o sabor da fruta.' },
-                { id: 'm7', prompt: '<span class="highlight-word">Nós</span> vamos ao cinema juntos.', targetClass: 'Pronome', rule: 'Pronome Pessoal: Indica quem vai ao cinema.' },
-                { id: 'm8', prompt: 'A <span class="highlight-word">cidade</span> estava movimentada.', targetClass: 'Substantivo', rule: 'Substantivo Comum: Nomeia um lugar.' },
-                { id: 'm9', prompt: 'O dia <span class="highlight-word">amanheceu</span> chuvoso.', targetClass: 'Verbo', rule: 'Verbo: Indica fenômeno da natureza.' },
-                { id: 'm10', prompt: 'Ganhei um brinquedo <span class="highlight-word">novo</span>.', targetClass: 'Adjetivo', rule: 'Adjetivo: Indica a condição do brinquedo.' },
-                { id: 'm11', prompt: '<span class="highlight-word">Meu</span> amigo chegou da viagem.', targetClass: 'Pronome', rule: 'Pronome Possessivo: Indica posse (de quem é o amigo).' },
-                { id: 'm12', prompt: 'Ele fala muito <span class="highlight-word">rápido</span>.', targetClass: 'Advérbio', rule: 'Advérbio: Modifica a maneira como ele fala (modo).' }
+                // SUBSTANTIVOS
+                { id: 'sm1', prompt: `O ${hl('cachorro')} correu no quintal.`, targetClass: 'Substantivo', rule: 'Substantivo: Nomeia o animal.' },
+                { id: 'sm2', prompt: `A ${hl('cidade')} estava iluminada.`, targetClass: 'Substantivo', rule: 'Substantivo: Nomeia o lugar.' },
+                { id: 'sm3', prompt: `Sentimos muita ${hl('alegria')} na festa.`, targetClass: 'Substantivo', rule: 'Substantivo Abstrato: Nomeia um sentimento.' },
+
+                // ADJETIVOS
+                { id: 'am1', prompt: `O aluno fez um trabalho ${hl('excelente')}.`, targetClass: 'Adjetivo', rule: 'Adjetivo: Qualifica o trabalho.' },
+                { id: 'am2', prompt: `Aquele cãozinho é muito ${hl('carinhoso')}.`, targetClass: 'Adjetivo', rule: 'Adjetivo: Caracteriza o cão.' },
+                { id: 'am3', prompt: `Comprei uma bicicleta ${hl('vermelha')}.`, targetClass: 'Adjetivo', rule: 'Adjetivo: Indica a cor do objeto.' },
+
+                // VERBOS
+                { id: 'vm1', prompt: `A menina ${hl('estudou')} bastante para a prova.`, targetClass: 'Verbo', rule: 'Verbo: Expressa uma ação no passado.' },
+                { id: 'vm2', prompt: `Nós ${hl('jogaremos')} futebol amanhã.`, targetClass: 'Verbo', rule: 'Verbo: Ação no futuro.' },
+                { id: 'vm3', prompt: `Os alunos ${hl('escreveram')} uma carta.`, targetClass: 'Verbo', rule: 'Verbo: Ação de redigir.' },
+
+                // PRONOMES
+                { id: 'pm1', prompt: `${hl('Ela')} ganhou a medalha da gincana.`, targetClass: 'Pronome', rule: 'Pronome Pessoal: Substitui o nome da pessoa.' },
+                { id: 'pm2', prompt: `Guarde o ${hl('meu')} lápis na caixa.`, targetClass: 'Pronome', rule: 'Pronome Possessivo: Indica posse.' },
+                { id: 'pm3', prompt: `${hl('Aquele')} menino est estuda na minha sala.`, targetClass: 'Pronome', rule: 'Pronome Demonstrativo: Aponta alguém.' },
+
+                // ARTIGOS
+                { id: 'rtm1', prompt: `${hl('O')} menino correu para o gol.`, targetClass: 'Artigo', rule: 'Artigo Definido Masculino.' },
+                { id: 'rtm2', prompt: `Encontrei ${hl('uma')} moeda antiga no chão.`, targetClass: 'Artigo', rule: 'Artigo Indefinido Feminino.' },
+                { id: 'rtm3', prompt: `Gostaria de ${hl('uns')} minutos de atenção.`, targetClass: 'Artigo', rule: 'Artigo Indefinido Plural.' },
+
+                // NUMERAIS
+                { id: 'nm1', prompt: `Eu comi ${hl('duas')} fatias de pizza.`, targetClass: 'Numeral', rule: 'Numeral Cardinal: Quantidade exata.' },
+                { id: 'nm2', prompt: `Ele ficou em ${hl('terceiro')} lugar na corrida.`, targetClass: 'Numeral', rule: 'Numeral Ordinal: Posição ou ordem.' },
+                { id: 'nm3', prompt: `Gastei o ${hl('triplo')} do valor planejado.`, targetClass: 'Numeral', rule: 'Numeral Multiplicativo.' },
+
+                // ADVÉRBIOS
+                { id: 'dm1', prompt: `O trem chegou ${hl('cedo')} na estação.`, targetClass: 'Advérbio', rule: 'Advérbio de Tempo: Modifica o verbo chegar.' },
+                { id: 'dm2', prompt: `Eles jogaram ${hl('muito')} bem ontem.`, targetClass: 'Advérbio', rule: 'Advérbio de Modo/Intensidade.' },
+                { id: 'dm3', prompt: `A mochila está ${hl('ali')} perto da bancada.`, targetClass: 'Advérbio', rule: 'Advérbio de Lugar.' },
+
+                // PREPOSIÇÕES
+                { id: 'prm1', prompt: `Fui para a escola ${hl('de')} ônibus.`, targetClass: 'Preposição', rule: 'Preposição: Indica o meio de transporte.' },
+                { id: 'prm2', prompt: `O bolo foi feito ${hl('com')} muito carinho.`, targetClass: 'Preposição', rule: 'Preposição: Expressa modo/companhia.' },
+                { id: 'prm3', prompt: `Viajamos ${hl('para')} a praia no verão.`, targetClass: 'Preposição', rule: 'Preposição: Indica destino.' },
+
+                // CONJUNÇÕES
+                { id: 'cjm1', prompt: `Estudei muito, ${hl('mas')} não consegui nota máxima.`, targetClass: 'Conjunção', rule: 'Conjunção Adversativa: Oposição de ideias.' },
+                { id: 'cjm2', prompt: `Comprei pão ${hl('e')} leite na padaria.`, targetClass: 'Conjunção', rule: 'Conjunção Aditiva: Une dois termos.' },
+                { id: 'cjm3', prompt: `Não fui à aula ${hl('porque')} fiquei doente.`, targetClass: 'Conjunção', rule: 'Conjunção Explicativa/Causal.' },
+
+                // INTERJEIÇÕES
+                { id: 'ijm1', prompt: `${hl('Nossa!')} Que surpresa incrível!`, targetClass: 'Interjeição', rule: 'Interjeição: Expressa admiração ou espanto.' },
+                { id: 'ijm2', prompt: `${hl('Cuidado!')} O chão está escorregadio.`, targetClass: 'Interjeição', rule: 'Interjeição: Expressa alerta.' },
+                { id: 'ijm3', prompt: `${hl('Parabéns!')} Você fez um ótimo trabalho.`, targetClass: 'Interjeição', rule: 'Interjeição: Expressa felicitação.' }
             ];
             db = items.map(i => ({ ...i, category: 'Frase Simples' }));
 
         } else {
-            // FRASES DESAFIADORAS COM CONTEXTUALIZAÇÃO DO 6º ANO
+            // DIFÍCIL: FRASES CONTEXTUALIZADAS (6º ANO)
             const items = [
-                { id: 'h1', prompt: 'A <span class="highlight-word">tristeza</span> tomou conta do ambiente.', targetClass: 'Substantivo Abstrato', rule: 'Substantivo Abstrato: Nomeia sentimento que depende de outro ser.' },
-                { id: 'h2', prompt: 'O <span class="highlight-word">enxame</span> invadiu a floresta.', targetClass: 'Substantivo Coletivo', rule: 'Substantivo Coletivo: Nomeia um conjunto de abelhas.' },
-                { id: 'h3', prompt: 'A culinária <span class="highlight-word">brasileira</span> é reconhecida.', targetClass: 'Adjetivo Pátrio', rule: 'Adjetivo Pátrio: Indica a origem ou nacionalidade.' },
-                { id: 'h4', prompt: 'Eles <span class="highlight-word">estudarão</span> para a prova amanhã.', targetClass: 'Verbo (Futuro)', rule: 'Verbo no Futuro do Presente: Ação que ainda vai acontecer.' },
-                { id: 'h5', prompt: 'Nós <span class="highlight-word">fizemos</span> a tarefa rapidamente.', targetClass: 'Verbo (Passado)', rule: 'Verbo no Pretérito Perfeito: Ação concluída no passado.' },
-                { id: 'h6', prompt: '<span class="highlight-word">Este</span> caderno pertence ao aluno.', targetClass: 'Pronome Demonstrativo', rule: 'Pronome Demonstrativo: Indica a posição de algo perto do falante.' },
-                { id: 'h7', prompt: 'Guardamos <span class="highlight-word">nossos</span> materiais escolares.', targetClass: 'Pronome Possessivo', rule: 'Pronome Possessivo: Indica relação de posse.' },
-                { id: 'h8', prompt: 'O garoto morava <span class="highlight-word">longe</span> da escola.', targetClass: 'Advérbio de Lugar', rule: 'Advérbio de Lugar: Indica onde o garoto morava.' },
-                { id: 'h9', prompt: 'Chegamos <span class="highlight-word">ontem</span> de viagem.', targetClass: 'Advérbio de Tempo', rule: 'Advérbio de Tempo: Indica o momento da ação verbal.' },
-                { id: 'h10', prompt: 'Ela colocou o livro <span class="highlight-word">sobre</span> a mesa.', targetClass: 'Preposição', rule: 'Preposição: Liga palavras estabelecendo relação de lugar.' },
-                { id: 'h11', prompt: 'Fui ao mercado, <span class="highlight-word">mas</span> não comprei nada.', targetClass: 'Conjunção', rule: 'Conjunção Adversativa: Liga orações dando ideia de oposição.' },
-                { id: 'h12', prompt: '<span class="highlight-word">Coragem</span> é enfrentar os desafios!', targetClass: 'Substantivo Abstrato', rule: 'Substantivo Abstrato: Nomeia uma virtude/qualidade moral.' }
+                // SUBSTANTIVOS
+                { id: 'sh1', prompt: `O ${hl('enxame')} voava em direção às flores.`, targetClass: 'Substantivo', rule: 'Substantivo Coletivo: Grupo de abelhas.' },
+                { id: 'sh2', prompt: `A ${hl('coragem')} do jovem surpreendeu a todos.`, targetClass: 'Substantivo', rule: 'Substantivo Abstrato: Virtude humana.' },
+                { id: 'sh3', prompt: `A ${hl('alcateia')} protegia seus filhotes na neve.`, targetClass: 'Substantivo', rule: 'Substantivo Coletivo: Grupo de lobos.' },
+
+                // ADJETIVOS
+                { id: 'ah1', prompt: `A culinária ${hl('mineira')} agrada os visitantes.`, targetClass: 'Adjetivo', rule: 'Adjetivo Pátrio: Indica origem (Minas Gerais).' },
+                { id: 'ah2', prompt: `O estudante ${hl('colombiano')} entrou na turma.`, targetClass: 'Adjetivo', rule: 'Adjetivo Pátrio: Nacionalidade.' },
+
+                // VERBOS
+                { id: 'vh1', prompt: `Amanhã nós ${hl('concluiremos')} o projeto.`, targetClass: 'Verbo', rule: 'Verbo no Futuro do Presente.' },
+                { id: 'vh2', prompt: `Se nós ${hl('estudássemos')} juntos, aprenderíamos rápido.`, targetClass: 'Verbo', rule: 'Verbo no Modo Subjuntivo: Hipótese/Condição.' },
+
+                // PRONOMES
+                { id: 'ph1', prompt: `Guardem ${hl('estes')} documentos na pasta.`, targetClass: 'Pronome', rule: 'Pronome Demonstrativo: Indica proximidade.' },
+                { id: 'ph2', prompt: `Entregamos ${hl('nossos')} trabalhos no prazo.`, targetClass: 'Pronome', rule: 'Pronome Possessivo de 1ª pessoa plural.' },
+
+                // ARTIGOS
+                { id: 'rth1', prompt: `${hl('Uns')} alunos preferiram a quadra cobertas.`, targetClass: 'Artigo', rule: 'Artigo Indefinido Masculino Plural.' },
+                { id: 'rth2', prompt: `Acompanhamos ${hl('as')} transformações da cidade.`, targetClass: 'Artigo', rule: 'Artigo Definido Feminino Plural.' },
+
+                // NUMERAIS
+                { id: 'nh1', prompt: `Ele obteve o ${hl('quintúplo')} dos pontos esperados.`, targetClass: 'Numeral', rule: 'Numeral Multiplicativo.' },
+                { id: 'nh2', prompt: `Trata-se do ${hl('décimo')} aniversário da instituição.`, targetClass: 'Numeral', rule: 'Numeral Ordinal: Posição na ordem.' },
+
+                // ADVÉRBIOS
+                { id: 'dh1', prompt: `O projeto foi desenvolvido ${hl('cuidadosamente')}.`, targetClass: 'Advérbio', rule: 'Advérbio de Modo formado por sufixo -mente.' },
+                { id: 'dh2', prompt: `Eles ${hl('jamais')} desistiram dos seus objetivos.`, targetClass: 'Advérbio', rule: 'Advérbio de Negação/Tempo.' },
+
+                // PREPOSIÇÕES
+                { id: 'prh1', prompt: `Discutimos ${hl('sobre')} a preservação da água.`, targetClass: 'Preposição', rule: 'Preposição: Expressa assunto.' },
+                { id: 'prh2', prompt: `Lutamos ${hl('contra')} a poluição do rio.`, targetClass: 'Preposição', rule: 'Preposição: Expressa oposição.' },
+
+                // CONJUNÇÕES
+                { id: 'cjh1', prompt: `Não apenas estudou ${hl('como também')} ensinou os colegas.`, targetClass: 'Conjunção', rule: 'Locução Conjuntiva Aditiva.' },
+                { id: 'cjh2', prompt: `${hl('Embora')} estivesse chovendo, fomos ao treino.`, targetClass: 'Conjunção', rule: 'Conjunção Subordinativa Concessiva.' },
+
+                // INTERJEIÇÕES
+                { id: 'ijh1', prompt: `${hl('Oxalá')} consigamos alcançar a meta final!`, targetClass: 'Interjeição', rule: 'Interjeição: Expressa desejo intenso.' },
+                { id: 'ijh2', prompt: `${hl('Caramba!')} Que resultado espetacular!`, targetClass: 'Interjeição', rule: 'Interjeição: Expressa espanto ou empolgação.' }
             ];
             db = items.map(i => ({ ...i, category: 'Desafio Gramatical' }));
         }
@@ -783,7 +956,22 @@
         return db;
     }
 
-    // --- AUDIO & EFFECTS HELPERS ---
+    // OBTÉM APENAS AS CLASSES MARCADAS NO CHECKBOX
+    function getSelectedClasses() {
+        let checkboxes = document.querySelectorAll('.cls-chk:checked');
+        return Array.from(checkboxes).map(cb => cb.value);
+    }
+
+    function validateCheckboxes() {
+        let selected = getSelectedClasses();
+        if (selected.length < 2) {
+            alert("⚠️ Selecione pelo menos 2 classes gramaticais para o jogo ter variedade!");
+            let firstChk = document.querySelector('.cls-chk');
+            if (firstChk) firstChk.checked = true;
+        }
+    }
+
+    // WEBAUDIO SOUNDS
     function playBeep(freq = 440, type = 'sine', duration = 0.1) {
         try {
             const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1000,6 +1188,12 @@
     let rightColumnOrder = [];
 
     function selectStudent(id) {
+        let selectedClasses = getSelectedClasses();
+        if (selectedClasses.length < itemsPerRound) {
+            alert(`⚠️ Para jogar com ${itemsPerRound} itens por rodada, selecione pelo menos ${itemsPerRound} classes gramaticais!`);
+            return;
+        }
+
         activeStudent = students.find(s => s.id === id);
 
         if (currentGameMode === 'normal') {
@@ -1046,15 +1240,21 @@
             document.getElementById('stats-display').innerText = `Pontos: ${attackScore}`;
         }
 
-        let pool = generateGrammarDatabase(currentSeqDifficulty);
-        let shuffled = [...pool].sort(() => 0.5 - Math.random());
+        // CARREGA E FILTRA O BANCO DE DADOS
+        let fullDb = generateGrammarDatabase(currentSeqDifficulty);
+        let allowedClasses = getSelectedClasses();
+
+        let filteredPool = fullDb.filter(item => allowedClasses.includes(item.targetClass));
+
+        let shuffled = [...filteredPool].sort(() => 0.5 - Math.random());
         
         roundChallenges = [];
-        let usedClasses = new Set();
+        let usedClassesInRound = new Set();
 
+        // Tenta selecionar itens de classes distintas para a mesma rodada
         for (let item of shuffled) {
-            if (!usedClasses.has(item.targetClass)) {
-                usedClasses.add(item.targetClass);
+            if (!usedClassesInRound.has(item.targetClass)) {
+                usedClassesInRound.add(item.targetClass);
                 roundChallenges.push(item);
             }
             if (roundChallenges.length === itemsPerRound) {
@@ -1062,9 +1262,10 @@
             }
         }
 
-        // Se por ventura a lista não preencher devido ao Set, ignora o filtro estrito
         if (roundChallenges.length < itemsPerRound) {
-            roundChallenges = shuffled.slice(0, itemsPerRound);
+            let remainingNeeded = itemsPerRound - roundChallenges.length;
+            let remainingItems = shuffled.filter(i => !roundChallenges.includes(i));
+            roundChallenges = roundChallenges.concat(remainingItems.slice(0, remainingNeeded));
         }
 
         rightColumnOrder = roundChallenges.map(item => ({
