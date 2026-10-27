@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Missao Area Total v3.1 FIX</title>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/drag-drop-touch@1.3.1/DragDropTouch.js"></script>
+<style>
+:root{--p:#58cc02;--pd:#46a302;--s:#1cb0f6;--sd:#1899d6;--a:#ff9600;--e:#ea2b2b;--bg:#f0f2f5;--b:#e5e5e5}
+*{box-sizing:border-box;font-family:Arial,sans-serif;margin:0;padding:0}
+body{background:var(--bg);display:flex;justify-content:center}
+.box{width:100%;max-width:1100px;background:#fff;min-height:100vh;display:flex;flex-direction:column}
+header{padding:12px;border-bottom:2px solid var(--b);background:#fff;position:sticky;top:0;z-index:5}
+h1{font-size:18px;color:var(--sd);font-weight:900}
+.btn{border:1px solid var(--b);background:#f1f3f5;padding:6px 10px;border-radius:8px;font-weight:700;cursor:pointer;font-size:12px}
+.bar{display:flex;justify-content:space-between;align-items:center;background:#f8f9fa;padding:8px 12px;border-radius:10px;border:1px solid var(--b);margin-top:8px}
+.timer{font-weight:900;background:#fff3bf;color:#d9480f;padding:4px 12px;border-radius:16px;border:2px solid #ffe066}
+.timer.bad{background:#ffe3e3;color:var(--e);border-color:#ffa8a8}
+.prog{flex:1;height:14px;background:var(--b);border-radius:8px;overflow:hidden}
+.prog i{display:block;height:100%;width:0%;background:var(--p)}
+main{flex:1;padding:15px}
+.setup{display:flex;flex-direction:column;gap:14px;text-align:center}
+.lab{font-size:12px;font-weight:800;color:#777;text-transform:uppercase}
+.modes{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.modes button{flex:1;min-width:120px;padding:10px;font-weight:800;border:2px solid var(--b);border-radius:12px;background:#fff;cursor:pointer;font-size:12px}
+.modes button.on{border-color:var(--a);background:#fff9db;color:#e08300;box-shadow:0 3px 0 var(--a)}
+.modes button.on2{border-color:var(--p);background:#ebfbee;color:var(--pd);box-shadow:0 3px 0 var(--pd)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:8px;padding:10px;background:#f8f9fa;border-radius:12px;border:1px solid var(--b)}
+.item{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;padding:8px;background:#fff;border-radius:8px;border:1px solid var(--b)}
+.stu{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;max-height:45vh;overflow-y:auto}
+.stu button{background:#fff;border:2px solid var(--b);padding:10px 6px;border-radius:12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px}
+.board{display:flex;flex-direction:column;gap:12px;max-width:950px;margin:0 auto}
+.hint{background:#e7f5ff;border:2px solid #a5d8ff;color:#1899d6;padding:10px;border-radius:12px;font-size:12px;font-weight:700;text-align:center}
+.assoc{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:700px){.assoc{grid-template-columns:1fr}}
+.col{font-size:12px;font-weight:800;color:var(--sd);text-transform:uppercase;margin-bottom:6px;text-align:center}
+.items{display:flex;flex-direction:column;gap:8px}
+.card{background:#fff;border:2px solid var(--b);border-radius:12px;padding:10px;cursor:pointer;box-shadow:0 3px 0 var(--b);min-height:62px;display:flex;flex-direction:column;justify-content:center;gap:3px}
+.card.sel{border-color:var(--s);background:#e7f5ff}
+.card.ok{border-color:var(--p);background:#ebfbee;opacity:.8}
+.card.bad{border-color:var(--e);background:#ffe3e3}
+.fig{font-size:22px;text-align:center}
+.qt{font-size:14px;font-weight:700}
+.qs{font-size:11px;color:#777}
+.exp{display:none;background:#fff;border:2px solid var(--b);border-radius:12px;padding:10px;font-size:12px;margin-top:6px}
+.rank{display:none;flex-direction:column;gap:8px}
+.ritem{display:flex;justify-content:space-between;background:#fff;padding:8px 12px;border-radius:8px;border:1px solid var(--b);font-weight:700;font-size:12px}
+footer{padding:12px;border-top:2px solid var(--b);background:#fff;position:sticky;bottom:0;z-index:5;display:none;flex-direction:column;gap:8px}
+.mainb{background:var(--p);color:#fff;border:none;border-radius:12px;padding:12px;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 4px 0 var(--pd);flex:1}
+.mainb.sec{background:var(--s);box-shadow:0 4px 0 var(--sd)}
+</style>
+</head>
+<body>
+<div class="box">
+<header>
+<div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;align-items:center">
+<h1>📐 Missão Área Total v3.1 FIX - Infinita</h1>
+<div style="display:flex;gap:6px;flex-wrap:wrap">
+<button class="btn" id="btn-sw" onclick="back()" style="display:none">Aluno</button>
+<button class="btn" onclick="showRank()">🏆 Ranking</button>
+<button class="btn" onclick="toggleFS()">⛶ Tela</button>
+<button class="btn" style="background:#ffe3e3;color:#ea2b2b" onclick="resetAll()">🔄 Reset Cache</button>
+</div>
+</div>
+<div class="bar" id="pbar" style="display:none">
+<div><span id="p-emo"></span> <b id="p-name">ALUNO</b></div>
+<div class="timer" id="timer">01:00</div>
+</div>
+<div style="display:flex;gap:10px;align-items:center;display:none;margin-top:8px" id="progW">
+<div class="prog"><i id="prog"></i></div>
+<div style="font-weight:800;font-size:12px" id="stats">Pontos: 0</div>
+</div>
+</header>
+<main>
+<div class="setup" id="setup">
+<div class="lab">1. Modo</div>
+<div class="modes">
+<button class="on" id="mA" onclick="setMode('attack')">⚡ Minute Attack</button>
+<button id="mN" onclick="setMode('normal')">📘 Carreira 13 Fases</button>
+</div>
+<div class="lab">2. Itens por Rodada</div>
+<div class="modes">
+<button class="on2" id="d3" onclick="setIt(3)">🟢 3</button>
+<button id="d4" onclick="setIt(4)">🟡 4</button>
+<button id="d5" onclick="setIt(5)">🔴 5</button>
+</div>
+<div class="lab">3. Aulas (números novos toda rodada!)</div>
+<div class="grid" id="agrid"></div>
+<div class="lab">4. Aluno - Nova Turma 38 (corrigido)</div>
+<div class="stu" id="sgrid"></div>
+<div style="font-size:11px;color:#888;margin-top:4px">Se ainda não aparecer, clique em Reset Cache</div>
+</div>
+<div id="game" style="display:none">
+<div class="board">
+<div class="hint">💡 Toque ou arraste para ligar problema → resposta. Números diferentes a cada rodada!</div>
+<div class="assoc">
+<div><div class="col">Problema / Figura</div><div class="items" id="left"></div></div>
+<div><div class="col">Fórmula / Resultado</div><div class="items" id="right"></div></div>
+</div>
+<div class="exp" id="exp"><b>Resolução:</b> <span id="expt"></span></div>
+</div>
+</div>
+<div class="rank" id="rank">
+<h2>🏆 Ranking</h2>
+<div id="rlist" style="display:flex;flex-direction:column;gap:6px;max-height:55vh;overflow-y:auto"></div>
+<button class="mainb sec" style="margin-top:10px" onclick="back()">Voltar</button>
+</div>
+</main>
+<footer id="foot">
+<div id="feed" style="font-weight:800;text-align:center;display:none;color:#46a302"></div>
+<button class="mainb" id="next" onclick="nextRound()">PRÓXIMA ➡️</button>
+</footer>
+</div>
+<script>
+var STUDENTS = ["ANA LAURA DOS SANTOS BATISTA","CARLOS EDUARDO CARVALHO TARAMELLI LIMA","CARLOS GABRIEL SANTOS OLIVEIRA","CELINE DION DE OLIVEIRA PEREIRA DA SILVA","EMANUEL PEDROSO SANTOS","EVELLYN YSABELLY DIAS ALVES","GABRIEL DA SILVA PORFIRIO","GABRIEL DE CASTRO JORDAO","GABRIEL HENRIQUE SANCHES ALVES","GABRIELLY SOUZA DO ESPIRITO SANTO","GEOVANI GABRIEL FARIAS DUTRA","GUILHERME MARTINS DE OLIVEIRA","GUSTAVO PACHECO DE ALMEIDA","HELOISA PIRES","HIGOR DA SILVA","ISABELI TOLEDO CHEREM DA SILVA","ISABELI SILVA PROENCA","JHONATAN HENRIQUE MARCIANO SANTOS","KEILA DE JESUS SANTOS","LETICIA FERREIRA DA SILVA","LUAN SOUZA NEVES","MAIRA GABRIELA GOMES","MAYKE DIONIZIO MEDEIROS DOS SANTOS","MAYUMI SUGAWARA DOS SANTOS","MOISES DE CARVALHO CAMPOS","PABLO SILVA AMARAL","RUAN DA SILVA FIDELES","SUSAN ELLEN DE AZEVEDO LIMA","TIAGO PITES SILVA","VITOR MANOEL SANTOS RAMOS","VITORIA APARECIDA LEITE DOS SANTOS","VITORIA REGINA FERREIRA DOS SANTOS","KAUAN LUZ DA SILVA","LAIS CRISTINA ROBERTO DOS SANTOS","JULIA LOPES FERNANDES","JULIA STEPHANYE SANTOS CARLOTA","ALEX HENRIQUE DOS SANTOS BRITO","MARIA LORRAINE BATISTA ALVES"];
+var EMO = ['🐶','🐱','🦊','🦁','🐸','🐵','🦄','🐼','🐯','🐨','🐙','🦖','🤖','🚀','⭐','🍎','⚽','🎨'];
+var students=[],active=null,mode='attack',items=3,aulasSet=null,score=0,timeLeft=60,tInt=null,round=0,elapsed=0,start=0,challenges=[],leftSel=null,rightSel=null,matches=0,dragged=null,rightOrder=[];
+var STOR='missao_v3_1_fix_final';
+var AULAS = [{id:1,n:'1 - Unidades'},{id:2,n:'2 - Quad/Ret/Paralel'},{id:3,n:'3 - Tri/Pitagoras'},{id:4,n:'4 - Revisao Planas'},{id:5,n:'5 - Trap/Losango'},{id:6,n:'6 - Circulo/Setor'},{id:7,n:'7 - Nao Regulares'},{id:8,n:'8 - Verificacao'},{id:9,n:'9 - Poliedros/Euler'},{id:10,n:'10 - Planificacao'},{id:11,n:'11 - Area Prisma/Piram'},{id:12,n:'12 - Rev Poliedros'},{id:13,n:'13 - Vol/Cavalieri'}];
+function beep(f,t,d){try{var c=new(window.AudioContext||window.webkitAudioContext)(),o=c.createOscillator(),g=c.createGain();o.type=t;o.frequency.value=f;g.gain.value=.15;g.gain.exponentialRampToValueAtTime(.01,c.currentTime+d);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+d)}catch(e){}}
+function ok(){beep(523,'triangle',.12);setTimeout(function(){beep(659,'triangle',.12)},100);setTimeout(function(){beep(784,'triangle',.2)},200)}
+function err(){beep(180,'sawtooth',.25)}
+function conf(){ok();if(window.confetti)confetti({particleCount:80,spread:70,origin:{y:.6}})}
+function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+function fmt(s){var m=Math.floor(s/60).toString();if(m.length<2)m='0'+m;var sec=(s%60).toString();if(sec.length<2)sec='0'+sec;return m+':'+sec}
+function init(){
+try{
+aulasSet = new Set([1,2,3,4,5,6,7,8,9,10,11,12,13]);
+var sv=localStorage.getItem(STOR);
+if(sv){students=JSON.parse(sv);}else{build();}
+}catch(e){
+localStorage.clear();
+build();
+}
+renderAulas();
+renderSetup();
+}
+function build(){
+students=[];
+for(var i=0;i<STUDENTS.length;i++){
+students.push({id:i,name:STUDENTS[i],emoji:EMO[i%EMO.length],completed:0,totalTime:0,record:0});
+}
+save();
+}
+function save(){localStorage.setItem(STOR,JSON.stringify(students))}
+function renderAulas(){
+var g=document.getElementById('agrid');
+var h='';
+for(var i=0;i<AULAS.length;i++){
+var a=AULAS[i];
+var chk = aulasSet.has(a.id) ? 'checked' : '';
+h += '<label class="item"><input type="checkbox" '+chk+' value="'+a.id+'" onchange="toggleA('+a.id+')"> '+a.n+'</label>';
+}
+g.innerHTML=h;
+}
+window.toggleA=function(id){
+if(aulasSet.has(id)){
+if(aulasSet.size>1){aulasSet.delete(id);}else{alert('Deixe 1');var el=document.querySelector('input[value="'+id+'"]');if(el)el.checked=true;}
+}else{aulasSet.add(id);}
+}
+function renderSetup(){
+stop();
+document.getElementById('setup').style.display='flex';
+document.getElementById('game').style.display='none';
+document.getElementById('rank').style.display='none';
+document.getElementById('pbar').style.display='none';
+document.getElementById('progW').style.display='none';
+document.getElementById('foot').style.display='none';
+document.getElementById('btn-sw').style.display='none';
+var g=document.getElementById('sgrid');
+var html='';
+for(var i=0;i<students.length;i++){
+var s=students[i];
+var rec = mode=='normal' ? s.completed+'/13 ('+fmt(s.totalTime)+')' : 'Rec: '+s.record+' pts';
+html += '<button onclick="pick('+s.id+')"><span style="font-size:22px">'+s.emoji+'</span><span style="font-weight:700;font-size:11px;text-transform:uppercase;text-align:center">'+s.name+'</span><span style="font-size:11px;color:#777">'+rec+'</span></button>';
+}
+g.innerHTML=html;
+}
+window.setMode=function(m){
+mode=m;
+document.getElementById('mA').className = (m=='attack' ? 'on' : '');
+document.getElementById('mN').className = (m=='normal' ? 'on' : '');
+renderSetup();
+}
+window.setIt=function(n){
+items=n;
+document.getElementById('d3').className = (n==3 ? 'on2' : '');
+document.getElementById('d4').className = (n==4 ? 'on2' : '');
+document.getElementById('d5').className = (n==5 ? 'on2' : '');
+}
+window.pick=function(id){
+if(aulasSet.size==0){alert('Selecione aula');return;}
+for(var i=0;i<students.length;i++){if(students[i].id==id){active=students[i];break;}}
+if(mode=='normal'){
+round=active.completed;
+elapsed=active.totalTime;
+if(round>=13){alert(active.name+' ja concluiu!');showRank();return;}
+}else{score=0;}
+document.getElementById('setup').style.display='none';
+document.getElementById('game').style.display='block';
+document.getElementById('pbar').style.display='flex';
+document.getElementById('progW').style.display='flex';
+document.getElementById('foot').style.display='flex';
+document.getElementById('btn-sw').style.display='inline-block';
+document.getElementById('p-emo').innerText=active.emoji;
+document.getElementById('p-name').innerText=active.name;
+loadRound();
+startTimer();
+}
+function genOne(aula){
+var id='q_'+Date.now()+'_'+Math.random().toString(36).substr(2,4);
+if(aula==1){
+var m=rnd(2,9);
+return {id:id,aula:aula,fig:'📏',q:m+' m² em cm²?',ans:(m*10000)+' cm²',sub:'Conversao',exp:m+' x 10.000 = '+(m*10000)};
+}
+if(aula==2){
+var t=rnd(1,3);
+if(t==1){var l=rnd(2,15);return {id:id,aula:aula,fig:'⬜',q:'Quad lado '+l,ans:'A='+(l*l),sub:'A=l²',exp:l+' x '+l+' = '+(l*l)}}
+if(t==2){var b=rnd(3,15),h=rnd(2,12);return {id:id,aula:aula,fig:'▭',q:'Ret '+b+' x '+h,ans:'A='+(b*h),sub:'b·h',exp:b+' x '+h+' = '+(b*h)}}
+var b=rnd(5,18),h=rnd(3,14),lado=rnd(6,14);
+return {id:id,aula:aula,fig:'▱',q:'Paralel b='+b+' h='+h+' lado '+lado,ans:'A='+(b*h),sub:'b·h ignora lado',exp:'Base '+b+' x altura '+h+' = '+(b*h)};
+}
+if(aula==3){
+var b=rnd(4,20),h=rnd(3,15);
+var A=Math.floor(b*h/2);
+return {id:id,aula:aula,fig:'🔺',q:'Tri b='+b+' h='+h,ans:'A='+A,sub:'b·h/2',exp:'('+b+' x '+h+')/2 = '+A};
+}
+if(aula==4){
+if(rnd(0,1)==0){var l=rnd(2,9);return {id:id,aula:aula,fig:'⬜',q:'Quad '+l+' (rev)',ans:'A='+(l*l),sub:'Revisao',exp:l+' x '+l+' = '+(l*l)}}
+else{var B=rnd(8,20),b2=rnd(2,B-1),hh=rnd(2,8);var A=Math.floor((B+b2)*hh/2);return {id:id,aula:aula,fig:'⏢',q:'Trap B='+B+' b='+b2+' h='+hh+' (rev)',ans:'A='+A,sub:'Revisao',exp:'('+(B+b2)+') x '+hh+' /2 = '+A}}
+}
+if(aula==5){
+if(rnd(0,1)==0){
+var B=rnd(8,24),b2=rnd(3,B-1),h=rnd(3,10);
+var A=Math.floor((B+b2)*h/2);
+return {id:id,aula:aula,fig:'⏢',q:'Trap B='+B+' b='+b2+' h='+h,ans:'A='+A,sub:'(B+b)h/2',exp:'('+B+'+'+b2+') x '+h+' /2 = '+A};
+}else{
+var D=rnd(8,22),d=rnd(4,16);
+var A=Math.floor(D*d/2);
+return {id:id,aula:aula,fig:'◆',q:'Los D='+D+' d='+d,ans:'A='+A,sub:'D·d/2',exp:D+' x '+d+' /2 = '+A};
+}
+}
+if(aula==6){
+if(rnd(0,1)==0){
+var r=rnd(2,12);
+return {id:id,aula:aula,fig:'⭕',q:'Circ r='+r+' (pi=3)',ans:'A='+(3*r*r),sub:'pi r²',exp:'3 x '+r+'² = '+(3*r*r)};
+}else{
+var r=rnd(3,10);
+var angs=[30,45,60,90,120,180];
+var ang=angs[rnd(0,5)];
+var A=Math.round(3*r*r*ang/360);
+return {id:id,aula:aula,fig:'🍕',q:'Setor r='+r+' '+ang+'° (pi=3)',ans:'A≈'+A,sub:'setor',exp:'3 x '+r+'² x '+ang+'/360 ≈ '+A};
+}
+}
+if(aula==7){
+var inte=rnd(10,30),met=rnd(4,18);
+var area=inte+met*0.5;
+return {id:id,aula:aula,fig:'🟫',q:inte+' int + '+met+' metades',ans:'A≈'+area,sub:'Aprox',exp:inte+' + '+met+' x 0.5 = '+area};
+}
+if(aula==8){
+var b=rnd(4,18),h=rnd(3,14);
+if(rnd(0,1)==0){
+return {id:id,aula:aula,fig:'📝',q:'Ret '+b+' x '+h,ans:'A='+(b*h),sub:'Verif',exp:b+' x '+h+' = '+(b*h)};
+}else{
+return {id:id,aula:aula,fig:'📝',q:'Tri b='+b+' h='+h,ans:'A='+Math.floor(b*h/2),sub:'Verif',exp:'('+b+' x '+h+')/2 = '+Math.floor(b*h/2)};
+}
+}
+if(aula==9){
+var V=rnd(5,12),F=rnd(4,9);
+var A=V+F-2;
+return {id:id,aula:aula,fig:'🎲',q:'Poliedro V='+V+' F='+F+' A?',ans:'A='+A,sub:'Euler',exp:V+' - '+A+' + '+F+' = 2'};
+}
+if(aula==10){
+return {id:id,aula:aula,fig:'📦',q:'Planif cubo tem?',ans:'6 quadrados',sub:'Planif',exp:'6 faces'};
+}
+if(aula==11){
+var Ab=rnd(8,25),Al=rnd(25,90);
+if(rnd(0,1)==0){
+return {id:id,aula:aula,fig:'📦',q:'Prisma Ab='+Ab+' Al='+Al+' At?',ans:'At='+(2*Ab+Al),sub:'2Ab+Al',exp:'2 x '+Ab+' + '+Al+' = '+(2*Ab+Al)};
+}else{
+return {id:id,aula:aula,fig:'🔺',q:'Piramide Ab='+Ab+' Al='+Al+' At?',ans:'At='+(Ab+Al),sub:'Ab+Al',exp:Ab+' + '+Al+' = '+(Ab+Al)};
+}
+}
+if(aula==12){
+var V=rnd(6,12),A=rnd(8,16);
+var F=2-V+A;
+if(F<4){F=5;A=V+F-2;}
+return {id:id,aula:aula,fig:'📦',q:'Euler V='+V+' A='+A+' F=?',ans:'F='+F,sub:'Euler',exp:V+' - '+A+' + '+F+' =2'};
+}
+if(aula==13){
+var Ab=rnd(10,35),h=rnd(3,12);
+return {id:id,aula:aula,fig:'📦',q:'Vol Ab='+Ab+' h='+h,ans:'V='+(Ab*h),sub:'Ab·h',exp:Ab+' x '+h+' = '+(Ab*h)};
+}
+return {id:id,aula:aula,fig:'❓',q:'Area?',ans:'A',sub:'?',exp:''};
+}
+function loadRound(){
+matches=0;leftSel=null;rightSel=null;
+document.getElementById('foot').style.display='none';
+document.getElementById('exp').style.display='none';
+if(mode=='normal'){
+document.getElementById('prog').style.width=((round+1)/13*100)+'%';
+document.getElementById('stats').innerText='Fase '+(round+1)+'/13';
+}else{
+document.getElementById('prog').style.width='100%';
+document.getElementById('stats').innerText='Pontos: '+score;
+}
+var list=[];
+var arr=[];
+aulasSet.forEach(function(v){arr.push(v);});
+var at=0;
+while(list.length<items && at<200){
+var aula=arr[rnd(0,arr.length-1)];
+var q=genOne(aula);
+var exists=false;
+for(var i=0;i<list.length;i++){if(list[i].ans==q.ans){exists=true;break;}}
+if(!exists){list.push(q);}
+at++;
+}
+challenges=list;
+rightOrder=[];
+for(var i=0;i<list.length;i++){rightOrder.push({id:list[i].id,ans:list[i].ans});}
+rightOrder.sort(function(){return 0.5-Math.random();});
+render();
+}
+function render(){
+var L=document.getElementById('left');
+var R=document.getElementById('right');
+var htmlL='';
+for(var i=0;i<challenges.length;i++){
+var c=challenges[i];
+var cls='card';
+if(c.matched)cls+=' ok';
+if(leftSel==c.id)cls+=' sel';
+htmlL+='<div class="'+cls+'" id="left-'+c.id+'" draggable="'+(!c.matched)+'" ondragstart="drag(event,\''+c.id+'\')" onclick="lClick(\''+c.id+'\')"><div class="fig">'+c.fig+'</div><div class="qt">'+c.q+'</div><div class="qs">'+c.sub+' • Aula '+c.aula+'</div></div>';
+}
+L.innerHTML=htmlL;
+var htmlR='';
+for(var i=0;i<rightOrder.length;i++){
+var ro=rightOrder[i];
+var c=null;
+for(var j=0;j<challenges.length;j++){if(challenges[j].id==ro.id){c=challenges[j];break;}}
+var cls='card';
+if(c.matched)cls+=' ok';
+if(rightSel==ro.id)cls+=' sel';
+var badge = c.matched ? '<span style="font-size:10px;background:#58cc02;color:#fff;padding:2px 6px;border-radius:6px">✓</span>' : '';
+htmlR+='<div class="'+cls+'" id="right-'+ro.id+'" ondragover="over(event)" ondragleave="leave(event)" ondrop="drop(event,\''+ro.id+'\')" onclick="rClick(\''+ro.id+'\')"><div class="qt">🏷️ '+ro.ans+'</div>'+badge+'</div>';
+}
+R.innerHTML=htmlR;
+}
+window.drag=function(e,id){dragged=id;e.dataTransfer.setData('text/plain',id);};
+window.over=function(e){e.preventDefault();e.currentTarget.style.transform='scale(1.02)';};
+window.leave=function(e){e.currentTarget.style.transform='scale(1)';};
+window.drop=function(e,id){e.preventDefault();e.currentTarget.style.transform='scale(1)';var lid=e.dataTransfer.getData('text/plain')||dragged;if(lid)check(lid,id);};
+window.lClick=function(id){
+for(var i=0;i<challenges.length;i++){if(challenges[i].id==id && challenges[i].matched)return;}
+if(leftSel==id)leftSel=null;else leftSel=id;
+render();
+if(leftSel && rightSel)check(leftSel,rightSel);
+};
+window.rClick=function(id){
+var c=null;
+for(var i=0;i<challenges.length;i++){if(challenges[i].id==id){c=challenges[i];break;}}
+if(c && c.matched)return;
+if(rightSel==id)rightSel=null;else rightSel=id;
+render();
+if(leftSel && rightSel)check(leftSel,rightSel);
+};
+function check(lid,rid){
+if(lid==rid){
+var t=null;
+for(var i=0;i<challenges.length;i++){if(challenges[i].id==lid){t=challenges[i];break;}}
+t.matched=true;
+matches++;
+leftSel=null;rightSel=null;
+ok();
+document.getElementById('exp').style.display='block';
+document.getElementById('expt').innerText=t.exp;
+render();
+if(mode=='attack'){
+score+=10;
+if(score>active.record){active.record=score;save();}
+document.getElementById('stats').innerText='Pontos: '+score;
+}
+if(matches==challenges.length)done();
+}else{
+var le=document.getElementById('left-'+lid);
+var re=document.getElementById('right-'+rid);
+if(le)le.classList.add('bad');
+if(re)re.classList.add('bad');
+pen();
+setTimeout(function(){leftSel=null;rightSel=null;render();},400);
+}
+}
+function pen(){
+err();
+if(mode=='attack'){
+timeLeft=Math.max(0,timeLeft-5);
+upd();
+}else{
+elapsed+=5;
+document.getElementById('timer').innerText='⏱️ '+fmt(elapsed+Math.floor((Date.now()-start)/1000));
+}
+}
+function done(){
+conf();
+if(mode=='attack'){
+score+=25;
+if(score>active.record){active.record=score;save();}
+setTimeout(function(){loadRound();},700);
+}else{
+stop();
+active.completed++;
+active.totalTime=elapsed;
+save();
+document.getElementById('foot').style.display='flex';
+var f=document.getElementById('feed');
+f.style.display='block';
+f.innerText='Fase '+(round+1)+' concluida!';
+document.getElementById('next').innerText = (round+1>=13 ? 'Ver Ranking 🏆' : 'Proxima ➡️');
+}
+}
+window.nextRound=function(){
+round++;
+if(round>=13){alert('Parabens '+active.name+'! Concluiu as 13 aulas!');showRank();}
+else{loadRound();startTimer();}
+}
+function startTimer(){
+stop();
+var td=document.getElementById('timer');
+td.classList.remove('bad');
+if(mode=='normal'){
+start=Date.now();
+tInt=setInterval(function(){
+var cur=Math.floor((Date.now()-start)/1000);
+var tot=elapsed+cur;
+td.innerText='⏱️ '+fmt(tot);
+},1000);
+}else{
+timeLeft=60;
+td.innerText='⚡ 01:00';
+tInt=setInterval(function(){
+timeLeft--;
+upd();
+if(timeLeft<=0){stop();finishA();}
+},1000);
+}
+}
+function upd(){
+var td=document.getElementById('timer');
+var c=Math.max(0,timeLeft);
+var s=c.toString();
+if(s.length<2)s='0'+s;
+td.innerText='⚡ 00:'+s;
+if(c<=10)td.classList.add('bad');else td.classList.remove('bad');
+}
+function stop(){
+if(tInt){clearInterval(tInt);tInt=null;if(mode=='normal' && start>0){elapsed+=Math.floor((Date.now()-start)/1000);start=0;}}
+}
+function finishA(){
+alert('⏰ Tempo! '+active.name+' fez '+score+' pts!');
+if(score>active.record){active.record=score;save();}
+renderSetup();
+}
+window.showRank=function(){
+stop();
+if(active && mode=='normal'){active.totalTime=elapsed;save();}
+document.getElementById('setup').style.display='none';
+document.getElementById('game').style.display='none';
+document.getElementById('rank').style.display='flex';
+document.getElementById('pbar').style.display='none';
+document.getElementById('progW').style.display='none';
+document.getElementById('foot').style.display='none';
+document.getElementById('btn-sw').style.display='none';
+var sorted=students.slice().sort(function(a,b){
+if(mode=='normal'){
+if(b.completed!=a.completed)return b.completed-a.completed;
+return a.totalTime-b.totalTime;
+}else{
+return (b.record||0)-(a.record||0);
+}
+});
+var list=document.getElementById('rlist');
+var html='';
+for(var i=0;i<sorted.length;i++){
+var s=sorted[i];
+var txt = mode=='normal' ? s.completed+'/13 ('+fmt(s.totalTime)+')' : (s.record||0)+' pts';
+html+='<div class="ritem"><span>#'+(i+1)+' '+s.emoji+' '+s.name+'</span><span>'+txt+'</span></div>';
+}
+list.innerHTML=html;
+}
+window.back=function(){renderSetup();}
+window.resetAll=function(){
+if(confirm('Resetar TUDO e limpar cache?')){
+localStorage.clear();
+build();
+active=null;
+renderSetup();
+alert('Cache limpo! Recarregue a pagina');
+}
+}
+window.toggleFS=function(){if(!document.fullscreenElement)document.documentElement.requestFullscreen().catch(function(){});else document.exitFullscreen();}
+window.onload=function(){init();}
+</script>
+</body>
+</html>
