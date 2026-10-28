@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Missao Area Total v3.1 FIX</title>
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/drag-drop-touch@1.3.1/DragDropTouch.js"></script>
+<title>Missão Área Total v3.4 - Comandos Claros</title>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/BernardoCastilho/dragdroptouch@master/DragDropTouch.js"></script>
 <style>
 :root{--p:#58cc02;--pd:#46a302;--s:#1cb0f6;--sd:#1899d6;--a:#ff9600;--e:#ea2b2b;--bg:#f0f2f5;--b:#e5e5e5}
-*{box-sizing:border-box;font-family:Arial,sans-serif;margin:0;padding:0}
+*{box-sizing:border-box;font-family:Arial,sans-serif;margin:0;padding:0;user-select:none;-webkit-user-select:none}
 body{background:var(--bg);display:flex;justify-content:center}
 .box{width:100%;max-width:1100px;background:#fff;min-height:100vh;display:flex;flex-direction:column}
 header{padding:12px;border-bottom:2px solid var(--b);background:#fff;position:sticky;top:0;z-index:5}
@@ -27,7 +27,7 @@ main{flex:1;padding:15px}
 .modes button.on{border-color:var(--a);background:#fff9db;color:#e08300;box-shadow:0 3px 0 var(--a)}
 .modes button.on2{border-color:var(--p);background:#ebfbee;color:var(--pd);box-shadow:0 3px 0 var(--pd)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:8px;padding:10px;background:#f8f9fa;border-radius:12px;border:1px solid var(--b)}
-.item{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;padding:8px;background:#fff;border-radius:8px;border:1px solid var(--b)}
+.item{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;padding:8px;background:#fff;border-radius:8px;border:1px solid var(--b);cursor:pointer}
 .stu{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;max-height:45vh;overflow-y:auto}
 .stu button{background:#fff;border:2px solid var(--b);padding:10px 6px;border-radius:12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px}
 .board{display:flex;flex-direction:column;gap:12px;max-width:950px;margin:0 auto}
@@ -36,13 +36,14 @@ main{flex:1;padding:15px}
 @media(max-width:700px){.assoc{grid-template-columns:1fr}}
 .col{font-size:12px;font-weight:800;color:var(--sd);text-transform:uppercase;margin-bottom:6px;text-align:center}
 .items{display:flex;flex-direction:column;gap:8px}
-.card{background:#fff;border:2px solid var(--b);border-radius:12px;padding:10px;cursor:pointer;box-shadow:0 3px 0 var(--b);min-height:62px;display:flex;flex-direction:column;justify-content:center;gap:3px}
+.card{background:#fff;border:2px solid var(--b);border-radius:12px;padding:10px;cursor:pointer;box-shadow:0 3px 0 var(--b);min-height:68px;display:flex;flex-direction:column;justify-content:center;gap:3px;touch-action:manipulation}
 .card.sel{border-color:var(--s);background:#e7f5ff}
 .card.ok{border-color:var(--p);background:#ebfbee;opacity:.8}
 .card.bad{border-color:var(--e);background:#ffe3e3}
 .fig{font-size:22px;text-align:center}
-.qt{font-size:14px;font-weight:700}
-.qs{font-size:11px;color:#777}
+.cmd{font-size:11px;font-weight:800;color:#d9480f;text-align:center;text-transform:uppercase;margin-bottom:2px}
+.qt{font-size:13px;font-weight:700;user-select:none;text-align:center}
+.qs{font-size:11px;color:#777;text-align:center}
 .exp{display:none;background:#fff;border:2px solid var(--b);border-radius:12px;padding:10px;font-size:12px;margin-top:6px}
 .rank{display:none;flex-direction:column;gap:8px}
 .ritem{display:flex;justify-content:space-between;background:#fff;padding:8px 12px;border-radius:8px;border:1px solid var(--b);font-weight:700;font-size:12px}
@@ -55,20 +56,20 @@ footer{padding:12px;border-top:2px solid var(--b);background:#fff;position:stick
 <div class="box">
 <header>
 <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;align-items:center">
-<h1>📐 Missão Área Total v3.1 FIX - Infinita</h1>
+<h1>📐 Missão Área Total v3.4 - Infinita</h1>
 <div style="display:flex;gap:6px;flex-wrap:wrap">
-<button class="btn" id="btn-sw" onclick="back()" style="display:none">Aluno</button>
+<button class="btn" id="btn-sw" onclick="back()" style="display: inline-block;">Aluno</button>
 <button class="btn" onclick="showRank()">🏆 Ranking</button>
 <button class="btn" onclick="toggleFS()">⛶ Tela</button>
 <button class="btn" style="background:#ffe3e3;color:#ea2b2b" onclick="resetAll()">🔄 Reset Cache</button>
 </div>
 </div>
-<div class="bar" id="pbar" style="display:none">
-<div><span id="p-emo"></span> <b id="p-name">ALUNO</b></div>
-<div class="timer" id="timer">01:00</div>
+<div class="bar" id="pbar" style="display: flex;">
+<div><span id="p-emo">🐶</span> <b id="p-name">---</b></div>
+<div class="timer" id="timer">⚡ 01:00</div>
 </div>
-<div style="display:flex;gap:10px;align-items:center;display:none;margin-top:8px" id="progW">
-<div class="prog"><i id="prog"></i></div>
+<div style="gap: 10px; align-items: center; display: flex; margin-top: 8px;" id="progW">
+<div class="prog"><i id="prog" style="width: 100%;"></i></div>
 <div style="font-weight:800;font-size:12px" id="stats">Pontos: 0</div>
 </div>
 </header>
@@ -85,29 +86,29 @@ footer{padding:12px;border-top:2px solid var(--b);background:#fff;position:stick
 <button id="d4" onclick="setIt(4)">🟡 4</button>
 <button id="d5" onclick="setIt(5)">🔴 5</button>
 </div>
-<div class="lab">3. Aulas (números novos toda rodada!)</div>
+<div class="lab">3. Aulas</div>
 <div class="grid" id="agrid"></div>
-<div class="lab">4. Aluno - Nova Turma 38 (corrigido)</div>
+<div class="lab">4. Alunos</div>
 <div class="stu" id="sgrid"></div>
 <div style="font-size:11px;color:#888;margin-top:4px">Se ainda não aparecer, clique em Reset Cache</div>
 </div>
-<div id="game" style="display:none">
+<div id="game" style="display: none;">
 <div class="board">
-<div class="hint">💡 Toque ou arraste para ligar problema → resposta. Números diferentes a cada rodada!</div>
+<div class="hint">💡 Toque ou arraste para ligar o problema à resposta correta!</div>
 <div class="assoc">
 <div><div class="col">Problema / Figura</div><div class="items" id="left"></div></div>
-<div><div class="col">Fórmula / Resultado</div><div class="items" id="right"></div></div>
+<div><div class="col">Resultado / Fórmula</div><div class="items" id="right"></div></div>
 </div>
-<div class="exp" id="exp"><b>Resolução:</b> <span id="expt"></span></div>
+<div class="exp" id="exp" style="display: none;"><b>Resolução:</b> <span id="expt"></span></div>
 </div>
 </div>
-<div class="rank" id="rank">
+<div class="rank" id="rank" style="display: none;">
 <h2>🏆 Ranking</h2>
 <div id="rlist" style="display:flex;flex-direction:column;gap:6px;max-height:55vh;overflow-y:auto"></div>
 <button class="mainb sec" style="margin-top:10px" onclick="back()">Voltar</button>
 </div>
 </main>
-<footer id="foot">
+<footer id="foot" style="display: none;">
 <div id="feed" style="font-weight:800;text-align:center;display:none;color:#46a302"></div>
 <button class="mainb" id="next" onclick="nextRound()">PRÓXIMA ➡️</button>
 </footer>
@@ -116,14 +117,31 @@ footer{padding:12px;border-top:2px solid var(--b);background:#fff;position:stick
 var STUDENTS = ["ANA LAURA DOS SANTOS BATISTA","CARLOS EDUARDO CARVALHO TARAMELLI LIMA","CARLOS GABRIEL SANTOS OLIVEIRA","CELINE DION DE OLIVEIRA PEREIRA DA SILVA","EMANUEL PEDROSO SANTOS","EVELLYN YSABELLY DIAS ALVES","GABRIEL DA SILVA PORFIRIO","GABRIEL DE CASTRO JORDAO","GABRIEL HENRIQUE SANCHES ALVES","GABRIELLY SOUZA DO ESPIRITO SANTO","GEOVANI GABRIEL FARIAS DUTRA","GUILHERME MARTINS DE OLIVEIRA","GUSTAVO PACHECO DE ALMEIDA","HELOISA PIRES","HIGOR DA SILVA","ISABELI TOLEDO CHEREM DA SILVA","ISABELI SILVA PROENCA","JHONATAN HENRIQUE MARCIANO SANTOS","KEILA DE JESUS SANTOS","LETICIA FERREIRA DA SILVA","LUAN SOUZA NEVES","MAIRA GABRIELA GOMES","MAYKE DIONIZIO MEDEIROS DOS SANTOS","MAYUMI SUGAWARA DOS SANTOS","MOISES DE CARVALHO CAMPOS","PABLO SILVA AMARAL","RUAN DA SILVA FIDELES","SUSAN ELLEN DE AZEVEDO LIMA","TIAGO PITES SILVA","VITOR MANOEL SANTOS RAMOS","VITORIA APARECIDA LEITE DOS SANTOS","VITORIA REGINA FERREIRA DOS SANTOS","KAUAN LUZ DA SILVA","LAIS CRISTINA ROBERTO DOS SANTOS","JULIA LOPES FERNANDES","JULIA STEPHANYE SANTOS CARLOTA","ALEX HENRIQUE DOS SANTOS BRITO","MARIA LORRAINE BATISTA ALVES"];
 var EMO = ['🐶','🐱','🦊','🦁','🐸','🐵','🦄','🐼','🐯','🐨','🐙','🦖','🤖','🚀','⭐','🍎','⚽','🎨'];
 var students=[],active=null,mode='attack',items=3,aulasSet=null,score=0,timeLeft=60,tInt=null,round=0,elapsed=0,start=0,challenges=[],leftSel=null,rightSel=null,matches=0,dragged=null,rightOrder=[];
-var STOR='missao_v3_1_fix_final';
-var AULAS = [{id:1,n:'1 - Unidades'},{id:2,n:'2 - Quad/Ret/Paralel'},{id:3,n:'3 - Tri/Pitagoras'},{id:4,n:'4 - Revisao Planas'},{id:5,n:'5 - Trap/Losango'},{id:6,n:'6 - Circulo/Setor'},{id:7,n:'7 - Nao Regulares'},{id:8,n:'8 - Verificacao'},{id:9,n:'9 - Poliedros/Euler'},{id:10,n:'10 - Planificacao'},{id:11,n:'11 - Area Prisma/Piram'},{id:12,n:'12 - Rev Poliedros'},{id:13,n:'13 - Vol/Cavalieri'}];
+var STOR='missao_v3_4_cmd_final';
+var qCounter=0;
+var AULAS = [
+  {id:1,n:'1 - Unidades de Medida'},
+  {id:2,n:'2 - Quad. / Retâng. / Paralel.'},
+  {id:3,n:'3 - Triângulos'},
+  {id:4,n:'4 - Revisão Figuras Planas'},
+  {id:5,n:'5 - Trapézios e Losangos'},
+  {id:6,n:'6 - Círculo e Setor'},
+  {id:7,n:'7 - Áreas Não Regulares'},
+  {id:8,n:'8 - Verificação Geral'},
+  {id:9,n:'9 - Poliedros e Relação de Euler'},
+  {id:10,n:'10 - Planificação de Sólidos'},
+  {id:11,n:'11 - Área de Prismas e Pirâmides'},
+  {id:12,n:'12 - Revisão de Poliedros'},
+  {id:13,n:'13 - Volume e Princípio de Cavalieri'}
+];
+
 function beep(f,t,d){try{var c=new(window.AudioContext||window.webkitAudioContext)(),o=c.createOscillator(),g=c.createGain();o.type=t;o.frequency.value=f;g.gain.value=.15;g.gain.exponentialRampToValueAtTime(.01,c.currentTime+d);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+d)}catch(e){}}
 function ok(){beep(523,'triangle',.12);setTimeout(function(){beep(659,'triangle',.12)},100);setTimeout(function(){beep(784,'triangle',.2)},200)}
 function err(){beep(180,'sawtooth',.25)}
 function conf(){ok();if(window.confetti)confetti({particleCount:80,spread:70,origin:{y:.6}})}
 function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a}
 function fmt(s){var m=Math.floor(s/60).toString();if(m.length<2)m='0'+m;var sec=(s%60).toString();if(sec.length<2)sec='0'+sec;return m+':'+sec}
+
 function init(){
 try{
 aulasSet = new Set([1,2,3,4,5,6,7,8,9,10,11,12,13]);
@@ -136,6 +154,7 @@ build();
 renderAulas();
 renderSetup();
 }
+
 function build(){
 students=[];
 for(var i=0;i<STUDENTS.length;i++){
@@ -144,6 +163,7 @@ students.push({id:i,name:STUDENTS[i],emoji:EMO[i%EMO.length],completed:0,totalTi
 save();
 }
 function save(){localStorage.setItem(STOR,JSON.stringify(students))}
+
 function renderAulas(){
 var g=document.getElementById('agrid');
 var h='';
@@ -154,11 +174,13 @@ h += '<label class="item"><input type="checkbox" '+chk+' value="'+a.id+'" onchan
 }
 g.innerHTML=h;
 }
+
 window.toggleA=function(id){
 if(aulasSet.has(id)){
-if(aulasSet.size>1){aulasSet.delete(id);}else{alert('Deixe 1');var el=document.querySelector('input[value="'+id+'"]');if(el)el.checked=true;}
+if(aulasSet.size>1){aulasSet.delete(id);}else{alert('Mantenha ao menos 1 aula selecionada');var el=document.querySelector('input[value="'+id+'"]');if(el)el.checked=true;}
 }else{aulasSet.add(id);}
 }
+
 function renderSetup(){
 stop();
 document.getElementById('setup').style.display='flex';
@@ -177,25 +199,28 @@ html += '<button onclick="pick('+s.id+')"><span style="font-size:22px">'+s.emoji
 }
 g.innerHTML=html;
 }
+
 window.setMode=function(m){
 mode=m;
 document.getElementById('mA').className = (m=='attack' ? 'on' : '');
 document.getElementById('mN').className = (m=='normal' ? 'on' : '');
 renderSetup();
 }
+
 window.setIt=function(n){
 items=n;
 document.getElementById('d3').className = (n==3 ? 'on2' : '');
 document.getElementById('d4').className = (n==4 ? 'on2' : '');
 document.getElementById('d5').className = (n==5 ? 'on2' : '');
 }
+
 window.pick=function(id){
-if(aulasSet.size==0){alert('Selecione aula');return;}
+if(aulasSet.size==0){alert('Selecione ao menos uma aula');return;}
 for(var i=0;i<students.length;i++){if(students[i].id==id){active=students[i];break;}}
 if(mode=='normal'){
 round=active.completed;
 elapsed=active.totalTime;
-if(round>=13){alert(active.name+' ja concluiu!');showRank();return;}
+if(round>=13){alert(active.name+' já concluiu!');showRank();return;}
 }else{score=0;}
 document.getElementById('setup').style.display='none';
 document.getElementById('game').style.display='block';
@@ -208,92 +233,144 @@ document.getElementById('p-name').innerText=active.name;
 loadRound();
 startTimer();
 }
+
+/* GERADOR DE QUESTÕES COM COMANDOS EM DESTAQUE */
 function genOne(aula){
-var id='q_'+Date.now()+'_'+Math.random().toString(36).substr(2,4);
+qCounter++;
+var id='q_'+qCounter;
+
+// Aula 1 - Unidades de Medida
 if(aula==1){
-var m=rnd(2,9);
-return {id:id,aula:aula,fig:'📏',q:m+' m² em cm²?',ans:(m*10000)+' cm²',sub:'Conversao',exp:m+' x 10.000 = '+(m*10000)};
+var m=rnd(2,8);
+return {id:id,aula:aula,fig:'📏',cmd:'Converta a medida:',q:m+' m² para cm²',ans:(m*10000)+' cm²',sub:'Conversão de Unidade',exp:m+' m² × 10.000 = '+(m*10000)+' cm²'};
 }
+
+// Aula 2 - Quadrado, Retângulo e Paralelogramo
 if(aula==2){
 var t=rnd(1,3);
-if(t==1){var l=rnd(2,15);return {id:id,aula:aula,fig:'⬜',q:'Quad lado '+l,ans:'A='+(l*l),sub:'A=l²',exp:l+' x '+l+' = '+(l*l)}}
-if(t==2){var b=rnd(3,15),h=rnd(2,12);return {id:id,aula:aula,fig:'▭',q:'Ret '+b+' x '+h,ans:'A='+(b*h),sub:'b·h',exp:b+' x '+h+' = '+(b*h)}}
-var b=rnd(5,18),h=rnd(3,14),lado=rnd(6,14);
-return {id:id,aula:aula,fig:'▱',q:'Paralel b='+b+' h='+h+' lado '+lado,ans:'A='+(b*h),sub:'b·h ignora lado',exp:'Base '+b+' x altura '+h+' = '+(b*h)};
+if(t==1){
+var l=rnd(2,10);
+return {id:id,aula:aula,fig:'⬜',cmd:'Calcule a Área do Quadrado:',q:'Lado = '+l,ans:'Área = '+(l*l),sub:'Área do Quadrado',exp:l+' × '+l+' = '+(l*l)};
 }
+if(t==2){
+var b=rnd(3,10),h=rnd(2,8);
+return {id:id,aula:aula,fig:'▭',cmd:'Calcule a Área do Retângulo:',q:'Base = '+b+' | Altura = '+h,ans:'Área = '+(b*h),sub:'Área do Retângulo',exp:b+' × '+h+' = '+(b*h)};
+}
+var b=rnd(4,10),h=rnd(2,7),lado=rnd(5,12);
+return {id:id,aula:aula,fig:'▱',cmd:'Calcule a Área do Paralelogramo:',q:'Base = '+b+' | Altura = '+h,ans:'Área = '+(b*h),sub:'Ignora o lado inclinado',exp:'Base '+b+' × Altura '+h+' = '+(b*h)};
+}
+
+// Aula 3 - Triângulos
 if(aula==3){
-var b=rnd(4,20),h=rnd(3,15);
-var A=Math.floor(b*h/2);
-return {id:id,aula:aula,fig:'🔺',q:'Tri b='+b+' h='+h,ans:'A='+A,sub:'b·h/2',exp:'('+b+' x '+h+')/2 = '+A};
+var b=rnd(3,10)*2;
+var h=rnd(2,8);
+var A=(b*h)/2;
+return {id:id,aula:aula,fig:'🔺',cmd:'Calcule a Área do Triângulo:',q:'Base = '+b+' | Altura = '+h,ans:'Área = '+A,sub:'(base × altura) / 2',exp:'('+b+' × '+h+') / 2 = '+A};
 }
+
+// Aula 4 - Revisão Planas
 if(aula==4){
-if(rnd(0,1)==0){var l=rnd(2,9);return {id:id,aula:aula,fig:'⬜',q:'Quad '+l+' (rev)',ans:'A='+(l*l),sub:'Revisao',exp:l+' x '+l+' = '+(l*l)}}
-else{var B=rnd(8,20),b2=rnd(2,B-1),hh=rnd(2,8);var A=Math.floor((B+b2)*hh/2);return {id:id,aula:aula,fig:'⏢',q:'Trap B='+B+' b='+b2+' h='+hh+' (rev)',ans:'A='+A,sub:'Revisao',exp:'('+(B+b2)+') x '+hh+' /2 = '+A}}
+if(rnd(0,1)==0){
+var l=rnd(2,9);
+return {id:id,aula:aula,fig:'⬜',cmd:'Calcule a Área do Quadrado:',q:'Lado = '+l,ans:'Área = '+(l*l),sub:'Revisão Planas',exp:l+' × '+l+' = '+(l*l)};
+}else{
+var B=rnd(6,12),b2=rnd(2,B-2),hh=rnd(2,6);
+if((B+b2)%2!==0) B++;
+var A=((B+b2)*hh)/2;
+return {id:id,aula:aula,fig:'⏢',cmd:'Calcule a Área do Trapézio:',q:'B = '+B+' | b = '+b2+' | h = '+hh,ans:'Área = '+A,sub:'Revisão Planas',exp:'(('+B+' + '+b2+') × '+hh+') / 2 = '+A};
 }
+}
+
+// Aula 5 - Trapézio e Losango
 if(aula==5){
 if(rnd(0,1)==0){
-var B=rnd(8,24),b2=rnd(3,B-1),h=rnd(3,10);
-var A=Math.floor((B+b2)*h/2);
-return {id:id,aula:aula,fig:'⏢',q:'Trap B='+B+' b='+b2+' h='+h,ans:'A='+A,sub:'(B+b)h/2',exp:'('+B+'+'+b2+') x '+h+' /2 = '+A};
+var B=rnd(5,12),b2=rnd(2,B-1),h=rnd(2,6);
+if((B+b2)%2!==0) B++;
+var A=((B+b2)*h)/2;
+return {id:id,aula:aula,fig:'⏢',cmd:'Calcule a Área do Trapézio:',q:'Base Maior='+B+' | Base Menor='+b2+' | Altura='+h,ans:'Área = '+A,sub:'(B + b) × h / 2',exp:'(('+B+' + '+b2+') × '+h+') / 2 = '+A};
 }else{
-var D=rnd(8,22),d=rnd(4,16);
-var A=Math.floor(D*d/2);
-return {id:id,aula:aula,fig:'◆',q:'Los D='+D+' d='+d,ans:'A='+A,sub:'D·d/2',exp:D+' x '+d+' /2 = '+A};
+var D=rnd(4,10)*2,d=rnd(2,6);
+var A=(D*d)/2;
+return {id:id,aula:aula,fig:'◆',cmd:'Calcule a Área do Losango:',q:'Diag. Maior = '+D+' | Diag. Menor = '+d,ans:'Área = '+A,sub:'(D × d) / 2',exp:'('+D+' × '+d+') / 2 = '+A};
 }
 }
+
+// Aula 6 - Círculo e Setor Circular
 if(aula==6){
 if(rnd(0,1)==0){
-var r=rnd(2,12);
-return {id:id,aula:aula,fig:'⭕',q:'Circ r='+r+' (pi=3)',ans:'A='+(3*r*r),sub:'pi r²',exp:'3 x '+r+'² = '+(3*r*r)};
+var r=rnd(2,7);
+return {id:id,aula:aula,fig:'⭕',cmd:'Calcule a Área do Círculo:',q:'Raio = '+r+' (considere π = 3)',ans:'Área = '+(3*r*r),sub:'Área = π × r²',exp:'3 × '+r+'² = '+(3*r*r)};
 }else{
-var r=rnd(3,10);
-var angs=[30,45,60,90,120,180];
-var ang=angs[rnd(0,5)];
-var A=Math.round(3*r*r*ang/360);
-return {id:id,aula:aula,fig:'🍕',q:'Setor r='+r+' '+ang+'° (pi=3)',ans:'A≈'+A,sub:'setor',exp:'3 x '+r+'² x '+ang+'/360 ≈ '+A};
+var pares = [{r:2,ang:120},{r:4,ang:90},{r:6,ang:60},{r:6,ang:90},{r:3,ang:120},{r:4,ang:180}];
+var p = pares[rnd(0,pares.length-1)];
+var A = (3 * p.r * p.r * p.ang) / 360;
+return {id:id,aula:aula,fig:'🍕',cmd:'Calcule a Área do Setor:',q:'Raio = '+p.r+' | Ângulo = '+p.ang+'° (π = 3)',ans:'Área = '+A,sub:'Fração do Círculo',exp:'3 × '+p.r+'² × ('+p.ang+' / 360) = '+A};
 }
 }
+
+// Aula 7 - Áreas Não Regulares
 if(aula==7){
-var inte=rnd(10,30),met=rnd(4,18);
-var area=inte+met*0.5;
-return {id:id,aula:aula,fig:'🟫',q:inte+' int + '+met+' metades',ans:'A≈'+area,sub:'Aprox',exp:inte+' + '+met+' x 0.5 = '+area};
+var inte=rnd(4,15),met=rnd(1,4)*2;
+var area=inte + (met * 0.5);
+return {id:id,aula:aula,fig:'🟫',cmd:'Calcule a Área Aproximada:',q:inte+' quadradinhos inteiros + '+met+' metades',ans:'Área = '+area,sub:'Malha Quadratulada',exp:inte+' + ('+met+' × 0,5) = '+area};
 }
+
+// Aula 8 - Verificação Geral
 if(aula==8){
-var b=rnd(4,18),h=rnd(3,14);
+var b=rnd(3,9),h=rnd(2,8);
 if(rnd(0,1)==0){
-return {id:id,aula:aula,fig:'📝',q:'Ret '+b+' x '+h,ans:'A='+(b*h),sub:'Verif',exp:b+' x '+h+' = '+(b*h)};
+return {id:id,aula:aula,fig:'📝',cmd:'Calcule a Área do Retângulo:',q:'Base = '+b+' | Altura = '+h,ans:'Área = '+(b*h),sub:'Verificação',exp:b+' × '+h+' = '+(b*h)};
 }else{
-return {id:id,aula:aula,fig:'📝',q:'Tri b='+b+' h='+h,ans:'A='+Math.floor(b*h/2),sub:'Verif',exp:'('+b+' x '+h+')/2 = '+Math.floor(b*h/2)};
+if(b%2!==0) b++;
+return {id:id,aula:aula,fig:'📝',cmd:'Calcule a Área do Triângulo:',q:'Base = '+b+' | Altura = '+h,ans:'Área = '+((b*h)/2),sub:'Verificação',exp:'('+b+' × '+h+') / 2 = '+((b*h)/2)};
 }
 }
+
+// Aula 9 - Poliedros e Relação de Euler
 if(aula==9){
-var V=rnd(5,12),F=rnd(4,9);
+var V=rnd(4,10),F=rnd(4,8);
 var A=V+F-2;
-return {id:id,aula:aula,fig:'🎲',q:'Poliedro V='+V+' F='+F+' A?',ans:'A='+A,sub:'Euler',exp:V+' - '+A+' + '+F+' = 2'};
+return {id:id,aula:aula,fig:'🎲',cmd:'Encontre o Nº de Arestas (Euler):',q:'Vértices = '+V+' | Faces = '+F,ans:'Arestas = '+A,sub:'V - A + F = 2',exp:V+' - A + '+F+' = 2  ➔  Arestas = '+A};
 }
+
+// Aula 10 - Planificação de Sólidos
 if(aula==10){
-return {id:id,aula:aula,fig:'📦',q:'Planif cubo tem?',ans:'6 quadrados',sub:'Planif',exp:'6 faces'};
+var solidos = [
+  {cmd:'Identifique as Faces do Cubo:', q:'Ao planificar um cubo temos:', ans:'6 quadrados', exp:'Um cubo possui 6 faces quadradas idênticas'},
+  {cmd:'Identifique as Faces do Paralelepípedo:', q:'Ao planificar um paralelepípedo temos:', ans:'6 retângulos', exp:'Possui 6 faces retangulares'},
+  {cmd:'Identifique as Faces da Pirâmide:', q:'Ao planificar uma pirâmide quadrada temos:', ans:'1 quad + 4 triângulos', exp:'1 base quadrada e 4 faces triangulares'}
+];
+var s = solidos[rnd(0,solidos.length-1)];
+return {id:id,aula:aula,fig:'📦',cmd:s.cmd,q:s.q,ans:s.ans,sub:'Planificação',exp:s.exp};
 }
+
+// Aula 11 - Área de Prismas e Pirâmides
 if(aula==11){
-var Ab=rnd(8,25),Al=rnd(25,90);
+var Ab=rnd(4,15),Al=rnd(12,40);
 if(rnd(0,1)==0){
-return {id:id,aula:aula,fig:'📦',q:'Prisma Ab='+Ab+' Al='+Al+' At?',ans:'At='+(2*Ab+Al),sub:'2Ab+Al',exp:'2 x '+Ab+' + '+Al+' = '+(2*Ab+Al)};
+return {id:id,aula:aula,fig:'📦',cmd:'Calcule a Área Total do Prisma:',q:'Área da Base = '+Ab+' | Área Lateral = '+Al,ans:'Área Total = '+(2*Ab+Al),sub:'2 × Base + Lateral',exp:'2 × '+Ab+' + '+Al+' = '+(2*Ab+Al)};
 }else{
-return {id:id,aula:aula,fig:'🔺',q:'Piramide Ab='+Ab+' Al='+Al+' At?',ans:'At='+(Ab+Al),sub:'Ab+Al',exp:Ab+' + '+Al+' = '+(Ab+Al)};
+return {id:id,aula:aula,fig:'🔺',cmd:'Calcule a Área Total da Pirâmide:',q:'Área da Base = '+Ab+' | Área Lateral = '+Al,ans:'Área Total = '+(Ab+Al),sub:'Base + Lateral',exp:Ab+' + '+Al+' = '+(Ab+Al)};
 }
 }
+
+// Aula 12 - Revisão de Poliedros
 if(aula==12){
-var V=rnd(6,12),A=rnd(8,16);
-var F=2-V+A;
-if(F<4){F=5;A=V+F-2;}
-return {id:id,aula:aula,fig:'📦',q:'Euler V='+V+' A='+A+' F=?',ans:'F='+F,sub:'Euler',exp:V+' - '+A+' + '+F+' =2'};
+var V=rnd(5,10),A=rnd(8,15);
+var F=2 - V + A;
+if(F < 4){ F=4; A=V+F-2; }
+return {id:id,aula:aula,fig:'📦',cmd:'Encontre o Nº de Faces (Euler):',q:'Vértices = '+V+' | Arestas = '+A,ans:'Faces = '+F,sub:'V - A + F = 2',exp:V+' - '+A+' + F = 2  ➔  Faces = '+F};
 }
+
+// Aula 13 - Volume e Princípio de Cavalieri
 if(aula==13){
-var Ab=rnd(10,35),h=rnd(3,12);
-return {id:id,aula:aula,fig:'📦',q:'Vol Ab='+Ab+' h='+h,ans:'V='+(Ab*h),sub:'Ab·h',exp:Ab+' x '+h+' = '+(Ab*h)};
+var Ab=rnd(5,15),h=rnd(2,8);
+return {id:id,aula:aula,fig:'📦',cmd:'Calcule o Volume do Sólido:',q:'Área da Base = '+Ab+' | Altura = '+h,ans:'Volume = '+(Ab*h),sub:'Volume = Base × Altura',exp:Ab+' × '+h+' = '+(Ab*h)};
 }
-return {id:id,aula:aula,fig:'❓',q:'Area?',ans:'A',sub:'?',exp:''};
+
+return {id:id,aula:aula,fig:'❓',cmd:'Calcule:',q:'Área?',ans:'A',sub:'?',exp:''};
 }
+
 function loadRound(){
 matches=0;leftSel=null;rightSel=null;
 document.getElementById('foot').style.display='none';
@@ -309,7 +386,7 @@ var list=[];
 var arr=[];
 aulasSet.forEach(function(v){arr.push(v);});
 var at=0;
-while(list.length<items && at<200){
+while(list.length<items && at<300){
 var aula=arr[rnd(0,arr.length-1)];
 var q=genOne(aula);
 var exists=false;
@@ -323,6 +400,7 @@ for(var i=0;i<list.length;i++){rightOrder.push({id:list[i].id,ans:list[i].ans});
 rightOrder.sort(function(){return 0.5-Math.random();});
 render();
 }
+
 function render(){
 var L=document.getElementById('left');
 var R=document.getElementById('right');
@@ -332,7 +410,7 @@ var c=challenges[i];
 var cls='card';
 if(c.matched)cls+=' ok';
 if(leftSel==c.id)cls+=' sel';
-htmlL+='<div class="'+cls+'" id="left-'+c.id+'" draggable="'+(!c.matched)+'" ondragstart="drag(event,\''+c.id+'\')" onclick="lClick(\''+c.id+'\')"><div class="fig">'+c.fig+'</div><div class="qt">'+c.q+'</div><div class="qs">'+c.sub+' • Aula '+c.aula+'</div></div>';
+htmlL+='<div class="'+cls+'" id="left-'+c.id+'" draggable="'+(!c.matched)+'" ondragstart="drag(event,\''+c.id+'\')" onclick="lClick(\''+c.id+'\')"><div class="fig">'+c.fig+'</div><div class="cmd">'+c.cmd+'</div><div class="qt">'+c.q+'</div><div class="qs">'+c.sub+' • Aula '+c.aula+'</div></div>';
 }
 L.innerHTML=htmlL;
 var htmlR='';
@@ -348,10 +426,12 @@ htmlR+='<div class="'+cls+'" id="right-'+ro.id+'" ondragover="over(event)" ondra
 }
 R.innerHTML=htmlR;
 }
+
 window.drag=function(e,id){dragged=id;e.dataTransfer.setData('text/plain',id);};
 window.over=function(e){e.preventDefault();e.currentTarget.style.transform='scale(1.02)';};
 window.leave=function(e){e.currentTarget.style.transform='scale(1)';};
 window.drop=function(e,id){e.preventDefault();e.currentTarget.style.transform='scale(1)';var lid=e.dataTransfer.getData('text/plain')||dragged;if(lid)check(lid,id);};
+
 window.lClick=function(id){
 for(var i=0;i<challenges.length;i++){if(challenges[i].id==id && challenges[i].matched)return;}
 if(leftSel==id)leftSel=null;else leftSel=id;
@@ -366,6 +446,7 @@ if(rightSel==id)rightSel=null;else rightSel=id;
 render();
 if(leftSel && rightSel)check(leftSel,rightSel);
 };
+
 function check(lid,rid){
 if(lid==rid){
 var t=null;
@@ -392,6 +473,7 @@ pen();
 setTimeout(function(){leftSel=null;rightSel=null;render();},400);
 }
 }
+
 function pen(){
 err();
 if(mode=='attack'){
@@ -402,6 +484,7 @@ elapsed+=5;
 document.getElementById('timer').innerText='⏱️ '+fmt(elapsed+Math.floor((Date.now()-start)/1000));
 }
 }
+
 function done(){
 conf();
 if(mode=='attack'){
@@ -416,21 +499,23 @@ save();
 document.getElementById('foot').style.display='flex';
 var f=document.getElementById('feed');
 f.style.display='block';
-f.innerText='Fase '+(round+1)+' concluida!';
-document.getElementById('next').innerText = (round+1>=13 ? 'Ver Ranking 🏆' : 'Proxima ➡️');
+f.innerText='Fase '+(round+1)+' concluída!';
+document.getElementById('next').innerText = (round+1>=13 ? 'Ver Ranking 🏆' : 'Próxima ➡️');
 }
 }
+
 window.nextRound=function(){
 round++;
-if(round>=13){alert('Parabens '+active.name+'! Concluiu as 13 aulas!');showRank();}
+if(round>=13){alert('Parabéns '+active.name+'! Concluiu as 13 aulas!');showRank();}
 else{loadRound();startTimer();}
 }
+
 function startTimer(){
 stop();
 var td=document.getElementById('timer');
 td.classList.remove('bad');
-if(mode=='normal'){
 start=Date.now();
+if(mode=='normal'){
 tInt=setInterval(function(){
 var cur=Math.floor((Date.now()-start)/1000);
 var tot=elapsed+cur;
@@ -440,12 +525,15 @@ td.innerText='⏱️ '+fmt(tot);
 timeLeft=60;
 td.innerText='⚡ 01:00';
 tInt=setInterval(function(){
-timeLeft--;
+var cur=Math.floor((Date.now()-start)/1000);
+var rem=Math.max(0, 60 - cur);
+timeLeft=rem;
 upd();
 if(timeLeft<=0){stop();finishA();}
-},1000);
+},250);
 }
 }
+
 function upd(){
 var td=document.getElementById('timer');
 var c=Math.max(0,timeLeft);
@@ -454,14 +542,17 @@ if(s.length<2)s='0'+s;
 td.innerText='⚡ 00:'+s;
 if(c<=10)td.classList.add('bad');else td.classList.remove('bad');
 }
+
 function stop(){
 if(tInt){clearInterval(tInt);tInt=null;if(mode=='normal' && start>0){elapsed+=Math.floor((Date.now()-start)/1000);start=0;}}
 }
+
 function finishA(){
 alert('⏰ Tempo! '+active.name+' fez '+score+' pts!');
 if(score>active.record){active.record=score;save();}
 renderSetup();
 }
+
 window.showRank=function(){
 stop();
 if(active && mode=='normal'){active.totalTime=elapsed;save();}
@@ -489,16 +580,19 @@ html+='<div class="ritem"><span>#'+(i+1)+' '+s.emoji+' '+s.name+'</span><span>'+
 }
 list.innerHTML=html;
 }
+
 window.back=function(){renderSetup();}
+
 window.resetAll=function(){
 if(confirm('Resetar TUDO e limpar cache?')){
 localStorage.clear();
 build();
 active=null;
 renderSetup();
-alert('Cache limpo! Recarregue a pagina');
+alert('Cache limpo!');
 }
 }
+
 window.toggleFS=function(){if(!document.fullscreenElement)document.documentElement.requestFullscreen().catch(function(){});else document.exitFullscreen();}
 window.onload=function(){init();}
 </script>
