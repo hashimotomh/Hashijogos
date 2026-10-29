@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>Passa para Lá - Classes Gramaticais</title>
+    <!-- Confetti JS -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Polyfill para Drag and Drop funcionar via Touch Screen / Lousa Digital BenQ -->
+    <script src="https://cdn.jsdelivr.net/npm/drag-drop-touch-polyfill@1.0.2/DragDropTouch.js"></script>
+    <style>
+        :root {
+            --primary: #58cc02;
+            --primary-dark: #46a302;
+            --secondary: #1cb0f6;
+            --secondary-dark: #1899d6;
+            --accent: #ff9600;
+            --accent-dark: #e08300;
+            --error: #ea2b2b;
+            --error-dark: #b81d1d;
+            --text-main: #3c3c3c;
+            --text-muted: #777777;
+            --bg-app: #ffffff;
+            --bg-card: #f8f9fa;
+            --border: #e5e5e5;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        html, body {
+            width: 100%;
+            min-height: 100%;
+            background-color: #f0f2f5;
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 1100px;
+            background: var(--bg-app);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 20px rgba(0,0,0,0.08);
+            position: relative;
+        }
+
+        header {
+            padding: 12px 15px;
+            border-bottom: 2px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 20;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        h1 {
+            font-size: 20px;
+            color: var(--secondary-dark);
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .system-controls {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .btn-sys {
+            background: #f1f3f5;
+            border: 1px solid var(--border);
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+        .btn-sys:hover { background: #e9ecef; }
+        .btn-reset { background: #ffe3e3; color: var(--error); border-color: #ffa8a8; }
+        .btn-finish { background: #e7f5ff; color: var(--secondary-dark); border-color: #a5d8ff; }
+        .btn-switch { background: #e6fcf5; color: #0ca678; border-color: #96f2d7; }
+
+        .selector-label {
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            text-align: center;
+        }
+
+        .mode-selector, .difficulty-selector {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+
+        .class-selector-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 8px;
+            margin-bottom: 12px;
+            padding: 10px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .class-checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 6px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .class-checkbox-item input {
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+        }
+
+        .btn-mode, .btn-diff {
+            flex: 1;
+            min-width: 120px;
+            padding: 10px;
+            font-weight: 800;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .btn-mode.active {
+            border-color: var(--accent);
+            background: #fff9db;
+            color: var(--accent-dark);
+            box-shadow: 0 3px 0 var(--accent-dark);
+        }
+
+        .btn-diff.active {
+            border-color: var(--primary);
+            background: #ebfbee;
+            color: var(--primary-dark);
+            box-shadow: 0 3px 0 var(--primary-dark);
+        }
+
+        .player-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-card);
+            padding: 8px 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            position: relative;
+        }
+
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        .timer-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .timer-display {
+            font-weight: 800;
+            font-size: 16px;
+            background: #fff3bf;
+            color: #d9480f;
+            padding: 4px 12px;
+            border-radius: 16px;
+            border: 2px solid #ffe066;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+
+        .timer-display.danger {
+            background: #ffe3e3;
+            color: var(--error);
+            border-color: #ffa8a8;
+            animation: blink 0.5s infinite alternate;
+        }
+
+        @keyframes blink {
+            0% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+
+        .penalty-toast {
+            position: absolute;
+            top: -22px;
+            right: 10px;
+            background: var(--error);
+            color: white;
+            font-weight: 900;
+            font-size: 14px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(10px) scale(0.8);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 30;
+        }
+
+        .penalty-toast.show {
+            opacity: 1;
+            transform: translateY(-8px) scale(1.1);
+        }
+
+        .progress-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .progress-bar-outer {
+            flex-grow: 1;
+            height: 14px;
+            background: var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .progress-bar-inner {
+            height: 100%;
+            width: 0%;
+            background: var(--primary);
+            border-radius: 8px;
+            transition: width 0.3s ease;
+        }
+
+        .stats {
+            font-weight: 800;
+            font-size: 13px;
+            min-width: 90px;
+            text-align: right;
+            color: var(--secondary-dark);
+        }
+
+        main {
+            flex-grow: 1;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .setup-screen {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            text-align: center;
+        }
+
+        .students-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 10px;
+            margin-top: 8px;
+            max-height: 40vh;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .btn-student {
+            background: white;
+            border: 2px solid var(--border);
+            padding: 10px 6px;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            transition: transform 0.1s, border-color 0.2s;
+        }
+        .btn-student:active { transform: scale(0.96); }
+        .btn-student.is-test {
+            background: #d3f9d8;
+            border-color: #40c057;
+            color: #2b8a3e;
+        }
+
+        .btn-student .emoji { font-size: 24px; }
+        .btn-student .name { font-weight: 700; font-size: 11px; text-transform: uppercase; text-align: center; word-break: break-word; }
+        .btn-student .status { font-size: 11px; color: var(--text-muted); font-weight: 600; }
+
+        .game-board {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            max-width: 950px;
+            margin: 0 auto;
+        }
+
+        .hint-banner {
+            background: #e7f5ff;
+            border: 2px solid #a5d8ff;
+            color: #1899d6;
+            padding: 10px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 700;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .association-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            position: relative;
+        }
+
+        @media (max-width: 680px) {
+            .association-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .column-title {
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--secondary-dark);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .items-column {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .word-card, .class-card {
+            touch-action: manipulation;
+        }
+
+        .word-card {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            box-shadow: 0 3px 0 var(--border);
+        }
+
+        .word-card:hover {
+            border-color: var(--secondary);
+        }
+
+        .word-card.selected {
+            border-color: var(--secondary);
+            background: #e7f5ff;
+            box-shadow: 0 3px 0 var(--secondary-dark);
+        }
+
+        .word-card.matched {
+            border-color: var(--primary);
+            background: #ebfbee;
+            box-shadow: 0 3px 0 var(--primary-dark);
+            cursor: default;
+            opacity: 0.85;
+        }
+
+        .word-card.wrong {
+            border-color: var(--error);
+            background: #ffe3e3;
+            animation: shake 0.35s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-7px); }
+            40%, 80% { transform: translateX(7px); }
+        }
+
+        .word-text {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-main);
+            line-height: 1.3;
+        }
+
+        .highlight-word {
+            color: var(--error);
+            font-weight: 800;
+            text-decoration: underline;
+        }
+
+        .class-card {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--secondary-dark);
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 3px 0 var(--border);
+            min-height: 58px;
+        }
+
+        .class-card:hover {
+            border-color: var(--accent);
+        }
+
+        .class-card.selected {
+            border-color: var(--accent);
+            background: #fff9db;
+            box-shadow: 0 3px 0 var(--accent-dark);
+        }
+
+        .class-card.matched {
+            border-color: var(--primary);
+            background: #ebfbee;
+            color: var(--primary-dark);
+            box-shadow: 0 3px 0 var(--primary-dark);
+            cursor: default;
+            opacity: 0.85;
+        }
+
+        .class-card.wrong {
+            border-color: var(--error);
+            background: #ffe3e3;
+            animation: shake 0.35s ease-in-out;
+        }
+
+        .class-card.drag-over {
+            border-color: var(--primary);
+            background: #e6fcf5;
+            transform: scale(1.02);
+        }
+
+        .match-badge {
+            font-size: 12px;
+            font-weight: 800;
+            padding: 4px 8px;
+            border-radius: 8px;
+            background: var(--primary);
+            color: white;
+        }
+
+        .explanation-panel {
+            background: #fff;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 15px;
+            margin-top: 5px;
+            font-size: 13px;
+            color: #495057;
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .explanation-title {
+            font-weight: 800;
+            color: var(--secondary-dark);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .ranking-screen {
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .ranking-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-height: 55vh;
+            overflow-y: auto;
+        }
+
+        .ranking-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: white;
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        footer {
+            padding: 12px 15px;
+            padding-bottom: calc(12px + env(safe-area-inset-bottom));
+            border-top: 2px solid var(--border);
+            background: white;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: center;
+            position: sticky;
+            bottom: 0;
+            z-index: 20;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+        }
+
+        .feedback-message {
+            display: none;
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--primary-dark);
+            text-align: center;
+        }
+
+        .footer-buttons {
+            display: flex;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .main-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 14px 16px;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 0 var(--primary-dark);
+            flex: 1;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .main-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--primary-dark); }
+
+        .btn-secondary-action {
+            background: var(--secondary);
+            box-shadow: 0 4px 0 var(--secondary-dark);
+        }
+        .btn-secondary-action:active { box-shadow: 0 2px 0 var(--secondary-dark); }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <header>
+        <div class="header-top">
+            <h1>📝 Passa para Lá - Classes Gramaticais</h1>
+            <div class="system-controls">
+                <button class="btn-sys btn-switch" id="header-switch-btn" onclick="backToSelect()" style="display:none;">👤 Mudar Aluno</button>
+                <button class="btn-sys btn-finish" onclick="showRanking()">🏆 Ranking</button>
+                <button class="btn-sys btn-reset" onclick="resetAll()">🔄 Reiniciar Tudo</button>
+            </div>
+        </div>
+        
+        <div class="player-bar" id="player-bar" style="display:none;">
+            <div class="player-info">
+                <span id="player-avatar"></span>
+                <span id="player-name"></span>
+            </div>
+            <div class="timer-wrapper">
+                <div class="timer-display" id="timer-display">⏱️ 00:00</div>
+                <div class="penalty-toast" id="penalty-toast">-10s!</div>
+            </div>
+        </div>
+
+        <div class="progress-wrapper" id="progress-wrapper" style="display:none;">
+            <div class="progress-bar-outer">
+                <div class="progress-bar-inner" id="progress-bar"></div>
+            </div>
+            <div class="stats" id="stats-display">Rodada 1/10</div>
+        </div>
+    </header>
+
+    <main>
+        <!-- TELA DE SELEÇÃO -->
+        <div class="setup-screen" id="setup-screen">
+            <div class="selector-label">1. Escolha o Modo de Jogo</div>
+            <div class="mode-selector">
+                <button class="btn-mode active" id="mode-attack-btn" onclick="setGameMode('attack')">⚡ Minute Attack (1 Minuto)</button>
+                <button class="btn-mode" id="mode-normal-btn" onclick="setGameMode('normal')">📘 Modo Normal (10 Rodadas)</button>
+            </div>
+
+            <div class="selector-label">2. Quantidade de Itens por Rodada</div>
+            <div class="difficulty-selector">
+                <button class="btn-diff active" id="diff-easy-btn" onclick="setDifficulty('easy')">🟢 Fácil (3 itens)</button>
+                <button class="btn-diff" id="diff-medium-btn" onclick="setDifficulty('medium')">🟡 Médio (4 itens)</button>
+                <button class="btn-diff" id="diff-hard-btn" onclick="setDifficulty('hard')">🔴 Difícil (5 itens)</button>
+            </div>
+
+            <div class="selector-label">3. Complexidade dos Desafios</div>
+            <div class="difficulty-selector">
+                <button class="btn-diff active" id="seq-easy-btn" onclick="setSeqDifficulty('easy')">🌱 Palavras Isoladas</button>
+                <button class="btn-diff" id="seq-medium-btn" onclick="setSeqDifficulty('medium')">🌿 Frases Curtas</button>
+                <button class="btn-diff" id="seq-hard-btn" onclick="setSeqDifficulty('hard')">🔥 Frases Contextualizadas</button>
+            </div>
+
+            <div class="selector-label">4. Classes Gramaticais Permitidas na Rodada</div>
+            <div class="class-selector-grid">
+                <label class="class-checkbox-item"><input type="checkbox" value="Substantivo" checked onchange="validateClasses()"> Substantivo</label>
+                <label class="class-checkbox-item"><input type="checkbox" value="Adjetivo" checked onchange="validateClasses()"> Adjetivo</label>
+                <label class="class-checkbox-item"><input type="checkbox" value="Verbo" checked onchange="validateClasses()"> Verbo</label>
+                <label class="class-checkbox-item"><input type="checkbox" value="Pronome" checked onchange="validateClasses()"> Pronome</label>
+                <label class="class-checkbox-item"><input type="checkbox" value="Artigo" checked onchange="validateClasses()"> Artigo</label>
+                <label class="class-checkbox-item"><input type="checkbox" value="Numeral" onchange="validateClasses()"> Numeral</label>
+                <label class="class-checkbox-item"><input type="checkbox" value="Advérbio" onchange="validateClasses()"> Advérbio</label>
+                <label class="class-checkbox-item"><input type="checkbox" value="Preposição" onchange="validateClasses()"> Preposição</label>
+                <label class="class-checkbox-item"><input type="checkbox" value="Conjunção" onchange="validateClasses()"> Conjunção</label>
+                <label class="class-checkbox-item"><input type="checkbox" value="Interjeição" onchange="validateClasses()"> Interjeição</label>
+            </div>
+
+            <div class="selector-label">5. Selecione o Aluno para Iniciar</div>
+            <div class="students-grid" id="students-grid"></div>
+        </div>
+
+        <!-- TELA DO JOGO -->
+        <div id="game-screen" style="display:none; width: 100%;">
+            <div class="game-board">
+                <div class="hint-banner">
+                    💡 <b>Atenção:</b> Arraste ou dê 1 toque no item e depois 1 toque na classe! Erros custam <b>-10s</b>!
+                </div>
+
+                <div class="association-container">
+                    <div>
+                        <div class="column-title">Palavra / Frase</div>
+                        <div class="items-column" id="left-column"></div>
+                    </div>
+                    <div>
+                        <div class="column-title">Classe Gramatical</div>
+                        <div class="items-column" id="right-column"></div>
+                    </div>
+                </div>
+
+                <div class="explanation-panel" id="explanation-panel">
+                    <div class="explanation-title">💡 Explicação Gramatical:</div>
+                    <div id="explanation-text">---</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TELA DE RANKING -->
+        <div class="ranking-screen" id="ranking-screen">
+            <h2 id="ranking-title">🏆 Ranking do Desafio</h2>
+            <div class="ranking-list" id="ranking-list"></div>
+            <button class="main-btn btn-secondary-action" style="margin-top:10px;" onclick="backToSelect()">Voltar para Seleção</button>
+        </div>
+    </main>
+
+    <!-- FOOTER COM CONTROLES E FEEDBACK -->
+    <footer id="feedback-footer" style="display:none;">
+        <div class="feedback-message" id="feedback-text">Rodada Concluída! 🎉</div>
+        <div class="footer-buttons">
+            <button class="main-btn" id="action-btn" onclick="nextRoundOrFinish()">PRÓXIMA RODADA ➡️</button>
+        </div>
+    </footer>
+</div>
+
+<script>
+    const EMOJIS = ['🐶', '🐱', '🦊', '🦁', '🐸', '🐵', '🦄', '🐼', '🐯', '🐨', '🐙', '🦖', '🤖', '🚀', '⭐', '🍎', '⚽', '🎨'];
+    
+    const OFFICIAL_STUDENTS = [
+        "ALUNO TESTE",
+        "ANA CAROLINA MIGUEL DOS SANTOS",
+        "ANDRÉ LUIZ GATTI",
+        "CELINE FARIA LIRIO XAVIER",
+        "CRISTIANO RICARDO DA SILVA DA FONSECA FILHO",
+        "DAVI JOSE BERTI",
+        "DÉBORA DE LIMA BALBINO",
+        "ELLEN RAFAELA MANOEL VIEIRA",
+        "ENRICO EDUARDO CORTES",
+        "GEOVANNA PASSARELLI DOMINGUES",
+        "GUSTAVO ALVES BARRETO QUARESMA",
+        "GUSTAVO PEREIRA AMARAL",
+        "IASMIM SOUZA FREITAS",
+        "ISABELA MEDEIROS CIESLAK",
+        "JOÃO VICTOR SILVA RODRIGUES SANTOS",
+        "KEYLIS SOFIA OLIVARES MUÑOZ",
+        "LAÍZ KATTIELLY SANTOS DE JESUS",
+        "LAURA AGUIAR PERO",
+        "LEVI BORGES DA SILVA",
+        "LIA VICENTIN ROCCHI",
+        "LÍVIA TROMBETTA MENDES",
+        "LORENZO RODRIGUES FERREIRA",
+        "LUIZA MARIA BATISTA",
+        "MARCO ANTONIO GARCIA CARDOZO",
+        "MARIA EDUARDA RIBEIRO",
+        "MIGUEL MARTINS DE SOUZA",
+        "MIRIÃ PINHEIRO",
+        "RYAN SANTOS DE OLIVEIRA",
+        "SAMUEL FELICE DE PAULA",
+        "KEIMARYS ALEJANDRA TOVAR AREYAN",
+        "Davi Nasseh",
+        "Evelyn",
+        "Alyce"
+    ];
+
+    let students = [];
+    let activeStudent = null;
+    let currentGameMode = 'attack';
+    let currentDifficulty = 'easy';
+    let currentSeqDifficulty = 'easy';
+    let itemsPerRound = 3;
+    let attackScore = 0;
+    let attackTimeLeft = 60;
+    let timerInterval = null;
+    let startTime = 0;
+    let elapsedSeconds = 0;
+    const STORAGE_KEY = 'passa_para_la_gramatica_v4';
+
+    function generateGrammarDatabase(diffLevel) {
+        let db = [];
+
+        if (diffLevel === 'easy') {
+            const items = [
+                { text: "Cachorro", target: "Substantivo", rule: "'Cachorro' é um substantivo pois dá nome a um ser." },
+                { text: "Escola", target: "Substantivo", rule: "'Escola' é um substantivo pois dá nome a um lugar." },
+                { text: "Caneta", target: "Substantivo", rule: "'Caneta' é um substantivo pois dá nome a um objeto." },
+                { text: "Brasil", target: "Substantivo", rule: "'Brasil' é um substantivo próprio." },
+                { text: "Alegria", target: "Substantivo", rule: "'Alegria' é um substantivo abstrato." },
+                { text: "Janela", target: "Substantivo", rule: "'Janela' nomeia um objeto/elemento." },
+                { text: "Professor", target: "Substantivo", rule: "'Professor' nomeia uma profissão/pessoa." },
+                
+                { text: "Bonito", target: "Adjetivo", rule: "'Bonito' é um adjetivo pois indica uma qualidade." },
+                { text: "Grande", target: "Adjetivo", rule: "'Grande' é um adjetivo pois indica uma característica." },
+                { text: "Inteligente", target: "Adjetivo", rule: "'Inteligente' caracteriza algo ou alguém." },
+                { text: "Veloz", target: "Adjetivo", rule: "'Veloz' atribui um atributo a um ser." },
+                { text: "Azul", target: "Adjetivo", rule: "'Azul' é um adjetivo que indica a cor." },
+                { text: "Amável", target: "Adjetivo", rule: "'Amável' é uma qualidade ou característica." },
+
+                { text: "Correr", target: "Verbo", rule: "'Correr' é um verbo pois indica uma ação." },
+                { text: "Estudou", target: "Verbo", rule: "'Estudou' indica uma ação no passado." },
+                { text: "Dormir", target: "Verbo", rule: "'Dormir' é um verbo que indica estado/ação." },
+                { text: "Brincar", target: "Verbo", rule: "'Brincar' exprime uma ação divertida." },
+                { text: "Falará", target: "Verbo", rule: "'Falará' indica uma ação que ocorrerá no futuro." },
+                { text: "Escrever", target: "Verbo", rule: "'Escrever' indica a ação de grafar palavras." },
+
+                { text: "Ele", target: "Pronome", rule: "'Ele' é um pronome pessoal do caso reto." },
+                { text: "Nós", target: "Pronome", rule: "'Nós' substitui as pessoas do discurso." },
+                { text: "Meu", target: "Pronome", rule: "'Meu' é um pronome possessivo." },
+                { text: "Este", target: "Pronome", rule: "'Este' é um pronome demonstrativo." },
+                { text: "Ela", target: "Pronome", rule: "'Ela' é um pronome pessoal." },
+                { text: "Seu", target: "Pronome", rule: "'Seu' é um pronome possessivo." },
+
+                { text: "O", target: "Artigo", rule: "'O' é um artigo definido masculino." },
+                { text: "Uma", target: "Artigo", rule: "'Uma' é um artigo indefinido feminino." },
+                { text: "Os", target: "Artigo", rule: "'Os' é um artigo definido plural." },
+                { text: "Uns", target: "Artigo", rule: "'Uns' é um artigo indefinido plural." },
+
+                { text: "Dois", target: "Numeral", rule: "'Dois' é um numeral cardinal." },
+                { text: "Primeiro", target: "Numeral", rule: "'Primeiro' é um numeral ordinal." },
+                { text: "Dobro", target: "Numeral", rule: "'Dobro' é um numeral multiplicativo." },
+                { text: "Cinquenta", target: "Numeral", rule: "'Cinquenta' indica quantidade numérica exata." },
+
+                { text: "Ontem", target: "Advérbio", rule: "'Ontem' é um advérbio de tempo." },
+                { text: "Muito", target: "Advérbio", rule: "'Muito' é um advérbio de intensidade." },
+                { text: "Aqui", target: "Advérbio", rule: "'Aqui' é um advérbio de lugar." },
+                { text: "Calmamente", target: "Advérbio", rule: "'Calmamente' é um advérbio de modo." },
+
+                { text: "De", target: "Preposição", rule: "'De' é uma preposição essencial." },
+                { text: "Com", target: "Preposição", rule: "'Com' é uma preposição que liga termos." },
+                { text: "Para", target: "Preposição", rule: "'Para' é uma preposição indicando destino/objetivo." },
+
+                { text: "E", target: "Conjunção", rule: "'E' é uma conjunção que soma elementos." },
+                { text: "Mas", target: "Conjunção", rule: "'Mas' liga ideias opostas." },
+                { text: "Porque", target: "Conjunção", rule: "'Porque' explica uma causa." },
+
+                { text: "Uau!", target: "Interjeição", rule: "'Uau!' expressa admiração." },
+                { text: "Ah!", target: "Interjeição", rule: "'Ah!' expressa emoção/surpresa." },
+                { text: "Oba!", target: "Interjeição", rule: "'Oba!' expressa alegria." }
+            ];
+
+            items.forEach((item, idx) => {
+                db.push({ id: `e_${idx}`, prompt: item.text, targetClass: item.target, rule: item.rule });
+            });
+
+        } else if (diffLevel === 'medium') {
+            const items = [
+                { text: "A <span class='highlight-word'>menina</span> ganhou um presente.", target: "Substantivo", rule: "'Menina' nomeia quem ganhou o presente." },
+                { text: "O <span class='highlight-word'>gato</span> subiu no telhado.", target: "Substantivo", rule: "'Gato' nomeia um animal." },
+                { text: "Aquela <span class='highlight-word'>cidade</span> é acolhedora.", target: "Substantivo", rule: "'Cidade' nomeia um lugar." },
+                { text: "Sinto muita <span class='highlight-word'>saudade</span> de você.", target: "Substantivo", rule: "'Saudade' nomeia um sentimento (substantivo abstrato)." },
+                { text: "O <span class='highlight-word'>sol</span> ilumina todas as manhãs.", target: "Substantivo", rule: "'Sol' nomeia o astro." },
+                { text: "Comprei um <span class='highlight-word'>caderno</span> novo para as aulas.", target: "Substantivo", rule: "'Caderno' nomeia um objeto escolar." },
+                { text: "A <span class='highlight-word'>música</span> alegrou toda a festa.", target: "Substantivo", rule: "'Música' nomeia uma arte/som." },
+                { text: "O <span class='highlight-word'>pássaro</span> fez um ninho na árvore.", target: "Substantivo", rule: "'Pássaro' nomeia o ser." },
+
+                { text: "O aluno é muito <span class='highlight-word'>dedicado</span>.", target: "Adjetivo", rule: "'Dedicado' traz a qualidade do aluno." },
+                { text: "Comprei um livro <span class='highlight-word'>interessante</span>.", target: "Adjetivo", rule: "'Interessante' atribui uma característica ao livro." },
+                { text: "O dia amanheceu <span class='highlight-word'>ensolarado</span>.", target: "Adjetivo", rule: "'Ensolarado' indica o estado do dia." },
+                { text: "Eles usavam roupas <span class='highlight-word'>limpas</span>.", target: "Adjetivo", rule: "'Limpas' caracteriza as roupas." },
+                { text: "Ela preparou um suco <span class='highlight-word'>gelado</span>.", target: "Adjetivo", rule: "'Gelado' é a qualidade do suco." },
+                { text: "O cachorro é bastante <span class='highlight-word'>carinhoso</span>.", target: "Adjetivo", rule: "'Carinhoso' é a qualidade do animal." },
+                { text: "Minha mãe comprou flores <span class='highlight-word'>cheirosas</span>.", target: "Adjetivo", rule: "'Cheirosas' dá característica às flores." },
+
+                { text: "Nós <span class='highlight-word'>jogamos</span> futebol ontem.", target: "Verbo", rule: "'Jogamos' exprime a ação praticada." },
+                { text: "Os alunos <span class='highlight-word'>estudam</span> na biblioteca.", target: "Verbo", rule: "'Estudam' é a ação realizada no presente." },
+                { text: "Ela <span class='highlight-word'>escreveu</span> uma carta amorosa.", target: "Verbo", rule: "'Escreveu' indica a ação no passado." },
+                { text: "Amanhã nós <span class='highlight-word'>viajaremos</span> bem cedo.", target: "Verbo", rule: "'Viajaremos' exprime uma ação futura." },
+                { text: "O cão <span class='highlight-word'>latia</span> sem parar.", target: "Verbo", rule: "'Latia' exprime uma ação contínua do cão." },
+                { text: "Todos <span class='highlight-word'>sorriram</span> para a fotografia.", target: "Verbo", rule: "'Sorriram' indica ação concluída no passado." },
+                { text: "Ela <span class='highlight-word'>desenhou</span> uma árvore colorida.", target: "Verbo", rule: "'Desenhou' é a ação realizada." },
+
+                { text: "<span class='highlight-word'>Ela</span> gosta de ler livros de suspense.", target: "Pronome", rule: "'Ela' substitui a pessoa na frase." },
+                { text: "<span class='highlight-word'>Nossa</span> escola passou por reformas.", target: "Pronome", rule: "'Nossa' indica posse da escola." },
+                { text: "Quem deixou <span class='highlight-word'>este</span> casaco no chão?", target: "Pronome", rule: "'Este' demonstra qual é o casaco." },
+                { text: "<span class='highlight-word'>Eles</span> chegaram a tempo para a prova.", target: "Pronome", rule: "'Eles' representa os alunos/grupo." },
+                { text: "Guarde <span class='highlight-word'>seu</span> material na mochila.", target: "Pronome", rule: "'Seu' indica posse." },
+                { text: "<span class='highlight-word'>Eu</span> terminei o dever de casa.", target: "Pronome", rule: "'Eu' é o pronome que faz a ação." },
+                { text: "Aquele livro é <span class='highlight-word'>meu</span>.", target: "Pronome", rule: "'Meu' é um pronome possessivo." },
+
+                { text: "<span class='highlight-word'>O</span> menino correu até a praça.", target: "Artigo", rule: "'O' define o substantivo menino." },
+                { text: "Encontrei <span class='highlight-word'>uma</span> chave perdida na rua.", target: "Artigo", rule: "'Uma' indefine a chave." },
+                { text: "<span class='highlight-word'>As</span> borboletas voavam pelo jardim.", target: "Artigo", rule: "'As' é um artigo definido no plural." },
+                { text: "Comprei <span class='highlight-word'>uns</span> lápis coloridos novos.", target: "Artigo", rule: "'Uns' é um artigo indefinido plural." },
+
+                { text: "Comi <span class='highlight-word'>dois</span> pedaços de torta.", target: "Numeral", rule: "'Dois' expressa a quantidade exata." },
+                { text: "Ele ficou em <span class='highlight-word'>primeiro</span> lugar no torneio.", target: "Numeral", rule: "'Primeiro' expressa a ordem." },
+                { text: "Ele pediu o <span class='highlight-word'>triplo</span> de comida.", target: "Numeral", rule: "'Triplo' é um numeral multiplicativo." },
+                { text: "Havia <span class='highlight-word'>dez</span> alunos na sala de informática.", target: "Numeral", rule: "'Dez' indica a quantidade de alunos." },
+
+                { text: "Eles saíram <span class='highlight-word'>cedo</span> para trabalhar.", target: "Advérbio", rule: "'Cedo' é um advérbio de tempo." },
+                { text: "O robô caminhava <span class='highlight-word'>lentamente</span>.", target: "Advérbio", rule: "'Lentamente' é um advérbio de modo." },
+                { text: "Nós moramos <span class='highlight-word'>longe</span> do centro da cidade.", target: "Advérbio", rule: "'Longe' é um advérbio de lugar." },
+                { text: "Ela gosta <span class='highlight-word'>bastante</span> de sorvete de morango.", target: "Advérbio", rule: "'Bastante' é um advérbio de intensidade." },
+                { text: "Ele <span class='highlight-word'>nunca</span> se atrasa para o compromisso.", target: "Advérbio", rule: "'Nunca' é um advérbio de negação/tempo." },
+                { text: "<span class='highlight-word'>Hoje</span> vamos ao cinema juntos.", target: "Advérbio", rule: "'Hoje' indica o tempo da ação." },
+                { text: "O pássaro cantou <span class='highlight-word'>suavemente</span>.", target: "Advérbio", rule: "'Suavemente' é o modo como cantou." },
+
+                { text: "O presente foi feito <span class='highlight-word'>para</span> você.", target: "Preposição", rule: "'Para' liga o presente ao destinatário." },
+                { text: "Caminhei <span class='highlight-word'>com</span> meus melhores amigos.", target: "Preposição", rule: "'Com' traz a ideia de companhia." },
+                { text: "O copo de vidro caiu <span class='highlight-word'>da</span> mesa.", target: "Preposição", rule: "'Da' (de+a) indica origem/ponto de partida." },
+                { text: "Eles conversavam <span class='highlight-word'>sobre</span> o filme do cinema.", target: "Preposição", rule: "'Sobre' indica o assunto." },
+
+                { text: "Estudei muito, <span class='highlight-word'>mas</span> a prova estava difícil.", target: "Conjunção", rule: "'Mas' dá a ideia de oposição." },
+                { text: "Ela canta <span class='highlight-word'>e</span> dança nas apresentações.", target: "Conjunção", rule: "'E' adiciona/soma duas ações." },
+                { text: "Não fui à aula <span class='highlight-word'>porque</span> fiquei doente.", target: "Conjunção", rule: "'Porque' explica a causa." },
+                { text: "Você prefere suco <span class='highlight-word'>ou</span> refrigerante?", target: "Conjunção", rule: "'Ou' indica uma opção/alternativa." },
+
+                { text: "<span class='highlight-word'>Socorro!</span> Preciso de ajuda urgente!", target: "Interjeição", rule: "'Socorro!' exprime pedido de socorro." },
+                { text: "<span class='highlight-word'>Nossa!</span> Que surpresa maravilhosa!", target: "Interjeição", rule: "'Nossa!' indica surpresa/espanto." },
+                { text: "<span class='highlight-word'>Eita!</span> Esqueci meu caderno em casa.", target: "Interjeição", rule: "'Eita!' expressa espanto." },
+                { text: "<span class='highlight-word'>Parabéns!</span> Você conseguiu passar de fase!", target: "Interjeição", rule: "'Parabéns!' expressa comemoração." }
+            ];
+
+            items.forEach((item, idx) => {
+                db.push({ id: `m_${idx}`, prompt: item.text, targetClass: item.target, rule: item.rule });
+            });
+
+        } else {
+            const items = [
+                { text: "O <span class='highlight-word'>enxame</span> assustou os visitantes no parque.", target: "Substantivo", rule: "'Enxame' é um substantivo coletivo." },
+                { text: "A <span class='highlight-word'>honestidade</span> é um valor fundamental.", target: "Substantivo", rule: "'Honestidade' é um substantivo abstrato." },
+                { text: "Seu <span class='highlight-word'>passa-tempo</span> era desenhar em quadrinhos.", target: "Substantivo", rule: "'Passa-tempo' é um substantivo composto." },
+
+                { text: "A culinária <span class='highlight-word'>brasileira</span> é muito apreciada.", target: "Adjetivo", rule: "'Brasileira' é um adjetivo pátrio." },
+                { text: "Aquele garoto parece ser bastante <span class='highlight-word'>medroso</span>.", target: "Adjetivo", rule: "'Medroso' é um adjetivo derivado de medo." },
+
+                { text: "Nós <span class='highlight-word'>tínhamos terminado</span> o dever antes da aula.", target: "Verbo", rule: "'Tínhamos terminado' forma uma locução verbal." },
+                { text: "Se você <span class='highlight-word'>estudasse</span> mais, tiraria notas ótimas.", target: "Verbo", rule: "'Estudasse' é um verbo no modo subjuntivo." },
+
+                { text: "Estes livros foram doados para <span class='highlight-word'>nós</span>.", target: "Pronome", rule: "'Nós' atua como pronome pessoal oblíquo tônico." },
+                { text: "Não se preocupe, <span class='highlight-word'>ninguém</span> viu o incidente.", target: "Pronome", rule: "'Ninguém' é um pronome indefinido." },
+
+                { text: "O aluno <span class='highlight-word'>com certeza</span> virá fazer a avaliação.", target: "Advérbio", rule: "'Com certeza' é uma locução adverbial." },
+                { text: "A garota morava <span class='highlight-word'>muito</span> longe de seus avós.", target: "Advérbio", rule: "'Muito' é um advérbio de intensidade." }
+            ];
+
+            items.forEach((item, idx) => {
+                db.push({ id: `h_${idx}`, prompt: item.text, targetClass: item.target, rule: item.rule });
+            });
+        }
+
+        return db;
+    }
+
+    function playBeep(freq = 440, type = 'sine', duration = 0.1) {
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, ctx.currentTime);
+            gain.gain.setValueAtTime(0.15, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + duration);
+        } catch (e) {}
+    }
+
+    function playSuccessSound() {
+        playBeep(523.25, 'triangle', 0.12);
+        setTimeout(() => playBeep(659.25, 'triangle', 0.12), 100);
+        setTimeout(() => playBeep(783.99, 'triangle', 0.25), 200);
+    }
+
+    function playErrorSound() {
+        playBeep(180, 'sawtooth', 0.25);
+    }
+
+    function triggerConfetti() {
+        playSuccessSound();
+        if (typeof confetti === 'function') {
+            confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+        }
+    }
+
+    function triggerPenaltyToast() {
+        playErrorSound();
+        const toast = document.getElementById('penalty-toast');
+        if (toast) {
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 800);
+        }
+    }
+
+    function applyPenalty() {
+        triggerPenaltyToast();
+        if (currentGameMode === 'attack') {
+            attackTimeLeft = Math.max(0, attackTimeLeft - 10);
+            updateTimerDisplay();
+        } else {
+            elapsedSeconds += 10;
+            const timerDisplay = document.getElementById('timer-display');
+            if (timerDisplay) {
+                timerDisplay.innerText = `⏱️ ${formatTime(elapsedSeconds)}`;
+            }
+        }
+    }
+
+    function validateClasses() {
+        const checked = document.querySelectorAll('.class-checkbox-item input:checked');
+        if (checked.length < itemsPerRound) {
+            alert(`Você precisa selecionar pelo menos ${itemsPerRound} classes gramaticais para a dificuldade escolhida!`);
+            return false;
+        }
+        return true;
+    }
+
+    function getSelectedClasses() {
+        const checked = document.querySelectorAll('.class-checkbox-item input:checked');
+        return Array.from(checked).map(c => c.value);
+    }
+
+    function initStudents() {
+        try {
+            let saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                students = JSON.parse(saved);
+            } else {
+                buildDefaultStudents();
+            }
+        } catch (e) {
+            buildDefaultStudents();
+        }
+    }
+
+    function buildDefaultStudents() {
+        students = OFFICIAL_STUDENTS.map((name, idx) => ({
+            id: idx,
+            name: name,
+            isTest: idx === 0,
+            emoji: idx === 0 ? '⚙️' : EMOJIS[idx % EMOJIS.length],
+            completed: 0,
+            totalTime: 0,
+            attackRecord: 0
+        }));
+        saveStudents();
+    }
+
+    function saveStudents() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(students));
+    }
+
+    function startTimer() {
+        stopTimer();
+        const timerDisplay = document.getElementById('timer-display');
+        if (timerDisplay) timerDisplay.classList.remove('danger');
+
+        if (currentGameMode === 'normal') {
+            startTime = Date.now();
+            timerInterval = setInterval(() => {
+                let currentSession = Math.floor((Date.now() - startTime) / 1000);
+                let displayTime = elapsedSeconds + currentSession;
+                if (timerDisplay) timerDisplay.innerText = `⏱️ ${formatTime(displayTime)}`;
+            }, 1000);
+        } else {
+            attackTimeLeft = 60;
+            if (timerDisplay) timerDisplay.innerText = `⚡ 01:00`;
+            timerInterval = setInterval(() => {
+                attackTimeLeft--;
+                updateTimerDisplay();
+
+                if (attackTimeLeft <= 0) {
+                    stopTimer();
+                    finishMinuteAttack();
+                }
+            }, 1000);
+        }
+    }
+
+    function updateTimerDisplay() {
+        const timerDisplay = document.getElementById('timer-display');
+        if (!timerDisplay) return;
+
+        if (currentGameMode === 'attack') {
+            let clamped = Math.max(0, attackTimeLeft);
+            let s = clamped.toString().padStart(2, '0');
+            timerDisplay.innerText = `⚡ 00:${s}`;
+
+            if (clamped <= 10) {
+                timerDisplay.classList.add('danger');
+            } else {
+                timerDisplay.classList.remove('danger');
+            }
+        }
+    }
+
+    function stopTimer() {
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            if (currentGameMode === 'normal' && startTime > 0) {
+                elapsedSeconds += Math.floor((Date.now() - startTime) / 1000);
+                startTime = 0;
+            }
+        }
+    }
+
+    function formatTime(sec) {
+        let m = Math.floor(sec / 60).toString().padStart(2, '0');
+        let s = (sec % 60).toString().padStart(2, '0');
+        return `${m}:${s}`;
+    }
+
+    function setGameMode(mode) {
+        currentGameMode = mode;
+        document.getElementById('mode-attack-btn').className = `btn-mode ${mode === 'attack' ? 'active' : ''}`;
+        document.getElementById('mode-normal-btn').className = `btn-mode ${mode === 'normal' ? 'active' : ''}`;
+        renderSetupScreen();
+    }
+
+    function setDifficulty(diff) {
+        currentDifficulty = diff;
+        itemsPerRound = diff === 'easy' ? 3 : (diff === 'medium' ? 4 : 5);
+        document.getElementById('diff-easy-btn').className = `btn-diff ${diff === 'easy' ? 'active' : ''}`;
+        document.getElementById('diff-medium-btn').className = `btn-diff ${diff === 'medium' ? 'active' : ''}`;
+        document.getElementById('diff-hard-btn').className = `btn-diff ${diff === 'hard' ? 'active' : ''}`;
+        validateClasses();
+        renderSetupScreen();
+    }
+
+    function setSeqDifficulty(diff) {
+        currentSeqDifficulty = diff;
+        document.getElementById('seq-easy-btn').className = `btn-diff ${diff === 'easy' ? 'active' : ''}`;
+        document.getElementById('seq-medium-btn').className = `btn-diff ${diff === 'medium' ? 'active' : ''}`;
+        document.getElementById('seq-hard-btn').className = `btn-diff ${diff === 'hard' ? 'active' : ''}`;
+        renderSetupScreen();
+    }
+
+    function renderSetupScreen() {
+        stopTimer();
+        if (activeStudent && currentGameMode === 'normal') {
+            activeStudent.totalTime = elapsedSeconds;
+            saveStudents();
+        }
+
+        document.getElementById('setup-screen').style.display = 'flex';
+        document.getElementById('game-screen').style.display = 'none';
+        document.getElementById('ranking-screen').style.display = 'none';
+        document.getElementById('player-bar').style.display = 'none';
+        document.getElementById('progress-wrapper').style.display = 'none';
+        document.getElementById('feedback-footer').style.display = 'none';
+        document.getElementById('header-switch-btn').style.display = 'none';
+
+        const grid = document.getElementById('students-grid');
+        grid.innerHTML = students.map(s => {
+            let statusText = currentGameMode === 'normal' 
+                ? `${s.completed}/10 Rds (${formatTime(s.totalTime)})`
+                : `Recorde: ${s.attackRecord || 0} pts`;
+
+            return `
+                <button class="btn-student ${s.isTest ? 'is-test' : ''}" onclick="selectStudent(${s.id})">
+                    <span class="emoji">${s.emoji}</span>
+                    <span class="name">${s.name}</span>
+                    <span class="status">${statusText}</span>
+                </button>
+            `;
+        }).join('');
+    }
+
+    let currentRound = 0;
+    let roundChallenges = [];
+    let selectedLeftId = null;
+    let selectedRightId = null;
+    let matchesFound = 0;
+    let draggedSeqId = null;
+    let rightColumnOrder = [];
+
+    function selectStudent(id) {
+        if (!validateClasses()) return;
+
+        activeStudent = students.find(s => s.id === id);
+
+        if (currentGameMode === 'normal') {
+            currentRound = activeStudent.completed;
+            elapsedSeconds = activeStudent.totalTime;
+
+            if (currentRound >= 10) {
+                alert(`${activeStudent.name} já concluiu todas as 10 rodadas do Modo Normal!`);
+                showRanking();
+                return;
+            }
+        } else {
+            attackScore = 0;
+            currentRound = 0;
+        }
+
+        document.getElementById('setup-screen').style.display = 'none';
+        document.getElementById('game-screen').style.display = 'block';
+        document.getElementById('ranking-screen').style.display = 'none';
+        document.getElementById('player-bar').style.display = 'flex';
+        document.getElementById('progress-wrapper').style.display = 'flex';
+        document.getElementById('header-switch-btn').style.display = 'inline-block';
+
+        document.getElementById('player-avatar').innerText = activeStudent.emoji;
+        document.getElementById('player-name').innerText = activeStudent.name;
+
+        loadRound();
+        startTimer();
+    }
+
+    function loadRound() {
+        matchesFound = 0;
+        selectedLeftId = null;
+        selectedRightId = null;
+
+        document.getElementById('feedback-footer').style.display = 'none';
+        document.getElementById('explanation-panel').style.display = 'none';
+
+        if (currentGameMode === 'normal') {
+            document.getElementById('progress-bar').style.width = ((currentRound + 1) / 10 * 100) + '%';
+            document.getElementById('stats-display').innerText = `Rodada ${currentRound + 1}/10`;
+        } else {
+            document.getElementById('progress-bar').style.width = '100%';
+            document.getElementById('stats-display').innerText = `Pontos: ${attackScore}`;
+        }
+
+        const allowedClasses = getSelectedClasses();
+        let fullDb = generateGrammarDatabase(currentSeqDifficulty);
+        
+        let filteredDb = fullDb.filter(item => allowedClasses.includes(item.targetClass));
+        let shuffled = [...filteredDb].sort(() => 0.5 - Math.random());
+        
+        roundChallenges = [];
+        let usedClasses = new Set();
+
+        for (let item of shuffled) {
+            if (!usedClasses.has(item.targetClass)) {
+                usedClasses.add(item.targetClass);
+                roundChallenges.push(item);
+            }
+            if (roundChallenges.length === itemsPerRound) {
+                break;
+            }
+        }
+
+        if (roundChallenges.length < itemsPerRound) {
+            for (let item of shuffled) {
+                if (!roundChallenges.includes(item)) {
+                    roundChallenges.push(item);
+                }
+                if (roundChallenges.length === itemsPerRound) break;
+            }
+        }
+
+        rightColumnOrder = roundChallenges.map(item => ({
+            id: item.id,
+            targetClass: item.targetClass
+        })).sort(() => 0.5 - Math.random());
+
+        renderAssociationBoard();
+    }
+
+    function renderAssociationBoard() {
+        const leftCol = document.getElementById('left-column');
+        const rightCol = document.getElementById('right-column');
+
+        let leftItems = roundChallenges.map(item => ({
+            id: item.id,
+            prompt: item.prompt,
+            matched: item.matched || false
+        }));
+
+        let rightItems = rightColumnOrder.map(ro => {
+            let item = roundChallenges.find(c => c.id === ro.id);
+            return {
+                id: item.id,
+                targetClass: item.targetClass,
+                matched: item.matched || false
+            };
+        });
+
+        leftCol.innerHTML = leftItems.map(item => `
+            <div class="word-card ${item.matched ? 'matched' : ''} ${selectedLeftId === item.id ? 'selected' : ''}"
+                 id="left-${item.id}"
+                 draggable="${!item.matched}"
+                 ondragstart="handleDragStart(event, '${item.id}')"
+                 onclick="handleLeftClick('${item.id}')">
+                <span class="word-text">${item.prompt}</span>
+            </div>
+        `).join('');
+
+        rightCol.innerHTML = rightItems.map(item => `
+            <div class="class-card ${item.matched ? 'matched' : ''} ${selectedRightId === item.id ? 'selected' : ''}"
+                 id="right-${item.id}"
+                 ondragover="handleDragOver(event)"
+                 ondragleave="handleDragLeave(event)"
+                 ondrop="handleDrop(event, '${item.id}')"
+                 onclick="handleRightClick('${item.id}')">
+                <span>🏷️ ${item.targetClass}</span>
+                ${item.matched ? `<span class="match-badge">✓ Ligado</span>` : ''}
+            </div>
+        `).join('');
+    }
+
+    function handleDragStart(event, id) {
+        draggedSeqId = id;
+        if (event.dataTransfer) {
+            event.dataTransfer.setData('text/plain', id);
+        }
+    }
+
+    function handleDragOver(event) {
+        event.preventDefault();
+        event.currentTarget.classList.add('drag-over');
+    }
+
+    function handleDragLeave(event) {
+        event.currentTarget.classList.remove('drag-over');
+    }
+
+    function handleDrop(event, rightId) {
+        event.preventDefault();
+        event.currentTarget.classList.remove('drag-over');
+        const leftId = (event.dataTransfer && event.dataTransfer.getData('text/plain')) || draggedSeqId;
+        if (leftId) {
+            checkAssociation(leftId, rightId);
+        }
+    }
+
+    function handleLeftClick(id) {
+        const item = roundChallenges.find(c => c.id === id);
+        if (item && item.matched) return;
+
+        selectedLeftId = (selectedLeftId === id) ? null : id;
+        renderAssociationBoard();
+
+        if (selectedLeftId && selectedRightId) {
+            checkAssociation(selectedLeftId, selectedRightId);
+        }
+    }
+
+    function handleRightClick(id) {
+        const item = roundChallenges.find(c => c.id === id);
+        if (item && item.matched) return;
+
+        selectedRightId = (selectedRightId === id) ? null : id;
+        renderAssociationBoard();
+
+        if (selectedLeftId && selectedRightId) {
+            checkAssociation(selectedLeftId, selectedRightId);
+        }
+    }
+
+    function checkAssociation(leftId, rightId) {
+        const leftElem = document.getElementById(`left-${leftId}`);
+        const rightElem = document.getElementById(`right-${rightId}`);
+
+        if (leftId === rightId) {
+            const target = roundChallenges.find(c => c.id === leftId);
+            target.matched = true;
+            matchesFound++;
+
+            selectedLeftId = null;
+            selectedRightId = null;
+            playBeep(587.33, 'sine', 0.1);
+
+            showExplanation(target.rule);
+            renderAssociationBoard();
+
+            if (currentGameMode === 'attack') {
+                attackScore += 10;
+                document.getElementById('stats-display').innerText = `Pontos: ${attackScore}`;
+            }
+
+            if (matchesFound === roundChallenges.length) {
+                onRoundComplete();
+            }
+        } else {
+            if (leftElem) leftElem.classList.add('wrong');
+            if (rightElem) rightElem.classList.add('wrong');
+
+            applyPenalty();
+
+            setTimeout(() => {
+                selectedLeftId = null;
+                selectedRightId = null;
+                renderAssociationBoard();
+            }, 400);
+        }
+    }
+
+    function showExplanation(ruleText) {
+        const panel = document.getElementById('explanation-panel');
+        const text = document.getElementById('explanation-text');
+        if (panel && text) {
+            text.innerHTML = ruleText;
+            panel.style.display = 'flex';
+        }
+    }
+
+    function onRoundComplete() {
+        triggerConfetti();
+
+        if (currentGameMode === 'attack') {
+            attackScore += 25;
+            if (attackScore > (activeStudent.attackRecord || 0)) {
+                activeStudent.attackRecord = attackScore;
+                saveStudents();
+            }
+            setTimeout(() => {
+                loadRound();
+            }, 800);
+        } else {
+            stopTimer();
+            activeStudent.completed += 1;
+            activeStudent.totalTime = elapsedSeconds;
+            saveStudents();
+
+            const footer = document.getElementById('feedback-footer');
+            const text = document.getElementById('feedback-text');
+            if (footer && text) {
+                text.innerText = `Excelente! Rodada ${currentRound + 1} Concluída! 🎉`;
+                text.style.display = 'block';
+                footer.style.display = 'flex';
+            }
+        }
+    }
+
+    function nextRoundOrFinish() {
+        currentRound++;
+        if (currentRound >= 10 && currentGameMode === 'normal') {
+            alert(`Parabéns ${activeStudent.name}! Você concluiu todas as 10 rodadas!`);
+            showRanking();
+        } else {
+            loadRound();
+            startTimer();
+        }
+    }
+
+    function finishMinuteAttack() {
+        alert(`⏰ TEMPO ESGOTADO! ${activeStudent.name} alcançou ${attackScore} pontos!`);
+        if (attackScore > (activeStudent.attackRecord || 0)) {
+            activeStudent.attackRecord = attackScore;
+            saveStudents();
+        }
+        renderSetupScreen();
+    }
+
+    function showRanking() {
+        stopTimer();
+        if (activeStudent && currentGameMode === 'normal') {
+            activeStudent.totalTime = elapsedSeconds;
+            saveStudents();
+        }
+
+        document.getElementById('setup-screen').style.display = 'none';
+        document.getElementById('game-screen').style.display = 'none';
+        document.getElementById('ranking-screen').style.display = 'flex';
+        document.getElementById('player-bar').style.display = 'none';
+        document.getElementById('progress-wrapper').style.display = 'none';
+        document.getElementById('feedback-footer').style.display = 'none';
+        document.getElementById('header-switch-btn').style.display = 'none';
+
+        document.getElementById('ranking-title').innerText = currentGameMode === 'normal' 
+            ? '🏆 Ranking Modo Normal' 
+            : '⚡ Ranking Minute Attack';
+
+        let sorted = [...students].sort((a, b) => {
+            if (currentGameMode === 'normal') {
+                if (b.completed !== a.completed) return b.completed - a.completed;
+                return a.totalTime - b.totalTime;
+            } else {
+                return (b.attackRecord || 0) - (a.attackRecord || 0);
+            }
+        });
+
+        const list = document.getElementById('ranking-list');
+        list.innerHTML = sorted.map((s, idx) => {
+            let scoreText = currentGameMode === 'normal'
+                ? `${s.completed} rodadas (${formatTime(s.totalTime)})`
+                : `${s.attackRecord || 0} pts`;
+
+            return `
+                <div class="ranking-item">
+                    <span>#${idx + 1} ${s.emoji} ${s.name}</span>
+                    <span>${scoreText}</span>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function backToSelect() {
+        renderSetupScreen();
+    }
+
+    function resetAll() {
+        const userChoice = window.confirm("Tem certeza que deseja resetar TODOS os dados e pontuações da turma?");
+        if (userChoice) {
+            localStorage.removeItem(STORAGE_KEY);
+            buildDefaultStudents();
+            activeStudent = null;
+            renderSetupScreen();
+        }
+    }
+
+    window.onload = () => {
+        initStudents();
+        renderSetupScreen();
+    };
+</script>
+</body>
+</html>
