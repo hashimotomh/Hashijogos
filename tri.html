@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <title>Passa para Lá - Geometria dos Triângulos</title>
+    <title>Passa para Lá - Geometria dos Triângulos (v5.0)</title>
     <!-- Confetti JS -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <!-- Polyfill para Touch Screen / Lousa Digital BenQ -->
@@ -82,6 +82,16 @@
             display: flex;
             align-items: center;
             gap: 6px;
+        }
+
+        .version-badge {
+            font-size: 11px;
+            background: #e7f5ff;
+            color: var(--secondary-dark);
+            border: 1px solid #a5d8ff;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 800;
         }
 
         .system-controls {
@@ -369,7 +379,6 @@
             box-shadow: 0 3px 0 var(--accent-dark);
         }
 
-        /* ESTILO PARA QUADROS ACERTADOS (VERDES) */
         .question-card.matched, .target-card.matched {
             border-color: var(--primary) !important;
             background: #ebfbee !important;
@@ -525,7 +534,7 @@
 <div class="game-container">
     <header>
         <div class="header-top">
-            <h1>📐 Passa para Lá - Triângulos</h1>
+            <h1>📐 Passa para Lá - Triângulos <span class="version-badge">v5.0</span></h1>
             <div class="system-controls">
                 <button class="btn-sys btn-switch" id="header-switch-btn" onclick="backToSelect()" style="display:none;">👤 Mudar Aluno</button>
                 <button class="btn-sys btn-finish" onclick="showRanking()">🏆 Ranking</button>
@@ -574,7 +583,7 @@
                 <button class="btn-diff" id="topic-angles-btn" onclick="setTopic('angles')">📐 Soma dos Ângulos Internos</button>
             </div>
 
-            <div class="selector-label">4. Selecione o Aluno para Iniciar</div>
+            <div class="selector-label">4. Selecione o Aluno para Iniciar <span class="version-badge">Versão 5.0</span></div>
             <div class="students-grid" id="students-grid"></div>
         </div>
 
@@ -668,28 +677,37 @@
     let timerInterval = null;
     let startTime = 0;
     let elapsedSeconds = 0;
-    // Chave v4 atualizada para limpar completamente o cache antigo da TV BenQ
-    const STORAGE_KEY = 'passa_para_la_triangulos_v4';
+    
+    // VERSÃO 5.0 - CHAVE DE MEMÓRIA ATUALIZADA
+    const STORAGE_KEY = 'passa_para_la_triangulos_v5_0';
 
-    // BANCO DE DADOS DE CONDIÇÃO DE EXISTÊNCIA
-    const EXISTENCE_DATABASE = [
-        { a: 3, b: 4, c: 5, valid: true },
-        { a: 5, b: 12, c: 13, valid: true },
-        { a: 6, b: 8, c: 10, valid: true },
-        { a: 7, b: 10, c: 12, valid: true },
-        { a: 8, b: 15, c: 17, valid: true },
-        { a: 9, b: 9, c: 9, valid: true },
-        { a: 5, b: 5, c: 8, valid: true },
-        { a: 4, b: 7, c: 9, valid: true },
-        { a: 10, b: 15, c: 20, valid: true },
-        { a: 6, b: 7, c: 8, valid: true },
-        { a: 2, b: 3, c: 6, valid: false, reason: "2 + 3 = 5 (menor que 6)" },
-        { a: 1, b: 2, c: 3, valid: false, reason: "1 + 2 = 3 (não é maior que 3)" },
-        { a: 5, b: 10, c: 20, valid: false, reason: "5 + 10 = 15 (menor que 20)" },
-        { a: 3, b: 3, c: 7, valid: false, reason: "3 + 3 = 6 (menor que 7)" },
-        { a: 4, b: 5, c: 10, valid: false, reason: "4 + 5 = 9 (menor que 10)" },
-        { a: 2, b: 8, c: 11, valid: false, reason: "2 + 8 = 10 (menor que 11)" },
-        { a: 6, b: 6, c: 13, valid: false, reason: "6 + 6 = 12 (menor que 13)" }
+    // BANCO EXPANDIDO COM MUITA VARIEDADE DE QUESTÕES DE EXISTÊNCIA
+    const EXISTENCE_DATABASE_VALID = [
+        { a: 3, b: 4, c: 5 }, { a: 5, b: 12, c: 13 }, { a: 6, b: 8, c: 10 },
+        { a: 7, b: 10, c: 12 }, { a: 8, b: 15, c: 17 }, { a: 9, b: 9, c: 9 },
+        { a: 5, b: 5, c: 8 }, { a: 4, b: 7, c: 9 }, { a: 10, b: 15, c: 20 },
+        { a: 6, b: 7, c: 8 }, { a: 11, b: 11, c: 15 }, { a: 7, b: 24, c: 25 },
+        { a: 9, b: 12, c: 15 }, { a: 10, b: 10, c: 18 }, { a: 14, b: 16, c: 20 },
+        { a: 8, b: 8, c: 10 }, { a: 12, b: 16, c: 20 }, { a: 15, b: 20, c: 25 },
+        { a: 5, b: 9, c: 11 }, { a: 13, b: 14, c: 15 }
+    ];
+
+    const EXISTENCE_DATABASE_INVALID = [
+        { a: 2, b: 3, c: 6, reason: "2 + 3 = 5 (menor que 6)" },
+        { a: 1, b: 2, c: 3, reason: "1 + 2 = 3 (não é maior que 3)" },
+        { a: 5, b: 10, c: 20, reason: "5 + 10 = 15 (menor que 20)" },
+        { a: 3, b: 3, c: 7, reason: "3 + 3 = 6 (menor que 7)" },
+        { a: 4, b: 5, c: 10, reason: "4 + 5 = 9 (menor que 10)" },
+        { a: 2, b: 8, c: 11, reason: "2 + 8 = 10 (menor que 11)" },
+        { a: 6, b: 6, c: 13, reason: "6 + 6 = 12 (menor que 13)" },
+        { a: 1, b: 4, c: 8, reason: "1 + 4 = 5 (menor que 8)" },
+        { a: 3, b: 5, c: 9, reason: "3 + 5 = 8 (menor que 9)" },
+        { a: 7, b: 8, c: 16, reason: "7 + 8 = 15 (menor que 16)" },
+        { a: 2, b: 5, c: 7, reason: "2 + 5 = 7 (não é maior que 7)" },
+        { a: 4, b: 4, c: 10, reason: "4 + 4 = 8 (menor que 10)" },
+        { a: 10, b: 10, c: 25, reason: "10 + 10 = 20 (menor que 25)" },
+        { a: 5, b: 8, c: 14, reason: "5 + 8 = 13 (menor que 14)" },
+        { a: 2, b: 2, c: 5, reason: "2 + 2 = 4 (menor que 5)" }
     ];
 
     function getRandomUid() {
@@ -936,23 +954,48 @@
         startTimer();
     }
 
-    // GERA QUESTÕES GARANTINDO ID ÚNICO MESMO EM NAVEGADORES DE TV
+    // GERA QUESTÕES COM EQUILÍBRIO RIGOROSO (50% EXISTE / 50% NÃO EXISTE)
     function generateRoundChallenges() {
         let items = [];
 
         if (currentTopic === 'existence') {
-            let existencePool = [...EXISTENCE_DATABASE].sort(() => 0.5 - Math.random());
-            for (let i = 0; i < itemsPerRound; i++) {
-                let q = existencePool.pop();
+            let validPool = [...EXISTENCE_DATABASE_VALID].sort(() => 0.5 - Math.random());
+            let invalidPool = [...EXISTENCE_DATABASE_INVALID].sort(() => 0.5 - Math.random());
+
+            // Calcula quantidade exata de V e F para garantir a proporção 50/50
+            let numValid = Math.ceil(itemsPerRound / 2);
+            let numInvalid = itemsPerRound - numValid;
+
+            // Se for número ímpar, alterna quem ganha o item extra a cada rodada
+            if (itemsPerRound % 2 !== 0 && Math.random() > 0.5) {
+                numValid = Math.floor(itemsPerRound / 2);
+                numInvalid = itemsPerRound - numValid;
+            }
+
+            // Seleciona os itens válidos (EXISTE)
+            for (let i = 0; i < numValid; i++) {
+                let q = validPool.pop();
                 items.push({
-                    id: `e_${i}_${getRandomUid()}`,
+                    id: `e_v_${i}_${getRandomUid()}`,
                     leftText: `Lados: ${q.a} cm, ${q.b} cm, ${q.c} cm`,
-                    correctAnswer: q.valid ? "EXISTE" : "NAO_EXISTE",
-                    rule: q.valid 
-                        ? `A soma de quaisquer dois lados é maior que o terceiro. (${q.a}+${q.b} > ${q.c})`
-                        : `Não forma triângulo pois ${q.reason}.`
+                    correctAnswer: "EXISTE",
+                    rule: `A soma de quaisquer dois lados é maior que o terceiro. (${q.a}+${q.b} > ${q.c})`
                 });
             }
+
+            // Seleciona os itens inválidos (NÃO EXISTE)
+            for (let i = 0; i < numInvalid; i++) {
+                let q = invalidPool.pop();
+                items.push({
+                    id: `e_i_${i}_${getRandomUid()}`,
+                    leftText: `Lados: ${q.a} cm, ${q.b} cm, ${q.c} cm`,
+                    correctAnswer: "NAO_EXISTE",
+                    rule: `Não forma triângulo pois ${q.reason}.`
+                });
+            }
+
+            // Embaralha a ordem final na coluna da esquerda
+            items.sort(() => 0.5 - Math.random());
 
             rightColumnItems = [
                 { id: "EXISTE", text: "✅ EXISTE" },
@@ -960,11 +1003,12 @@
             ];
 
         } else {
+            // MODO ÂNGULOS INTERNOS: RESPOSTAS ÚNICAS SEM DUPLICIDADE
             let usedThirdAngles = new Set();
             for (let i = 0; i < itemsPerRound; i++) {
                 let a, b, c;
                 do {
-                    a = Math.floor(Math.random() * 20 + 4) * 5;
+                    a = Math.floor(Math.random() * 20 + 4) * 5; // Múltiplo de 5 (20 a 100)
                     b = Math.floor(Math.random() * 20 + 4) * 5;
                     c = 180 - (a + b);
                 } while (c <= 10 || c >= 140 || c % 5 !== 0 || usedThirdAngles.has(c));
