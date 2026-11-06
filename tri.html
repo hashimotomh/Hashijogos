@@ -668,7 +668,8 @@
     let timerInterval = null;
     let startTime = 0;
     let elapsedSeconds = 0;
-    const STORAGE_KEY = 'passa_para_la_triangulos_v3';
+    // Chave v4 atualizada para limpar completamente o cache antigo da TV BenQ
+    const STORAGE_KEY = 'passa_para_la_triangulos_v4';
 
     // BANCO DE DADOS DE CONDIÇÃO DE EXISTÊNCIA
     const EXISTENCE_DATABASE = [
@@ -690,6 +691,10 @@
         { a: 2, b: 8, c: 11, valid: false, reason: "2 + 8 = 10 (menor que 11)" },
         { a: 6, b: 6, c: 13, valid: false, reason: "6 + 6 = 12 (menor que 13)" }
     ];
+
+    function getRandomUid() {
+        return Math.random().toString(36).substring(2, 9);
+    }
 
     function playBeep(freq = 440, type = 'sine', duration = 0.1) {
         try {
@@ -931,6 +936,7 @@
         startTimer();
     }
 
+    // GERA QUESTÕES GARANTINDO ID ÚNICO MESMO EM NAVEGADORES DE TV
     function generateRoundChallenges() {
         let items = [];
 
@@ -939,7 +945,7 @@
             for (let i = 0; i < itemsPerRound; i++) {
                 let q = existencePool.pop();
                 items.push({
-                    id: `e_${i}_${Date.now()}`,
+                    id: `e_${i}_${getRandomUid()}`,
                     leftText: `Lados: ${q.a} cm, ${q.b} cm, ${q.c} cm`,
                     correctAnswer: q.valid ? "EXISTE" : "NAO_EXISTE",
                     rule: q.valid 
@@ -966,7 +972,7 @@
                 usedThirdAngles.add(c);
 
                 items.push({
-                    id: `a_${i}_${Date.now()}`,
+                    id: `a_${i}_${getRandomUid()}`,
                     leftText: `Ângulos: ${a}° e ${b}°`,
                     correctAnswer: `DEG_${c}`,
                     rule: `Soma interna é 180°. (${a}° + ${b}° + ${c}° = 180°)`
